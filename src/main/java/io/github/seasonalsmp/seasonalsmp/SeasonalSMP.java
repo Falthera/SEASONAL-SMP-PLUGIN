@@ -11,6 +11,8 @@ import io.github.seasonalsmp.seasonalsmp.command.GiveSwordCommand;
 import io.github.seasonalsmp.seasonalsmp.command.ReloadCommand;
 import io.github.seasonalsmp.seasonalsmp.command.SeasonCommand;
 import io.github.seasonalsmp.seasonalsmp.command.SeasonCommandTabCompleter;
+import io.github.seasonalsmp.seasonalsmp.command.SeasonalStartCommand;
+import io.github.seasonalsmp.seasonalsmp.command.WhitelistCommand;
 import io.github.seasonalsmp.seasonalsmp.combat.CombatManager;
 import io.github.seasonalsmp.seasonalsmp.combat.CombatListener;
 import io.github.seasonalsmp.seasonalsmp.command.SeasonalStartCommand;
@@ -24,6 +26,8 @@ import io.github.seasonalsmp.seasonalsmp.season.Season;
 import io.github.seasonalsmp.seasonalsmp.season.SeasonManager;
 import io.github.seasonalsmp.seasonalsmp.sword.SwordCombatListener;
 import io.github.seasonalsmp.seasonalsmp.sword.SwordManager;
+import io.github.seasonalsmp.seasonalsmp.whitelist.WhitelistAPIServer;
+import io.github.seasonalsmp.seasonalsmp.whitelist.WhitelistManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
@@ -50,6 +54,8 @@ public final class SeasonalSMP extends JavaPlugin {
     private io.github.seasonalsmp.seasonalsmp.effect.SeasonEffectsManager seasonEffectsManager;
     private io.github.seasonalsmp.seasonalsmp.data.DataStorage dataStorage;
     private CombatManager combatManager;
+    private WhitelistManager whitelistManager;
+    private WhitelistAPIServer whitelistAPIServer;
     private BukkitTask seasonCycleTask;
     private BukkitTask ambientEffectTask;
 
@@ -75,6 +81,9 @@ public final class SeasonalSMP extends JavaPlugin {
         seasonEffectsManager = new io.github.seasonalsmp.seasonalsmp.effect.SeasonEffectsManager(this);
         seasonEffectsManager.initialize();
         combatManager = new CombatManager(this);
+        whitelistManager = new WhitelistManager(this);
+        whitelistAPIServer = new WhitelistAPIServer(this, whitelistManager);
+        whitelistAPIServer.start();
         registerListeners();
         registerCommands();
         startSeasonCycle();
@@ -113,6 +122,9 @@ public final class SeasonalSMP extends JavaPlugin {
         }
         if (combatManager != null) {
             combatManager.shutdown();
+        }
+        if (whitelistAPIServer != null) {
+            whitelistAPIServer.stop();
         }
         instance = null;
         getLogger().info("SeasonalSMP disabled gracefully");
@@ -169,6 +181,10 @@ public final class SeasonalSMP extends JavaPlugin {
         org.bukkit.command.PluginCommand seasonal = getCommand("seasonal");
         if (seasonal != null) {
             seasonal.setExecutor(new SeasonalStartCommand(this));
+        }
+        org.bukkit.command.PluginCommand whitelist = getCommand("whitelist");
+        if (whitelist != null) {
+            whitelist.setExecutor(new WhitelistCommand(this));
         }
     }
 
@@ -326,6 +342,15 @@ public final class SeasonalSMP extends JavaPlugin {
     public io.github.seasonalsmp.seasonalsmp.effect.SeasonEffectsManager getSeasonEffectsManager() {
         return seasonEffectsManager;
     }
+
+    public CombatManager getCombatManager() {
+        return combatManager;
+    }
+
+    public WhitelistManager getWhitelistManager() {
+        return whitelistManager;
+    }
+}
 
     public CombatManager getCombatManager() {
         return combatManager;

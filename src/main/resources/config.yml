@@ -191,6 +191,14 @@ relic-purge:
   allow-pet-kill-credit: true
   bloodborn-multiplier: 4.0
 
+whitelist:
+  enabled: true
+  api-key: "changeme"
+  api-port: 8080
+  discord-bot-token: ""
+  discord-whitelist-channel-id: ""
+  discord-whitelisted-role-id: ""
+
 combat:
   enabled: true
   combat-duration-seconds: 1.5
