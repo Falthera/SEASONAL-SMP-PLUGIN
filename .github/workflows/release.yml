@@ -102,7 +102,7 @@ jobs:
           git config user.name "Falthera"
           git config user.email "bot@example.com"
           git add pom.xml
-          git commit -m "chore: bump version to ${{ steps.version.outputs.version }}"
+          git commit -m "chore: bump version to ${{ steps.version.outputs.version }} [skip ci]"
           git tag "v${{ steps.version.outputs.version }}"
           git push origin HEAD:main --tags
 
