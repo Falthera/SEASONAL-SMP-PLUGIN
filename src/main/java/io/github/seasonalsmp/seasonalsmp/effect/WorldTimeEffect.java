@@ -34,7 +34,7 @@ class WorldTimeEffect implements SeasonEffectsManager.SeasonEffect {
             if (!configManager.getStringList("world.apply-effects-to").contains(world.getName())) {
                 continue;
             }
-            Boolean current = world.getGameRule(GameRule.DO_DAYLIGHT_CYCLE);
+            Boolean current = world.getGameRuleValue(GameRule.DO_DAYLIGHT_CYCLE);
             if (current != null) {
                 previousDaylightCycle.put(world.getName(), current);
             }
@@ -45,9 +45,9 @@ class WorldTimeEffect implements SeasonEffectsManager.SeasonEffect {
                 default -> multiplier = 1.0;
             }
             if (multiplier > 1.0) {
-                world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+                world.setGameRuleValue(GameRule.DO_DAYLIGHT_CYCLE, "false");
             } else if (multiplier < 1.0) {
-                world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+                world.setGameRuleValue(GameRule.DO_DAYLIGHT_CYCLE, "false");
             }
         }
         timeTask = new org.bukkit.scheduler.BukkitRunnable() {
@@ -60,7 +60,7 @@ class WorldTimeEffect implements SeasonEffectsManager.SeasonEffect {
                     if (!configManager.getStringList("world.apply-effects-to").contains(world.getName())) {
                         continue;
                     }
-                    if (!Boolean.FALSE.equals(world.getGameRule(GameRule.DO_DAYLIGHT_CYCLE))) {
+                    if (!Boolean.FALSE.equals(world.getGameRuleValue(GameRule.DO_DAYLIGHT_CYCLE))) {
                         continue;
                     }
                     long time = world.getTime();
@@ -91,9 +91,9 @@ class WorldTimeEffect implements SeasonEffectsManager.SeasonEffect {
             }
             Boolean previous = previousDaylightCycle.get(world.getName());
             if (previous != null) {
-                world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, previous);
+                world.setGameRuleValue(GameRule.DO_DAYLIGHT_CYCLE, previous.toString());
             } else {
-                world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, true);
+                world.setGameRuleValue(GameRule.DO_DAYLIGHT_CYCLE, "true");
             }
         }
         previousDaylightCycle.clear();

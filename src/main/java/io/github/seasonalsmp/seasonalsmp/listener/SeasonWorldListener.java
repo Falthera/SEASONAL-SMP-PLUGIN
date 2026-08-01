@@ -3,7 +3,7 @@ import io.github.seasonalsmp.seasonalsmp.config.ConfigManager;
 import io.github.seasonalsmp.seasonalsmp.season.Season;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Ageable;
+import org.bukkit.block.data.Ageable;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
@@ -15,6 +15,7 @@ import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -81,7 +82,7 @@ public class SeasonWorldListener implements Listener {
                 Integer multiplier = boosts.get(cropType);
                 if (multiplier != null && multiplier > 1) {
                     event.setCancelled(true);
-                    Collection<ItemStack> drops = block.getDrops(event);
+                    Collection<ItemStack> drops = block.getDrops(event.getPlayer().getInventory().getItemInMainHand());
                     block.setType(Material.AIR);
                     for (ItemStack drop : drops) {
                         drop.setAmount(drop.getAmount() * multiplier);

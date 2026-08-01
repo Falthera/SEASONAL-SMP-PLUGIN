@@ -7,6 +7,7 @@ import io.github.seasonalsmp.seasonalsmp.season.Season;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -47,7 +48,9 @@ public class UIManager {
         }
         cooldownTasks.clear();
         for (BossBar bar : playerBossBars.values()) {
-            bar.removeAll();
+            for (Player online : plugin.getServer().getOnlinePlayers()) {
+                online.hideBossBar(bar);
+            }
         }
         playerBossBars.clear();
     }
@@ -59,7 +62,7 @@ public class UIManager {
         UUID uuid = player.getUniqueId();
         BossBar oldBar = playerBossBars.remove(uuid);
         if (oldBar != null) {
-            oldBar.removeAll();
+            player.hideBossBar(oldBar);
         }
         String prefix = configManager.getString("general.plugin-prefix", "&r");
         Component name = Component.text(prefix).append(Component.space())
@@ -68,7 +71,7 @@ public class UIManager {
         BossBar.Color barColor = switch (season) {
             case SPRING -> BossBar.Color.GREEN;
             case SUMMER -> BossBar.Color.YELLOW;
-            case AUTUMN -> BossBar.Color.ORANGE;
+            case AUTUMN -> BossBar.Color.YELLOW;
             case WINTER -> BossBar.Color.BLUE;
         };
         BossBar.Overlay overlay = BossBar.Overlay.PROGRESS;
@@ -84,7 +87,6 @@ public class UIManager {
         UUID uuid = player.getUniqueId();
         BossBar bar = playerBossBars.remove(uuid);
         if (bar != null) {
-            bar.removeAll();
             player.hideBossBar(bar);
         }
     }
@@ -118,7 +120,7 @@ public class UIManager {
         }
         String raw = configManager.getString("season.info.cooldown", "<white>Cooldown: <red>{seconds}s</red></white>");
         String formatted = raw.replace("{seconds}", String.valueOf(secondsRemaining));
-        showActionBar(player, Component.text(net.kyori.adventure.text.minimessage.MiniMessage.miniMessage().deserialize(formatted)));
+        showActionBar(player, MiniMessage.miniMessage().deserialize(formatted));
     }
 
     public void clearCooldown(Player player) {
@@ -138,7 +140,7 @@ public class UIManager {
             return;
         }
         String raw = configManager.getString("season.info.ready", "<green><b>Ability Ready!</b></green>");
-        showActionBar(player, Component.text(net.kyori.adventure.text.minimessage.MiniMessage.miniMessage().deserialize(raw)));
+        showActionBar(player, MiniMessage.miniMessage().deserialize(raw));
     }
 
     public void startCooldownTimer(Player player, String abilityName, int totalSeconds) {
