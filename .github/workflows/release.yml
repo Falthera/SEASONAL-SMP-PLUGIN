@@ -1,0 +1,151 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g. 1.0.1)'
+        required: true
+        default: '1.0.0'
+      prerelease:
+        description: 'Mark this release as a pre-release'
+        required: true
+        default: 'false'
+        type: boolean
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build and Verify
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      jar-path: ${{ steps.verify.outputs.jar-path }}
+      checksums: ${{ steps.checksum.outputs.path }}
+      changelog: ${{ steps.changelog.outputs.content }}
+      is-prerelease: ${{ steps.release-info.outputs.prerelease }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Extract version
+        id: version
+        run: |
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            VERSION=${GITHUB_REF#refs/tags/v}
+          else
+            VERSION="${{ github.event.inputs.version }}"
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_ENV"
+          echo "Resolved version: $VERSION"
+
+      - name: Update POM version
+        run: |
+          mvn versions:set -DnewVersion=${{ env.version }} -DgenerateBackupPoms=false
+          mvn versions:commit
+
+      - name: Build with Maven
+        run: mvn clean package -DskipTests -Dcheckstyle.skip=true -B -V
+
+      - name: Locate built artifact
+        id: verify
+        run: |
+          JAR=$(find target -maxdepth 1 -type f -name "SeasonalSMP-*.jar" ! -name "*sources*" ! -name "*javadoc*" | head -n 1)
+          if [[ -z "$JAR" ]]; then
+            echo "Built JAR not found in target/"
+            ls -la target/ || true
+            exit 1
+          fi
+          echo "jar-path=$JAR" >> "$GITHUB_OUTPUT"
+          echo "Built artifact: $JAR"
+          unzip -l "$JAR" | grep -q "plugin.yml" || { echo "plugin.yml missing from JAR"; exit 1; }
+
+      - name: Generate SHA256 checksums
+        id: checksum
+        run: |
+          JAR="${{ steps.verify.outputs.jar-path }}"
+          sha256sum "$JAR" > "${JAR}.sha256"
+          echo "path=${JAR}.sha256" >> "$GITHUB_OUTPUT"
+
+      - name: Extract changelog
+        id: changelog
+        run: |
+          if [[ -f CHANGELOG.md ]]; then
+            echo "content<<EOF" >> "$GITHUB_OUTPUT"
+            awk -v ver="${{ env.version }}" '
+              $0 ~ "^## \\[?" ver { found=1 }
+              found { print }
+              /^## \\[?[0-9]/ && found { exit }
+            ' CHANGELOG.md >> "$GITHUB_OUTPUT" || true
+            echo "EOF" >> "$GITHUB_OUTPUT"
+          else
+            echo "content=## SeasonalSMP v${{ env.version }}\n\nBuilt on Paper 1.21.11.\n\n**Changes:**\n- See commit history and diff for details." >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Determine prerelease status
+        id: release-info
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            IS_PRE=${{ github.event.inputs.prerelease }}
+          else
+            IS_PRE=false
+            if [[ "${{ github.ref }}" == *"-"* ]]; then
+              IS_PRE=true
+            fi
+          fi
+          echo "prerelease=$IS_PRE" >> "$GITHUB_OUTPUT"
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: seasonal-smp-${{ env.version }}
+          path: |
+            ${{ steps.verify.outputs.jar-path }}
+            ${{ steps.checksum.outputs.path }}
+          retention-days: 30
+          compression-level: 9
+
+  release:
+    name: Publish GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: seasonal-smp-${{ needs.build.outputs.version }}
+          path: release-artifacts
+
+      - name: Display release assets
+        run: |
+          echo "Release assets:"
+          ls -lah release-artifacts/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ needs.build.outputs.version }}
+          name: SeasonalSMP v${{ needs.build.outputs.version }}
+          body: ${{ needs.build.outputs.changelog }}
+          files: |
+            release-artifacts/*
+          draft: false
+          prerelease: ${{ needs.build.outputs.is-prerelease == 'true' }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,67 @@
+prefix: "&8[&6Seasonal&aSMP&8] &r"
+
+season:
+  transition:
+    title: "<gradient:#55FF55:#55AA55>Season Changed!</gradient>"
+    subtitle: "<white>The season is now <{season}><bold>{season_name}</bold></{season}>"
+    broadcast: "<white>☀ The season has changed to <{season}>{season_name}</{season}>!</white>"
+    days-remaining: "<white>Days remaining: <{season}>{days}</{season}>"
+    next-announce: "<white>The next season will be <{season}>{next_season}</{season}> in <yellow><b>{days}</b></yellow> days."
+  info:
+    header: "<gold><bold>═══ Season Information ═══</bold></gold>"
+    current: "<white>Current Season: <{season}><bold>{season_name}</bold></{season}>"
+    day: "<white>Day: <yellow>{day}</yellow>/<yellow>{max_day}</yellow>"
+    bound: "<white>Your Bound: <{bound}><bold>{bound_name}</bold></{bound}>"
+    bonus: "<white>Bonus: <green>{bonus}</green>"
+    penalty: "<white>Penalty: <red>{penalty}</red>"
+    ability: "<white>Ability: <aqua>{ability}</aqua>"
+    ready: "<white>Ability Ready! <green><bold>CLICK</bold></green> with your bound sword!"
+    cooldown: "<white>Ability on cooldown: <red>{seconds}s</red>"
+
+bound:
+  assign:
+    self: "<white>You have been assigned the <{bound}><bold>{bound_name} Bound</bold></{bound}>!"
+    other: "<white>Assigned <{bound}><bold>{bound_name} Bound</bold></{bound}> to <player>."
+    already: "<red>Player already has a bound!</red>"
+    none-available: "<red>All bounds have been assigned or configuration prevents auto-assignment.</red>"
+    first-join: "<white>Welcome! You have been assigned the <{bound}><bold>{bound_name} Bound</bold></{bound}>!"
+  view:
+    self: "<white>Your Season Bound: <{bound}><bold>{bound_name}</bold></{bound}>"
+    other: "<white><player>'s Season Bound: <{bound}><bold>{bound_name}</bold></{bound}>"
+    none: "<white>No bound assigned.</white>"
+  change:
+    success: "<white>Bound changed to <{bound}><bold>{bound_name}</bold></{bound}>!"
+    cooldown: "<red>You must wait {days} more days before changing your bound!</red>"
+    not-allowed: "<red>Bound changing is not allowed by configuration.</red>"
+    no-bound: "<red>You do not have a bound assigned!</red>"
+
+sword:
+  give:
+    success: "<white>Gave <{bound}><bold>{bound_name} Sword</bold></{bound}> to <player>."
+    received: "<white>Received <{bound}><bold>{bound_name} Sword</bold></{bound}>!"
+    already-has: "<yellow>Player already has this sword in their inventory.</yellow>"
+  ability:
+    activate: "<white>Activated <{bound}><bold>{ability_name}</bold></{bound}>!"
+    cooldown: "<red>Ability on cooldown! Wait {seconds}s.</red>"
+    no-bound: "<red>You need a bound sword to use this ability.</red>"
+    range: "<white>Healed <green><b>{count}</b></green> entities within range."
+
+command:
+  reload:
+    success: "<white>Configuration reloaded successfully.</white>"
+    fail: "<red>Failed to reload configuration! Check console.</red>"
+  debug:
+    header: "<gold><bold>═══ Debug Information ═══</bold></gold>"
+    season: "<white>Current Season: <{season}><bold>{season_name}</bold></{season}>"
+    day: "<white>Day: <yellow>{day}</yellow>/<yellow>{max_day}</yellow>"
+    bounds-assigned: "<white>Bounds Assigned: <yellow>{count}</yellow>"
+    online: "<white>Online Players: <yellow>{count}</yellow>"
+    worlds: "<white>Worlds Tracked: <yellow>{worlds}</yellow>"
+
+error:
+  no-permission: "<red>You do not have permission to use this command.</red>"
+  player-only: "<red>This command can only be used by players.</red>"
+  console-only: "<red>This command can only be used from the console.</red>"
+  player-not-found: "<red>Player '<player>' not found.</red>"
+  invalid-args: "<red>Invalid arguments! Usage: <usage></red>"
+  season-not-found: "<red>Season not found. Available: Spring, Summer, Autumn, Winter</red>"

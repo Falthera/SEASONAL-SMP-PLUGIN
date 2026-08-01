@@ -1,0 +1,192 @@
+general:
+  plugin-prefix: "&8[&6Seasonal&aSMP&8] &r"
+  debug-mode: false
+  first-join-bound-random: true
+  default-bound: "NONE"
+
+season:
+  duration-seconds: 7200
+  start-season: "SPRING"
+  auto-cycle: true
+  transition-announce-seconds: 30
+  announce-transitions: true
+
+world:
+  apply-effects-to:
+    - "world"
+  apply-to-all-worlds: true
+  apply-weather-effects: true
+  apply-visual-effects: true
+  apply-audio-effects: true
+  apply-gamerule-changes: true
+
+bound:
+  assign-on-first-join: true
+  allow-change-command: true
+  change-command-cooldown-days: 7
+  peak-season-bonus-multiplier: 1.5
+  save-bound-data: true
+
+swords:
+  give-on-bound-assign: true
+  unbreakable: true
+  cooldown-seconds:
+    bloom: 60
+    solar-burst: 45
+    harvest: 50
+    frozen-heart: 40
+  global-cooldown-ticks: 10
+  ability-radius: 8.0
+  legendary-prefix: "&6&lLegendary "
+  legendary-suffix: "&r"
+
+effects:
+  ambient-vfx-enabled: true
+  ambient-sfx-enabled: true
+  particles-per-second-max: 500
+  sound-distance: 48.0
+  transition-duration-seconds: 10
+
+ui:
+  bossbar-enabled: true
+  actionbar-enabled: true
+  title-on-transition: true
+  cooldown-display: true
+  season-display-position: "top"
+
+player:
+  max-health-boost: 4.0
+  movement-speed-boost: 0.1
+  regeneration-boost: 1.0
+  attack-damage-boost: 2.0
+  mining-speed-boost: 2.0
+  fire-resistance-boost: true
+  absorption-hearts: 2
+
+resource-pack:
+  url: "https://example.com/seasonalsmp/resourcepack.zip"
+  sha1: "0000000000000000000000000000000000000000"
+  force-pack: false
+  check-version: true
+  pack-version: 1
+
+mobs:
+  seasonal-spawn-rates:
+    spring:
+      passive-boost: 1.3
+      hostile-reduction: 0.7
+    summer:
+      passive-boost: 1.0
+      hostile-boost: 1.4
+    autumn:
+      passive-boost: 1.1
+      hostile-boost: 1.2
+    winter:
+      passive-boost: 0.6
+      hostile-boost: 1.1
+  bee-aggression-spring: false
+  mob-health-scale:
+    summer: 1.2
+    winter: 1.15
+    autumn: 1.0
+    spring: 1.0
+
+crops:
+  growth-rate-multiplier:
+    spring: 2.0
+    summer: 1.0
+    autumn: 1.3
+    winter: 0.2
+  auto-harvest-enabled: true
+
+weather:
+  spring:
+    rain-chance: 0.5
+    thunder-chance: 0.1
+  summer:
+    rain-chance: 0.15
+    thunder-chance: 0.05
+    clear-chance: 0.8
+  autumn:
+    rain-chance: 0.4
+    thunder-chance: 0.08
+  winter:
+    snow-chance: 0.6
+    thunder-chance: 0.02
+
+world-transformation:
+  water-freeze-enabled: true
+  freeze-check-radius: 48
+  freeze-task-interval-ticks: 200
+  autumn-leaf-particle-count: 40
+  spring-flower-particle-count: 30
+  winter-snow-particle-count: 60
+  summer-ember-particle-count: 50
+  biome-aware-colors: true
+  apply-to-biomes:
+    - PLAINS
+    - FOREST
+    - DARK_FOREST
+    - SWAMP
+    - TAIGA
+    - SNOWY_PLAINS
+    - ICE_SPIKES
+  grass-colors:
+    spring: 8519935
+    summer: 12601983
+    autumn: 14405048
+    winter: 10066329
+  water-colors:
+    spring: 4159008
+    summer: 4159008
+    autumn: 3355614
+    winter: 5592536
+  day-length-multiplier:
+    spring: 1.0
+    summer: 1.3
+    autumn: 1.0
+    winter: 0.7
+  night-length-multiplier:
+    spring: 1.0
+    summer: 0.7
+    autumn: 1.0
+    winter: 1.3
+  spring:
+    flower-particles-enabled: true
+    extra-animal-spawns: true
+    crop-growth-boost: true
+    bees-passive: true
+  summer:
+    heat-haze-particles: true
+    fire-particles-enabled: true
+    extra-hostile-spawns: true
+    longer-days: true
+  autumn:
+    falling-leaves: true
+    leaf-decay-enabled: true
+    extra-loot-enabled: true
+    fog-enabled: true
+  winter:
+    snow-particles-enabled: true
+    water-freeze-enabled: true
+    ice-spikes: true
+    extra-night-spawns: true
+    longer-nights: true
+
+sound:
+  transition-sound: "seasonalsmp:sound.season_transition"
+  ability-spring: "seasonalsmp:sound.bloom"
+  ability-summer: "seasonalsmp:sound.solar_burst"
+  ability-autumn: "seasonalsmp:sound.harvest"
+  ability-winter: "seasonalsmp:sound.frozen_heart"
+  sword-unsheathe: "seasonalsmp:sound.sword_unsheathe"
+  ui-click: "seasonalsmp:sound.ui_click"
+  ui-hover: "seasonalsmp:sound.ui_hover"
+
+relic-purge:
+  enabled: true
+  duration-seconds: 600
+  drop-on-death: true
+  kill-credit-player-only: true
+  allow-pet-kill-credit: true
+  bloodborn-multiplier: 4.0

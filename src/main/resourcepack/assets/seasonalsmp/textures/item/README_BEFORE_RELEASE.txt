@@ -1,0 +1,1 @@
+note: replace textures in this folder with the final seasonal sword PNGs before release

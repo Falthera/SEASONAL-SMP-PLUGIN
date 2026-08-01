@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/handheld",
+  "custom_model_data": 1004,
+  "textures": {
+    "layer0": "seasonalsmp:item/frost_sword"
+  }
+}

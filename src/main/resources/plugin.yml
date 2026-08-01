@@ -1,0 +1,77 @@
+name: SeasonalSMP
+version: ${project.version}
+main: io.github.seasonalsmp.seasonalsmp.SeasonalSMP
+api-version: '1.21'
+author: SeasonalSMP Team
+description: A production-ready Minecraft Paper plugin featuring seasonal world transformations and bound-based gameplay.
+softdepend: [ProtocolLib, PacketEvents]
+permissions:
+  seasonalsmp.admin:
+    description: Full access to all SeasonalSMP admin commands
+    default: op
+    children:
+      seasonalsmp.command.season.admin: true
+      seasonalsmp.command.bound.admin: true
+      seasonalsmp.command.give: true
+      seasonalsmp.command.reload: true
+      seasonalsmp.command.debug: true
+  seasonalsmp.command.season:
+    description: View season info and time
+    default: true
+  seasonalsmp.command.season.admin:
+    description: Modify the current season
+    default: op
+  seasonalsmp.command.bound:
+    description: View your season bound
+    default: true
+  seasonalsmp.command.bound.admin:
+    description: Manage player season bounds
+    default: op
+  seasonalsmp.command.give:
+    description: Give seasonal swords to players
+    default: op
+  seasonalsmp.command.reload:
+    description: Reload plugin configuration
+    default: op
+  seasonalsmp.command.debug:
+    description: Access debug information
+    default: op
+commands:
+  season:
+    description: View or modify the current season
+    usage: /<command> [info|set <season>|next|time]
+    aliases: [sseason]
+    permission: seasonalsmp.command.season
+  bound:
+    description: Manage season bounds
+    usage: /<command> [view|assign <player> <season>|list]
+    aliases: [sbound]
+    permission: seasonalsmp.command.bound
+  givesword:
+    description: Give a seasonal sword to a player
+    usage: /<command> <spring|summer|autumn|winter> [player]
+    aliases: [seasonalsword]
+    permission: seasonalsmp.command.give
+  seasonreload:
+    description: Reload plugin configuration
+    usage: /<command>
+    aliases: [sreload]
+    permission: seasonalsmp.command.reload
+  seasondebug:
+    description: View debug information
+    usage: /<command>
+    aliases: [sdebug]
+    permission: seasonalsmp.command.debug
+  ability:
+    description: Activate your bound ability
+    usage: /<command>
+    aliases: [boundability]
+    permission: seasonalsmp.command.bound
+  changebound:
+    description: Change a player's bound
+    usage: /<command> <player> <season>
+    permission: seasonalsmp.command.bound.admin
+  event:
+    description: Start server events
+    usage: /<command> start <event-name>
+    permission: seasonalsmp.command.season.admin

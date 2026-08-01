@@ -1,0 +1,46 @@
+defaults:
+  apply-weather-effects: true
+  apply-visual-effects: true
+  apply-audio-effects: true
+  apply-gamerule-changes: true
+
+worlds:
+  world:
+    apply-effects: true
+    season-color:
+      spring: "#55FF55"
+      summer: "#FFFF55"
+      autumn: "#FFAA55"
+      winter: "#55FFFF"
+    fog:
+      autumn-density: 0.05
+      winter-density: 0.1
+    grass-color:
+      spring: 8519935
+      summer: 12601983
+      autumn: 14405048
+      winter: 10066329
+    water-color:
+      spring: 4159008
+      summer: 4159008
+      autumn: 3355614
+      winter: 5592536
+    leaf-color:
+      spring: 5271966
+      summer: 5271966
+      autumn: 15263976
+      winter: 14313319
+    sky-color:
+      spring: 7864320
+      summer: 7703398
+      autumn: 11599872
+      winter: 6574652
+    ambient-sounds:
+      spring:
+        - "seasonalsmp:sound.ambient_spring"
+      summer:
+        - "seasonalsmp:sound.ambient_summer"
+      autumn:
+        - "seasonalsmp:sound.ambient_autumn"
+      winter:
+        - "seasonalsmp:sound.ambient_winter"

@@ -1,0 +1,37 @@
+name: Continuous Integration
+
+on:
+  pull_request:
+    branches: [ main, master ]
+  push:
+    branches: [ main, master ]
+
+jobs:
+  build-and-test:
+    name: Build and Verify
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Verify code style
+        run: mvn checkstyle:check -B
+
+      - name: Build and run tests
+        run: mvn clean test -B -V
+
+      - name: Verify JAR artifact
+        run: |
+          JAR=$(find target -maxdepth 1 -type f -name "SeasonalSMP-*.jar" ! -name "*sources*" ! -name "*javadoc*" | head -n 1)
+          test -f "$JAR"
+          unzip -l "$JAR" | grep -q "plugin.yml" || { echo "plugin.yml missing from JAR"; exit 1; }
+          echo "Build verified: $JAR"

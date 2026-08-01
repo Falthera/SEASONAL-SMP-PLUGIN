@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/handheld",
+  "custom_model_data": 1003,
+  "textures": {
+    "layer0": "seasonalsmp:item/harvest_sword"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/handheld",
+  "custom_model_data": 1002,
+  "textures": {
+    "layer0": "seasonalsmp:item/solar_sword"
+  }
+}

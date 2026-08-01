@@ -1,0 +1,3 @@
+Seasonal SMP - production-ready Paper plugin.
+Build with Maven, drop the jar into plugins/, edit configs, and restart.
+See docs/ and README.md for configuration and release steps.

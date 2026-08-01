@@ -1,0 +1,126 @@
+spring-bound:
+  display-name: "Spring"
+  color-code: "&a"
+  hex-color: 8519935
+  peak-season: "SPRING"
+  ability-name: "Bloom"
+  ability-description: "Releases a healing wave that heals you and nearby allies while cleansing negative effects."
+  legendary-prefix: "&a&l[SPRING] "
+  passive:
+    enabled: true
+    effects:
+      - "regeneration:1:0"
+      - "speed:1:0"
+  peak-bonus:
+    effects:
+      - "regeneration:2:0"
+      - "speed:2:0"
+      - "saturation:1:0"
+    crop-boost-multiplier: 2.0
+    mob-passive-boost: 1.3
+  penalty-seasons:
+    SUMMER:
+      effects:
+        - "hunger:1:0"
+    AUTUMN:
+      effects:
+        - "regeneration:-1:0"
+    WINTER:
+      effects:
+        - "regeneration:0:0"
+  assign-sword: true
+
+summer-bound:
+  display-name: "Summer"
+  color-code: "&e"
+  hex-color: 16777045
+  peak-season: "SUMMER"
+  ability-name: "Solar Burst"
+  ability-description: "Creates a powerful wave of heat that ignites and knocks back nearby enemies."
+  legendary-prefix: "&e&l[SUMMER] "
+  passive:
+    enabled: true
+    effects:
+      - "fire_resistance:0:0"
+      - "strength:1:0"
+  peak-bonus:
+    effects:
+      - "strength:2:0"
+      - "fire_resistance:1:0"
+      - "speed:1:0"
+    fire-damage-boost: 1.3
+    mob-hostile-boost: 1.4
+  penalty-seasons:
+    AUTUMN:
+      effects:
+        - "strength:-1:0"
+    WINTER:
+      effects:
+        - "mining_fatigue:1:0"
+        - "slowness:1:0"
+    SPRING:
+      effects:
+        - "slowness:1:0"
+
+autumn-bound:
+  display-name: "Autumn"
+  color-code: "&6"
+  hex-color: 16744447
+  peak-season: "AUTUMN"
+  ability-name: "Harvest"
+  ability-description: "Instantly harvest nearby crops while temporarily increasing loot drops."
+  legendary-prefix: "&6&l[AUTUMN] "
+  passive:
+    enabled: true
+    effects:
+      - "haste:1:0"
+  peak-bonus:
+    effects:
+      - "haste:2:0"
+      - "luck:1:0"
+    fortune-boost: 2.5
+    looting-boost: 2.5
+    crop-yield-boost: 2.0
+  penalty-seasons:
+    WINTER:
+      effects:
+        - "haste:-1:0"
+    SPRING:
+      effects:
+        - "speed:-1:0"
+    SUMMER:
+      effects:
+        - "haste:0:0"
+        - "luck:0:0"
+
+winter-bound:
+  display-name: "Winter"
+  color-code: "&b"
+  hex-color: 65535
+  peak-season: "WINTER"
+  ability-name: "Frozen Heart"
+  ability-description: "Temporarily become extremely resilient while slowing nearby enemies."
+  legendary-prefix: "&b&l[WINTER] "
+  passive:
+    enabled: true
+    effects:
+      - "resistance:1:0"
+  peak-bonus:
+    effects:
+      - "resistance:3:0"
+      - "health_boost:2:0"
+      - "slowness:-1:0"
+    freeze-immunity: true
+    ice-speed-boost: 2.0
+  penalty-seasons:
+    SPRING:
+      effects:
+        - "health_boost:0:0"
+    SUMMER:
+      effects:
+        - "fire_resistance:-1:0"
+        - "hunger:1:0"
+        - "mining_fatigue:1:0"
+    AUTUMN:
+      effects:
+        - "resistance:0:0"
