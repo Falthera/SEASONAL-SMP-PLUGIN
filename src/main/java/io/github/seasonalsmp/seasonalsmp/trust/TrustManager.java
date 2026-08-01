@@ -1,6 +1,7 @@
 package io.github.seasonalsmp.seasonalsmp.trust;
 
 import io.github.seasonalsmp.seasonalsmp.SeasonalSMP;
+import org.bukkit.entity.Player;
 
 import java.io.*;
 import java.util.*;
