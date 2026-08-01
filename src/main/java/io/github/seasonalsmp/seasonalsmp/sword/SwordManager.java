@@ -3,7 +3,6 @@ package io.github.seasonalsmp.seasonalsmp.sword;
 import io.github.seasonalsmp.seasonalsmp.SeasonalSMP;
 import io.github.seasonalsmp.seasonalsmp.bound.BoundType;
 import io.github.seasonalsmp.seasonalsmp.config.ConfigManager;
-import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -128,9 +127,9 @@ public class SwordManager implements Listener {
             return item;
         }
         meta.setDisplayName(displayName);
-        List<Component> lore = new ArrayList<>();
+        List<String> lore = new ArrayList<>();
         for (String line : rawLore) {
-            lore.add(Component.text(line.replace("&", "§")));
+            lore.add(line.replace("&", "§"));
         }
         meta.setLore(lore);
         meta.setCustomModelData(modelData);
