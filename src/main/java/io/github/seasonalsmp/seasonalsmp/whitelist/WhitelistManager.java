@@ -220,8 +220,8 @@ public class WhitelistManager {
                     return null;
                 }
                 String id = json.get("id").getAsString();
-                String username = json.get("name").getAsString();
-                return new MojangResponse(username, id);
+                String resolvedUsername = json.get("name").getAsString();
+                return new MojangResponse(resolvedUsername, id);
             }
         } catch (Exception e) {
             plugin.getLogger().warning("Failed to fetch UUID from Mojang for username " + username + ": " + e.getMessage());
