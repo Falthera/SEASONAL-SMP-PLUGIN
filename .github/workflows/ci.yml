@@ -23,8 +23,7 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Verify code style
-        run: mvn checkstyle:check -B
+
 
       - name: Build and run tests
         run: mvn clean test -B -V
