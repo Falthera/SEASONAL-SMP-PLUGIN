@@ -39,6 +39,9 @@ permissions:
   seasonalsmp.command.whitelist.admin:
     description: Manage whitelist via API and commands
     default: op
+  seasonalsmp.command.trust:
+    description: Manage trusted allies
+    default: true
 commands:
   season:
     description: View or modify the current season
@@ -86,3 +89,7 @@ commands:
     description: Whitelist management commands
     usage: /<command> <add|remove|lookup|stats|reload>
     permission: seasonalsmp.command.whitelist.admin
+  trust:
+    description: Manage trusted allies
+    usage: /<command> <add|remove|list>
+    permission: seasonalsmp.command.trust

@@ -4,6 +4,7 @@ import io.github.seasonalsmp.seasonalsmp.SeasonalSMP;
 import io.github.seasonalsmp.seasonalsmp.config.ConfigManager;
 import io.github.seasonalsmp.seasonalsmp.effect.particle.ParticleService;
 import io.github.seasonalsmp.seasonalsmp.effect.sound.SoundService;
+import io.github.seasonalsmp.seasonalsmp.trust.TrustManager;
 import io.github.seasonalsmp.seasonalsmp.season.Season;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -34,6 +35,7 @@ public class SpringBoundHandler {
         Location center = player.getLocation();
         double radius = configManager.getDouble("bounds.spring-bound.ability-radius", 8.0);
         double healAmount = configManager.getDouble("bounds.spring-bound.heal-amount", 6.0);
+        TrustManager trustManager = plugin.getTrustManager();
         player.setHealth(Math.min(player.getHealth() + healAmount, player.getMaxHealth()));
         player.setFoodLevel(Math.min(player.getFoodLevel() + 6, 20));
         player.setSaturation(Math.min(player.getSaturation() + 6, 20));
@@ -43,11 +45,13 @@ public class SpringBoundHandler {
             }
         }
         for (Entity entity : player.getNearbyEntities(radius, radius, radius)) {
-            if (entity instanceof LivingEntity living) {
-                living.setHealth(Math.min(living.getHealth() + (healAmount / 2.0), ((LivingEntity) entity).getMaxHealth()));
-                for (PotionEffect effect : living.getActivePotionEffects()) {
+            if (entity instanceof Player nearby && trustManager.isTrusted(player, nearby)) {
+                nearby.setHealth(Math.min(nearby.getHealth() + (healAmount / 2.0), nearby.getMaxHealth()));
+                nearby.setFoodLevel(Math.min(nearby.getFoodLevel() + 6, 20));
+                nearby.setSaturation(Math.min(nearby.getSaturation() + 6, 20));
+                for (PotionEffect effect : nearby.getActivePotionEffects()) {
                     if (Set.of(PotionEffectType.POISON, PotionEffectType.WITHER, PotionEffectType.WEAKNESS, PotionEffectType.SLOWNESS, PotionEffectType.BLINDNESS, PotionEffectType.NAUSEA).contains(effect.getType())) {
-                        living.removePotionEffect(effect.getType());
+                        nearby.removePotionEffect(effect.getType());
                     }
                 }
             }

@@ -42,7 +42,11 @@ public class CombatListener implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        combatManager.removeFromCombat(event.getPlayer());
+        Player player = event.getPlayer();
+        if (combatManager.isInCombat(player)) {
+            Bukkit.broadcastMessage("§c§l" + player.getName() + " §cis suspected of combat logging!");
+        }
+        combatManager.removeFromCombat(player);
     }
 
     @EventHandler
