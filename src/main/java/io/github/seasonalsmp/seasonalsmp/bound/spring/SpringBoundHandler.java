@@ -66,8 +66,8 @@ public class SpringBoundHandler {
                 living.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 80, 1));
             }
         }
-        particleService.spawnCircle(center, radius, Particle.VINE, 40, 0.3);
-        particleService.spawnSphere(center, radius * 0.6, Particle.FALLING_NECTAR, 30);
+        particleService.spawnCircle(center, radius, Particle.HEART, 40, 0.3);
+        particleService.spawnSphere(center, radius * 0.6, Particle.HAPPY_VILLAGER, 30);
         center.getWorld().playSound(center, Sound.BLOCK_GRASS_BREAK, 2.0f, 0.8f);
     }
 

@@ -46,9 +46,9 @@ public class SummerBoundHandler {
                 entity.setVelocity(direction.multiply(knockback));
             }
         }
-        particleService.spawn(player, Particle.FLAME, 50, 1.0);
+        particleService.spawn(player.getLocation(), Particle.FLAME, 50, 1.0);
         particleService.spawnCircle(center, radius, Particle.FLAME, 20, 0.8);
-        particleService.spawn(player, Particle.LAVA, 10, 0.3);
+        particleService.spawn(player.getLocation(), Particle.LAVA, 10, 0.3);
         center.getWorld().playSound(center, Sound.ENTITY_BLAZE_SHOOT, 2.0f, 1.2f);
     }
 

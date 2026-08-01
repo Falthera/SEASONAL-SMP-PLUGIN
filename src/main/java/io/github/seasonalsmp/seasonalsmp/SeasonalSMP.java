@@ -18,6 +18,7 @@ import io.github.seasonalsmp.seasonalsmp.sword.SwordCombatListener;
 import io.github.seasonalsmp.seasonalsmp.sword.SwordManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.GameRule;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -227,20 +228,20 @@ public final class SeasonalSMP extends JavaPlugin {
         }
         switch (season) {
             case SPRING -> {
-                world.setGameRuleValue("randomTickSpeed", "3");
-                world.setGameRuleValue("doMobSpawning", "true");
+                world.setGameRule(GameRule.RANDOM_TICK_SPEED, 3);
+                world.setGameRule(GameRule.DO_MOB_SPAWNING, true);
             }
             case SUMMER -> {
-                world.setGameRuleValue("randomTickSpeed", "4");
-                world.setGameRuleValue("doMobSpawning", "true");
+                world.setGameRule(GameRule.RANDOM_TICK_SPEED, 4);
+                world.setGameRule(GameRule.DO_MOB_SPAWNING, true);
             }
             case AUTUMN -> {
-                world.setGameRuleValue("randomTickSpeed", "3");
-                world.setGameRuleValue("doMobSpawning", "true");
+                world.setGameRule(GameRule.RANDOM_TICK_SPEED, 3);
+                world.setGameRule(GameRule.DO_MOB_SPAWNING, true);
             }
             case WINTER -> {
-                world.setGameRuleValue("randomTickSpeed", "2");
-                world.setGameRuleValue("doMobSpawning", "true");
+                world.setGameRule(GameRule.RANDOM_TICK_SPEED, 2);
+                world.setGameRule(GameRule.DO_MOB_SPAWNING, true);
             }
         }
     }

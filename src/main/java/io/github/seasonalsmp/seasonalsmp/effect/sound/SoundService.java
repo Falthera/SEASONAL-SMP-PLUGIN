@@ -24,7 +24,7 @@ public class SoundService {
         fallbackSounds.put("frozen_heart", Sound.BLOCK_GLASS_BREAK);
         fallbackSounds.put("sword_unsheathe", Sound.ENTITY_IRON_GOLEM_ATTACK);
         fallbackSounds.put("ui_click", Sound.UI_BUTTON_CLICK);
-        fallbackSounds.put("ui_hover", Sound.UI_BUTTON_HOVER);
+        fallbackSounds.put("ui_hover", Sound.UI_BUTTON_CLICK);
     }
 
     public void play(Player player, String key) {

@@ -40,7 +40,7 @@ public class EventCommand implements CommandExecutor, TabCompleter {
             return true;
         }
         plugin.getServer().getScheduler().runTask(plugin, () -> {
-            io.github.seasonalsmp.seasonalsmp.event.RelicPurgeManager.startRelicPurge(plugin);
+            io.github.seasonalsmp.seasonalsmp.event.relic.RelicPurgeManager.startRelicPurge(plugin);
         });
         sender.sendMessage("§aStarted RELIC-PURGE event!");
         return true;

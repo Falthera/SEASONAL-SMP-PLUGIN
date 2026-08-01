@@ -35,7 +35,7 @@ public class WinterBoundHandler {
         int slowAmplifier = configManager.getInt("bounds.winter-bound.slow-amplifier", 2);
         double slowRadius = configManager.getDouble("bounds.winter-bound.slow-radius", 6.0);
         player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, durationSeconds * 20, resistanceLevel - 1));
-        player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, durationSeconds * 20, resistanceLevel));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, durationSeconds * 20, resistanceLevel));
         player.addPotionEffect(new PotionEffect(PotionEffectType.HEALTH_BOOST, durationSeconds * 20, 1));
         Location center = player.getLocation();
         for (Entity entity : player.getNearbyEntities(slowRadius, slowRadius, slowRadius)) {
@@ -59,9 +59,9 @@ public class WinterBoundHandler {
                 living.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, freezeDuration * 20, 1));
             }
         }
-        particleService.spawnCircle(center, radius, Particle.ICE_CRYSTAL, 80, 0.3);
+        particleService.spawnCircle(center, radius, Particle.SNOWFLAKE, 80, 0.3);
         particleService.spawnSphere(center, radius * 0.7, Particle.CLOUD, 50);
-        center.getWorld().playSound(center, Sound.ENTITY_FROZEN_ORB_PLACE, 2.0f, 0.5f);
+        center.getWorld().playSound(center, Sound.BLOCK_GLASS_BREAK, 2.0f, 0.5f);
     }
 
     public void applyPassiveEffects(Player player, Season currentSeason) {

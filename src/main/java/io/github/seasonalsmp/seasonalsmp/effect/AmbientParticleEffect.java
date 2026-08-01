@@ -81,7 +81,7 @@ class AmbientParticleEffect implements SeasonEffectsManager.SeasonEffect {
             org.bukkit.Location p = loc.clone().add(x, y, z);
             particleService.spawn(p, Particle.HEART, 1, 0.0);
             if (random.nextDouble() < 0.4) {
-                particleService.spawn(p, Particle.FALLING_NECTAR, 1, 0.0);
+                particleService.spawn(p, Particle.HAPPY_VILLAGER, 1, 0.0);
             }
         }
     }

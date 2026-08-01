@@ -3,16 +3,15 @@ import io.github.seasonalsmp.seasonalsmp.config.ConfigManager;
 import io.github.seasonalsmp.seasonalsmp.season.Season;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Ageable;
 import org.bukkit.block.Block;
-import org.bukkit.block.data.Ageable;
-import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
-import org.bukkit.event.player.PlayerHarvestBlockEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -70,26 +69,24 @@ public class SeasonWorldListener implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
         Season current = plugin.getSeasonManager().getCurrentSeason();
         if (current == Season.AUTUMN && configManager.getBoolean("world-transformation.extra-loot-enabled")) {
-            org.bukkit.block.Block block = event.getBlock();
+            Block block = event.getBlock();
             if (block.getBlockData() instanceof Ageable ageable && ageable.getAge() == ageable.getMaximumAge()) {
-            }
-        }
-    }
-
-    @EventHandler
-    public void onPlayerHarvest(PlayerHarvestBlockEvent event) {
-        Season current = plugin.getSeasonManager().getCurrentSeason();
-        if (current == Season.AUTUMN && configManager.getBoolean("world-transformation.extra-loot-enabled")) {
-            Map<Material, Integer> boosts = new HashMap<>();
-            boosts.put(Material.WHEAT, 3);
-            boosts.put(Material.CARROTS, 3);
-            boosts.put(Material.POTATOES, 3);
-            boosts.put(Material.BEETROOTS, 3);
-            boosts.put(Material.NETHER_WART, 2);
-            for (ItemStack drop : event.getItems()) {
-                Material type = drop.getType();
-                if (boosts.containsKey(type)) {
-                    drop.setAmount(drop.getAmount() * boosts.get(type));
+                Material cropType = block.getType();
+                Map<Material, Integer> boosts = new HashMap<>();
+                boosts.put(Material.WHEAT, 3);
+                boosts.put(Material.CARROTS, 3);
+                boosts.put(Material.POTATOES, 3);
+                boosts.put(Material.BEETROOTS, 3);
+                boosts.put(Material.NETHER_WART, 2);
+                Integer multiplier = boosts.get(cropType);
+                if (multiplier != null && multiplier > 1) {
+                    event.setCancelled(true);
+                    Collection<ItemStack> drops = block.getDrops(event);
+                    block.setType(Material.AIR);
+                    for (ItemStack drop : drops) {
+                        drop.setAmount(drop.getAmount() * multiplier);
+                        block.getWorld().dropItemNaturally(block.getLocation(), drop);
+                    }
                 }
             }
         }
@@ -102,8 +99,8 @@ public class SeasonWorldListener implements Listener {
         }
         Season current = plugin.getSeasonManager().getCurrentSeason();
         if (current == Season.SUMMER && configManager.getBoolean("world-transformation.extra-hostile-spawns")) {
-            if (event.getEntity() instanceof org.bukkit.entity.Monster) {
-                event.getEntity().setHealth(event.getEntity().getHealth() * 1.2);
+            if (event.getEntity() instanceof LivingEntity living) {
+                living.setHealth(living.getHealth() * 1.2);
             }
         }
     }
