@@ -32,6 +32,10 @@ public class CombatListener implements Listener {
         if (event.getEntity() instanceof Player victim && event.getDamager() instanceof Player attacker) {
             combatManager.markInCombat(victim);
             combatManager.markInCombat(attacker);
+            if (plugin.getTrustManager().isTrusted(attacker, victim) || plugin.getTrustManager().isTrusted(victim, attacker)) {
+                event.setCancelled(true);
+                attacker.sendMessage("§cYou cannot harm a trusted ally.");
+            }
         }
     }
 
