@@ -30,7 +30,7 @@ jobs:
 
       - name: Verify JAR artifact
         run: |
-          JAR=$(find target -maxdepth 1 -type f -name "SeasonalSMP-*.jar" ! -name "*sources*" ! -name "*javadoc*" | head -n 1)
-          test -f "$JAR"
+          JAR=$(find target -maxdepth 1 -type f \( -name "SeasonalSMP.jar" -o -name "SeasonalSMP-*.jar" \) ! -name "*sources*" ! -name "*javadoc*" | head -n 1)
+          test -n "$JAR" && test -f "$JAR"
           unzip -l "$JAR" | grep -q "plugin.yml" || { echo "plugin.yml missing from JAR"; exit 1; }
           echo "Build verified: $JAR"
