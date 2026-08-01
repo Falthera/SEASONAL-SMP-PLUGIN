@@ -34,7 +34,7 @@ class WorldTimeEffect implements SeasonEffectsManager.SeasonEffect {
             if (!configManager.getStringList("world.apply-effects-to").contains(world.getName())) {
                 continue;
             }
-            Boolean current = world.getGameRuleValue(GameRule.DO_DAYLIGHT_CYCLE);
+            Boolean current = world.getGameRule(GameRule.DO_DAYLIGHT_CYCLE);
             if (current != null) {
                 previousDaylightCycle.put(world.getName(), current);
             }
@@ -60,7 +60,7 @@ class WorldTimeEffect implements SeasonEffectsManager.SeasonEffect {
                     if (!configManager.getStringList("world.apply-effects-to").contains(world.getName())) {
                         continue;
                     }
-                    if (!Boolean.FALSE.equals(world.getGameRuleValue(GameRule.DO_DAYLIGHT_CYCLE))) {
+                    if (!Boolean.FALSE.equals(world.getGameRule(GameRule.DO_DAYLIGHT_CYCLE))) {
                         continue;
                     }
                     long time = world.getTime();

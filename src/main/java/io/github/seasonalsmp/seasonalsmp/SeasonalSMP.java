@@ -2,10 +2,14 @@ package io.github.seasonalsmp.seasonalsmp;
 
 import io.github.seasonalsmp.seasonalsmp.bound.BoundManager;
 import io.github.seasonalsmp.seasonalsmp.command.BoundCommand;
+import io.github.seasonalsmp.seasonalsmp.command.BoundCommandTabCompleter;
+import io.github.seasonalsmp.seasonalsmp.command.ChangeBoundCommand;
 import io.github.seasonalsmp.seasonalsmp.command.DebugCommand;
+import io.github.seasonalsmp.seasonalsmp.command.EventCommand;
 import io.github.seasonalsmp.seasonalsmp.command.GiveSwordCommand;
 import io.github.seasonalsmp.seasonalsmp.command.ReloadCommand;
 import io.github.seasonalsmp.seasonalsmp.command.SeasonCommand;
+import io.github.seasonalsmp.seasonalsmp.command.SeasonCommandTabCompleter;
 import io.github.seasonalsmp.seasonalsmp.config.ConfigManager;
 import io.github.seasonalsmp.seasonalsmp.core.PluginManager;
 import io.github.seasonalsmp.seasonalsmp.effect.EffectManager;
@@ -118,37 +122,37 @@ public final class SeasonalSMP extends JavaPlugin {
     }
 
     private void registerCommands() {
-        org.bukkit.command.Command season = getCommand("season");
+        org.bukkit.command.PluginCommand season = getCommand("season");
         if (season != null) {
             season.setExecutor(new SeasonCommand(this));
             season.setTabCompleter(new SeasonCommandTabCompleter(this));
         }
-        org.bukkit.command.Command bound = getCommand("bound");
+        org.bukkit.command.PluginCommand bound = getCommand("bound");
         if (bound != null) {
             bound.setExecutor(new BoundCommand(this));
             bound.setTabCompleter(new BoundCommandTabCompleter(this));
         }
-        org.bukkit.command.Command givesword = getCommand("givesword");
+        org.bukkit.command.PluginCommand givesword = getCommand("givesword");
         if (givesword != null) {
             givesword.setExecutor(new GiveSwordCommand(this));
         }
-        org.bukkit.command.Command reload = getCommand("seasonreload");
+        org.bukkit.command.PluginCommand reload = getCommand("seasonreload");
         if (reload != null) {
             reload.setExecutor(new ReloadCommand(this));
         }
-        org.bukkit.command.Command debug = getCommand("seasondebug");
+        org.bukkit.command.PluginCommand debug = getCommand("seasondebug");
         if (debug != null) {
             debug.setExecutor(new DebugCommand(this));
         }
-        org.bukkit.command.Command ability = getCommand("ability");
+        org.bukkit.command.PluginCommand ability = getCommand("ability");
         if (ability != null) {
             ability.setExecutor(new AbilityCommand(this));
         }
-        org.bukkit.command.Command changebound = getCommand("changebound");
+        org.bukkit.command.PluginCommand changebound = getCommand("changebound");
         if (changebound != null) {
             changebound.setExecutor(new ChangeBoundCommand(this));
         }
-        org.bukkit.command.Command event = getCommand("event");
+        org.bukkit.command.PluginCommand event = getCommand("event");
         if (event != null) {
             event.setExecutor(new EventCommand(this));
         }
