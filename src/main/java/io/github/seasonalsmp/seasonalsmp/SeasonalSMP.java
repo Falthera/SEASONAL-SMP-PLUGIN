@@ -11,6 +11,7 @@ import io.github.seasonalsmp.seasonalsmp.command.GiveSwordCommand;
 import io.github.seasonalsmp.seasonalsmp.command.ReloadCommand;
 import io.github.seasonalsmp.seasonalsmp.command.SeasonCommand;
 import io.github.seasonalsmp.seasonalsmp.command.SeasonCommandTabCompleter;
+import io.github.seasonalsmp.seasonalsmp.command.SeasonalStartCommand;
 import io.github.seasonalsmp.seasonalsmp.config.ConfigManager;
 import io.github.seasonalsmp.seasonalsmp.core.PluginManager;
 import io.github.seasonalsmp.seasonalsmp.effect.EffectManager;
@@ -156,6 +157,10 @@ public final class SeasonalSMP extends JavaPlugin {
         org.bukkit.command.PluginCommand event = getCommand("event");
         if (event != null) {
             event.setExecutor(new EventCommand(this));
+        }
+        org.bukkit.command.PluginCommand seasonal = getCommand("seasonal");
+        if (seasonal != null) {
+            seasonal.setExecutor(new SeasonalStartCommand(this));
         }
     }
 

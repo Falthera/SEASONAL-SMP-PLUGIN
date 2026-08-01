@@ -75,3 +75,7 @@ commands:
     description: Start server events
     usage: /<command> start <event-name>
     permission: seasonalsmp.command.season.admin
+  seasonal:
+    description: Start the seasonal event
+    usage: /<command> start
+    permission: seasonalsmp.command.season.admin
