@@ -190,3 +190,31 @@ relic-purge:
   kill-credit-player-only: true
   allow-pet-kill-credit: true
   bloodborn-multiplier: 4.0
+
+combat:
+  enabled: true
+  combat-duration-seconds: 1.5
+  enforce-item-restrictions: true
+  max-totems: 1
+  max-wolves: 1
+  max-sharpness-level: 4
+  max-protection-level: 3
+  max-mace-density: 4
+  max-xp-bottles: 128
+  max-breeze-rods: 64
+  max-wind-charges: 128
+  max-golden-apples: 128
+  max-cobwebs: 128
+  prevent-ender-pearl-escape: true
+  prevent-water-running: true
+  prevent-punch-bows: true
+  prevent-tnt-minecarts: true
+  prevent-end-crystals: true
+  prevent-respawn-anchors: true
+  prevent-bed-bombing: true
+  prevent-spears: true
+  prevent-trident-combat: true
+  prevent-debuff-potions: true
+  prevent-encrusted-golden-apples: true
+  prevent-bucket-draining: true
+  netherite-pickaxe-only: true

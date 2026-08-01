@@ -11,6 +11,8 @@ import io.github.seasonalsmp.seasonalsmp.command.GiveSwordCommand;
 import io.github.seasonalsmp.seasonalsmp.command.ReloadCommand;
 import io.github.seasonalsmp.seasonalsmp.command.SeasonCommand;
 import io.github.seasonalsmp.seasonalsmp.command.SeasonCommandTabCompleter;
+import io.github.seasonalsmp.seasonalsmp.combat.CombatManager;
+import io.github.seasonalsmp.seasonalsmp.combat.CombatListener;
 import io.github.seasonalsmp.seasonalsmp.command.SeasonalStartCommand;
 import io.github.seasonalsmp.seasonalsmp.config.ConfigManager;
 import io.github.seasonalsmp.seasonalsmp.core.PluginManager;
@@ -47,6 +49,7 @@ public final class SeasonalSMP extends JavaPlugin {
     private UIManager uiManager;
     private io.github.seasonalsmp.seasonalsmp.effect.SeasonEffectsManager seasonEffectsManager;
     private io.github.seasonalsmp.seasonalsmp.data.DataStorage dataStorage;
+    private CombatManager combatManager;
     private BukkitTask seasonCycleTask;
     private BukkitTask ambientEffectTask;
 
@@ -71,6 +74,7 @@ public final class SeasonalSMP extends JavaPlugin {
         uiManager.initialize();
         seasonEffectsManager = new io.github.seasonalsmp.seasonalsmp.effect.SeasonEffectsManager(this);
         seasonEffectsManager.initialize();
+        combatManager = new CombatManager(this);
         registerListeners();
         registerCommands();
         startSeasonCycle();
@@ -107,6 +111,9 @@ public final class SeasonalSMP extends JavaPlugin {
         if (seasonEffectsManager != null) {
             seasonEffectsManager.shutdown();
         }
+        if (combatManager != null) {
+            combatManager.shutdown();
+        }
         instance = null;
         getLogger().info("SeasonalSMP disabled gracefully");
     }
@@ -119,6 +126,7 @@ public final class SeasonalSMP extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new PlayerJoinListener(this), this);
         Bukkit.getPluginManager().registerEvents(new SeasonWorldListener(this), this);
         Bukkit.getPluginManager().registerEvents(new SwordCombatListener(), this);
+        Bukkit.getPluginManager().registerEvents(new CombatListener(this), this);
         io.github.seasonalsmp.seasonalsmp.event.RelicPurgeListener relicListener = new io.github.seasonalsmp.seasonalsmp.event.RelicPurgeListener(this);
         relicListener.initialize();
     }
@@ -317,5 +325,9 @@ public final class SeasonalSMP extends JavaPlugin {
 
     public io.github.seasonalsmp.seasonalsmp.effect.SeasonEffectsManager getSeasonEffectsManager() {
         return seasonEffectsManager;
+    }
+
+    public CombatManager getCombatManager() {
+        return combatManager;
     }
 }
