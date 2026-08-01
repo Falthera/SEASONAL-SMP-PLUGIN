@@ -26,11 +26,21 @@ jobs:
 
 
       - name: Build and run tests
-        run: mvn clean test -B -V
+        run: mvn clean verify -B -V
 
       - name: Verify JAR artifact
         run: |
           JAR=$(find target -maxdepth 1 -type f \( -name "SeasonalSMP.jar" -o -name "SeasonalSMP-*.jar" \) ! -name "*sources*" ! -name "*javadoc*" | head -n 1)
-          test -n "$JAR" && test -f "$JAR"
-          unzip -l "$JAR" | grep -q "plugin.yml" || { echo "plugin.yml missing from JAR"; exit 1; }
+
+          if [ -z "$JAR" ] || [ ! -f "$JAR" ]; then
+            echo "No plugin JAR found in target/. Ensure Maven packaging produces SeasonalSMP*.jar."
+            ls -la target || true
+            exit 1
+          fi
+
+          unzip -l "$JAR" | grep -q "plugin.yml" || {
+            echo "plugin.yml missing from JAR: $JAR"
+            exit 1
+          }
+
           echo "Build verified: $JAR"
