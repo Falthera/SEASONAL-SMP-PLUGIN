@@ -2,13 +2,12 @@ package io.github.seasonalsmp.seasonalsmp.combat;
 
 import io.github.seasonalsmp.seasonalsmp.SeasonalSMP;
 import io.github.seasonalsmp.seasonalsmp.config.ConfigManager;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.potion.PotionType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -116,8 +115,7 @@ public class CombatManager {
         Material type = item.getType();
 
         if (type == Material.BOW) {
-            Enchantment punch = item.getEnchantment(Enchantment.ARROW_KNOCKBACK);
-            return punch != null && punch.getLevel(item) > 0;
+            return item.getEnchantmentLevel(Enchantment.PUNCH) > 0;
         }
 
         if (type == Material.TNT || type == Material.TNT_MINECART) {
@@ -129,15 +127,10 @@ public class CombatManager {
         }
 
         if (type == Material.MACE) {
-            Enchantment density = item.getEnchantment(Enchantment.DENSITY);
-            return density == null || density.getLevel(item) > 4;
+            return item.getEnchantmentLevel(Enchantment.DENSITY) > 4;
         }
 
         if (type == Material.TRIDENT) {
-            return true;
-        }
-
-        if (type == Material.SPEAR) {
             return true;
         }
 
@@ -154,8 +147,8 @@ public class CombatManager {
             if (armor == null || armor.getType().isAir()) {
                 continue;
             }
-            Enchantment prot = armor.getEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL);
-            if (prot != null && prot.getLevel(armor) > 3) {
+            int protLevel = armor.getEnchantmentLevel(Enchantment.PROTECTION);
+            if (protLevel > 3) {
                 return true;
             }
         }
@@ -168,8 +161,7 @@ public class CombatManager {
         if (mainHand == null || mainHand.getType().isAir()) {
             return false;
         }
-        Enchantment sharpness = mainHand.getEnchantment(Enchantment.DAMAGE_ALL);
-        return sharpness != null && sharpness.getLevel(mainHand) > 4;
+        return mainHand.getEnchantmentLevel(Enchantment.SHARPNESS) > 4;
     }
 
     public boolean hasIllegalPickaxe(Player player) {
@@ -197,11 +189,6 @@ public class CombatManager {
             return false;
         }
         if (item.getType() == Material.TIPPED_ARROW || item.getType() == Material.LINGERING_POTION || item.getType() == Material.SPLASH_POTION) {
-            for (PotionEffectType effect : item.getEnchantments().keySet()) {
-                if (effect != null && !effect.isBeneficial()) {
-                    return true;
-                }
-            }
             return true;
         }
         return false;
@@ -212,7 +199,7 @@ public class CombatManager {
             return false;
         }
         Material type = block.getType();
-        return type == Material.RESPAWN_ANCHOR || type == Material.BED;
+        return type == Material.RESPAWN_ANCHOR;
     }
 
     public boolean isEnderPearlEscape(Player player) {

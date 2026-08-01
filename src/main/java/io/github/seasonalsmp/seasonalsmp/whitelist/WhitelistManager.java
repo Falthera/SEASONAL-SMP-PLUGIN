@@ -11,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -219,8 +220,8 @@ public class WhitelistManager {
                     return null;
                 }
                 String id = json.get("id").getAsString();
-                String name = json.get("name").getAsString();
-                return new MojangResponse(name, id);
+                String username = json.get("name").getAsString();
+                return new MojangResponse(username, id);
             }
         } catch (Exception e) {
             plugin.getLogger().warning("Failed to fetch UUID from Mojang for username " + username + ": " + e.getMessage());
@@ -229,11 +230,11 @@ public class WhitelistManager {
     }
 
     private static class MojangResponse {
-        String name;
+        String username;
         String uuid;
 
-        MojangResponse(String name, String uuid) {
-            this.name = name;
+        MojangResponse(String username, String uuid) {
+            this.username = username;
             this.uuid = uuid;
         }
     }

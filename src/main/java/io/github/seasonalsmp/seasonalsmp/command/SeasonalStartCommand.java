@@ -64,6 +64,7 @@ public class SeasonalStartCommand implements CommandExecutor {
         }
 
         Season firstSeason = Season.values()[random.nextInt(Season.values().length)];
+        final int durationTicks = 120;
 
         Bukkit.broadcastMessage("§6§l========================================");
         Bukkit.broadcastMessage("§e§l       SEASONAL BOUND SELECTION");
@@ -73,7 +74,6 @@ public class SeasonalStartCommand implements CommandExecutor {
 
         BukkitTask selectionTask = new BukkitRunnable() {
             int tick = 0;
-            final int durationTicks = 120;
 
             @Override
             public void run() {

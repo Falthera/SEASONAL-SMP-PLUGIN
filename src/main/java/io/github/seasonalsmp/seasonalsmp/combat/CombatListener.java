@@ -3,7 +3,6 @@ package io.github.seasonalsmp.seasonalsmp.combat;
 import io.github.seasonalsmp.seasonalsmp.SeasonalSMP;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,7 +13,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
 
@@ -153,8 +151,7 @@ public class CombatListener implements Listener {
         Material type = item.getType();
 
         if (type == Material.BOW) {
-            Enchantment punch = item.getEnchantment(Enchantment.ARROW_KNOCKBACK);
-            return punch != null && punch.getLevel(item) > 0;
+            return item.getEnchantmentLevel(Enchantment.PUNCH) > 0;
         }
 
         if (type == Material.TNT || type == Material.TNT_MINECART) {
@@ -166,15 +163,10 @@ public class CombatListener implements Listener {
         }
 
         if (type == Material.MACE) {
-            Enchantment density = item.getEnchantment(Enchantment.DENSITY);
-            return density == null || density.getLevel(item) > 4;
+            return item.getEnchantmentLevel(Enchantment.DENSITY) > 4;
         }
 
-        if (type == Material.TRIDENT || type == Material.TRIDENT) {
-            return true;
-        }
-
-        if (type == Material.SPEAR) {
+        if (type == Material.TRIDENT) {
             return true;
         }
 
@@ -190,6 +182,6 @@ public class CombatListener implements Listener {
             return false;
         }
         Material type = item.getType();
-        return type == Material.RESPAWN_ANCHOR || type == Material.BED || type == Material.END_CRYSTAL;
+        return type == Material.RESPAWN_ANCHOR || type == Material.END_CRYSTAL;
     }
 }
