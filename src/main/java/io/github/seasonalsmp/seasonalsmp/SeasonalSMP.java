@@ -70,10 +70,11 @@ public final class SeasonalSMP extends JavaPlugin {
             uiManager = new UIManager(this);
             dataStorage = new io.github.seasonalsmp.seasonalsmp.data.DataStorage(this);
             seasonManager = new SeasonManager(this);
+            effectManager = new EffectManager(this);
             boundManager = new BoundManager(this, dataStorage);
             swordManager = new SwordManager(this);
-            effectManager = new EffectManager(this);
             configManager.loadAll();
+            dataStorage.initialize();
             seasonManager.initialize();
             boundManager.loadAll();
             swordManager.initialize();
