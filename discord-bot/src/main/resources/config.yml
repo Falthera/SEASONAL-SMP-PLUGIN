@@ -1,7 +1,0 @@
-bot:
-  token: ""
-  guild-id: ""
-  whitelist-channel-id: ""
-  whitelist-role-id: ""
-  api-base-url: "http://localhost:8080"
-  api-key: "changeme"

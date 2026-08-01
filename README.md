@@ -76,6 +76,79 @@ Resource pack settings:
 - `resource-pack.sha1`
 - `resource-pack.force-pack`
 
+## Discord Whitelist Bot Setup
+
+The plugin includes an integrated Discord whitelist system with a companion bot.
+
+### 1. Copy `.env.example` to `.env`
+
+From the `discord-bot/` directory:
+
+```bash
+cp .env.example .env
+```
+
+### 2. Where to obtain each Discord ID
+
+- **DISCORD_TOKEN**: Create a bot application at https://discord.com/developers/applications, go to the **Bot** page, and click **Reset Token** or **Copy**.
+- **GUILD_ID**: Enable Developer Mode in Discord, right-click your server, and click **Copy ID**.
+- **WHITELIST_CHANNEL_ID**: Enable Developer Mode, right-click the whitelist text channel, and click **Copy ID**.
+- **WHITELIST_ROLE_ID**: Enable Developer Mode, right-click the whitelisted role, and click **Copy ID**.
+- **LOG_CHANNEL_ID**: Enable Developer Mode, right-click the log text channel, and click **Copy ID**.
+
+### 3. How to create a Discord bot application
+
+1. Go to https://discord.com/developers/applications
+2. Click **New Application**, enter a name, and accept the terms.
+3. In the application page, go to the **Bot** tab.
+4. Click **Add Bot** and confirm.
+5. Under **Privileged Gateway Intents**, enable:
+   - **Message Content Intent**
+   - **Server Members Intent** (optional but recommended for role assignment)
+
+### 4. How to obtain the bot token
+
+1. In the Discord Developer Portal, select your application.
+2. Go to the **Bot** tab.
+3. Under **Token**, click **Reset Token** or **Copy**.
+4. Paste the token into your `.env` file as `DISCORD_TOKEN`.
+
+### 5. How to generate a secure API key for the Seasonal SMP plugin
+
+Generate a strong random string and store it in both:
+
+- `plugins/SeasonalSMP/config.yml` under `whitelist.api-key`
+- `discord-bot/.env` under `PLUGIN_API_KEY`
+
+Example:
+
+```bash
+openssl rand -hex 32
+```
+
+### 6. How to configure `PLUGIN_API_URL`
+
+Set `PLUGIN_API_URL` to the public or LAN address where the Paper server is reachable on the API port.
+
+Examples:
+
+- Same machine: `http://127.0.0.1:8080`
+- LAN: `http://192.168.1.100:8080`
+- Public: `https://your-domain.com:8080`
+
+Ensure the port configured in `plugins/SeasonalSMP/config.yml` under `whitelist.api-port` matches the port exposed by the server.
+
+### 7. How to start the bot
+
+From the `discord-bot/` directory:
+
+```bash
+mvn clean package
+java -jar target/SeasonalDiscordBot.jar
+```
+
+The bot loads `.env` from the current working directory. If any required environment variable is missing, it prints a clear error and exits before starting.
+
 ## Developer Guide
 
 This project follows clean architecture and SOLID principles:

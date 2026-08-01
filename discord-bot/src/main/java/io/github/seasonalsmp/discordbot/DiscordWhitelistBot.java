@@ -1,22 +1,22 @@
 package io.github.seasonalsmp.discordbot;
 
-import io.github.seasonalsmp.discordbot.config.BotConfig;
+import io.github.cdimascio.dotenv.Dotenv;
+import io.github.cdimascio.dotenv.DotenvBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
-import javax.security.auth.login.LoginException;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import javax.security.auth.login.LoginException;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -26,18 +26,41 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class DiscordWhitelistBot extends ListenerAdapter {
-    private final BotConfig config;
+    private final String token;
+    private final String guildId;
+    private final String whitelistChannelId;
+    private final String whitelistRoleId;
+    private final String logChannelId;
+    private final String apiBaseUrl;
+    private final String apiKey;
+
     private JDA jda;
     private WhitelistAPIClient apiClient;
 
-    public DiscordWhitelistBot() {
-        this.config = loadConfig();
-        this.apiClient = new WhitelistAPIClient(config.apiBaseUrl, config.apiKey);
+    public DiscordWhitelistBot(Map<String, String> env) {
+        List<String> missing = new ArrayList<>();
+        this.token = require(env, "DISCORD_TOKEN", missing);
+        this.guildId = require(env, "GUILD_ID", missing);
+        this.whitelistChannelId = require(env, "WHITELIST_CHANNEL_ID", missing);
+        this.whitelistRoleId = require(env, "WHITELIST_ROLE_ID", missing);
+        this.logChannelId = require(env, "LOG_CHANNEL_ID", missing);
+        this.apiBaseUrl = require(env, "PLUGIN_API_URL", missing);
+        this.apiKey = require(env, "PLUGIN_API_KEY", missing);
+
+        if (!missing.isEmpty()) {
+            System.err.println("[DiscordBot] Missing required environment variables:");
+            for (String var : missing) {
+                System.err.println("[DiscordBot]   - " + var);
+            }
+            System.exit(1);
+        }
+
+        this.apiClient = new WhitelistAPIClient(apiBaseUrl, apiKey);
     }
 
     public void start() {
         try {
-            jda = JDABuilder.createDefault(config.token)
+            jda = JDABuilder.createDefault(token)
                     .addEventListeners(this)
                     .enableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT)
                     .build();
@@ -62,14 +85,14 @@ public class DiscordWhitelistBot extends ListenerAdapter {
         if (event.getAuthor().isBot()) {
             return;
         }
-        if (event.getChannel().getId().equals(config.whitelistChannelId)) {
+        if (event.getChannel().getId().equals(whitelistChannelId)) {
             handleWhitelistRequest(event.getMessage(), event.getAuthor());
         }
     }
 
     @Override
     public void onMessageUpdate(MessageUpdateEvent event) {
-        if (event.getChannel().getId().equals(config.whitelistChannelId)) {
+        if (event.getChannel().getId().equals(whitelistChannelId)) {
             event.getMessage().addReaction("❌").queue();
         }
     }
@@ -110,7 +133,7 @@ public class DiscordWhitelistBot extends ListenerAdapter {
                                     message.clearReactions().queue();
                                     message.addReaction("✅").queue();
 
-                                    Role whitelistRole = message.getGuild().getRoleById(config.whitelistRoleId);
+                                    Role whitelistRole = message.getGuild().getRoleById(whitelistRoleId);
                                     if (whitelistRole != null) {
                                         message.getGuild().retrieveMember(author).queue(
                                                 member -> {
@@ -190,38 +213,16 @@ public class DiscordWhitelistBot extends ListenerAdapter {
         }
     }
 
-    private BotConfig loadConfig() {
-        BotConfig config = new BotConfig();
-        try (InputStream is = getClass().getClassLoader().getResourceAsStream("config.yml")) {
-            if (is == null) {
-                throw new FileNotFoundException("config.yml not found in resources.");
-            }
-            Properties properties = new Properties();
-            properties.load(is);
-            config.token = properties.getProperty("bot.token", "");
-            config.guildId = properties.getProperty("bot.guild-id", "");
-            config.whitelistChannelId = properties.getProperty("bot.whitelist-channel-id", "");
-            config.whitelistRoleId = properties.getProperty("bot.whitelist-role-id", "");
-            config.apiBaseUrl = properties.getProperty("bot.api-base-url", "http://localhost:8080");
-            config.apiKey = properties.getProperty("bot.api-key", "changeme");
-        } catch (Exception e) {
-            log("Failed to load config: " + e.getMessage());
-            System.exit(1);
+    private static String require(Map<String, String> env, String key, List<String> missing) {
+        String value = env.get(key);
+        if (value == null || value.isBlank()) {
+            missing.add(key);
         }
-        return config;
+        return value != null ? value : "";
     }
 
     private void log(String message) {
         System.out.println("[DiscordBot] " + message);
-    }
-
-    private static class BotConfig {
-        String token;
-        String guildId;
-        String whitelistChannelId;
-        String whitelistRoleId;
-        String apiBaseUrl;
-        String apiKey;
     }
 
     private static class MojangResponse {
@@ -235,7 +236,22 @@ public class DiscordWhitelistBot extends ListenerAdapter {
     }
 
     public static void main(String[] args) {
-        DiscordWhitelistBot bot = new DiscordWhitelistBot();
+        DotenvBuilder builder = Dotenv.configure()
+                .directory("./")
+                .filename(".env")
+                .ignoreIfMissing()
+                .systemProperties();
+
+        Dotenv dotenv = builder.load();
+
+        Map<String, String> env = new HashMap<>();
+        for (Dotenv.Entry entry : dotenv.entries()) {
+            env.put(entry.getKey(), entry.getValue());
+        }
+
+        System.getenv().forEach((k, v) -> env.putIfAbsent(k, v));
+
+        DiscordWhitelistBot bot = new DiscordWhitelistBot(env);
         Runtime.getRuntime().addShutdownHook(new Thread(bot::stop));
         bot.start();
     }
