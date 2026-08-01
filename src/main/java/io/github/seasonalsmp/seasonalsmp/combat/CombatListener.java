@@ -1,6 +1,7 @@
 package io.github.seasonalsmp.seasonalsmp.combat;
 
 import io.github.seasonalsmp.seasonalsmp.SeasonalSMP;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;

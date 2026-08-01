@@ -118,7 +118,7 @@ public class TrustManager {
                         }
                     }
                     if (!set.isEmpty()) {
-                        trusts.put(truster, ConcurrentHashMap.newKeySet(set));
+                        trusts.put(truster, ConcurrentHashMap.newKeySet());
                     }
                 }
             }
