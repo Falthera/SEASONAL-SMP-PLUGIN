@@ -351,8 +351,3 @@ public final class SeasonalSMP extends JavaPlugin {
         return whitelistManager;
     }
 }
-
-    public CombatManager getCombatManager() {
-        return combatManager;
-    }
-}

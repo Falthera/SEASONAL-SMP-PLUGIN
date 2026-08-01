@@ -11,3 +11,4 @@ out/
 .DS_Store
 Thumbs.db
 .env
+discord-bot/.env
