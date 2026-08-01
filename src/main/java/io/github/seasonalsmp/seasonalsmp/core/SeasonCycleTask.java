@@ -1,5 +1,6 @@
 package io.github.seasonalsmp.seasonalsmp.core;
 
+import io.github.seasonalsmp.seasonalsmp.season.SeasonManager;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class SeasonCycleTask extends BukkitRunnable {

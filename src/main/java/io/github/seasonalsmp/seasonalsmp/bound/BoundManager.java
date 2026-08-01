@@ -143,6 +143,10 @@ public class BoundManager {
         boundDataService.saveAll();
     }
 
+    public void loadAll() {
+        boundDataService.loadAll();
+    }
+
     public void activateAbility(Player player, BoundType bound, boolean swordAbility) {
         if (player == null || bound == null) {
             return;

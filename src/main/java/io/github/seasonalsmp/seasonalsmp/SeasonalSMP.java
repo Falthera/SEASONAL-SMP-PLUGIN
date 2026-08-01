@@ -19,6 +19,7 @@ import io.github.seasonalsmp.seasonalsmp.sword.SwordManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -111,7 +112,7 @@ public final class SeasonalSMP extends JavaPlugin {
     private void registerListeners() {
         Bukkit.getPluginManager().registerEvents(new PlayerJoinListener(this), this);
         Bukkit.getPluginManager().registerEvents(new SeasonWorldListener(this), this);
-        Bukkit.getPluginManager().registerEvents(new SwordCombatListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new SwordCombatListener(), this);
         io.github.seasonalsmp.seasonalsmp.event.RelicPurgeListener relicListener = new io.github.seasonalsmp.seasonalsmp.event.RelicPurgeListener(this);
         relicListener.initialize();
     }

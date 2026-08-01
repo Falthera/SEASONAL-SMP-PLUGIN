@@ -1,3 +1,5 @@
+package io.github.seasonalsmp.seasonalsmp.listener;
+
 import io.github.seasonalsmp.seasonalsmp.SeasonalSMP;
 import io.github.seasonalsmp.seasonalsmp.config.ConfigManager;
 import io.github.seasonalsmp.seasonalsmp.season.Season;
