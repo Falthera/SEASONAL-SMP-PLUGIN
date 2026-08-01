@@ -21,7 +21,7 @@ public final class ConfigManager {
 
     private static final String[] REQUIRED_PATHS = new String[]{
         "general.plugin-prefix",
-        "season.cycle-duration-days",
+        "season.duration-seconds",
         "season.start-season",
         "season.auto-cycle",
         "world.apply-effects-to",

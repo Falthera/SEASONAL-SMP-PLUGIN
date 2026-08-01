@@ -116,8 +116,8 @@ public final class DataStorage {
             if (data != null) {
                 String seasonName = (String) data.get("season");
                 this.savedSeason = Season.fromString(seasonName);
-                Integer day = (Integer) data.get("day");
-                this.savedDay = day != null ? day : 1;
+                Number dayNumber = (Number) data.get("day");
+                this.savedDay = dayNumber != null ? dayNumber.intValue() : 1;
             }
         } catch (IOException e) {
             plugin.getLogger().log(Level.SEVERE, "Failed to load season data", e);
