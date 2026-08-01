@@ -178,3 +178,4 @@ public class SwordManager implements Listener {
         plugin.getBoundManager().activateAbility(player, bound, true);
         setCooldown(player, cooldownSeconds);
     }
+}
