@@ -45,7 +45,7 @@ jobs:
           MAJOR=0
           MINOR=0
           PATCH=0
-          IFS='.' read -r MAJOR MINOR PATCH << "$LATEST"
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$LATEST"
           case "$BUMP" in
             major) MAJOR=$((MAJOR + 1)); MINOR=0; PATCH=0 ;;
             minor) MINOR=$((MINOR + 1)); PATCH=0 ;;
@@ -102,9 +102,20 @@ jobs:
           git config user.name "Falthera"
           git config user.email "bot@example.com"
           git add pom.xml
-          git commit -m "chore: bump version to ${{ steps.version.outputs.version }} [skip ci]"
-          git tag "v${{ steps.version.outputs.version }}"
-          git push origin HEAD:main --tags
+
+          if git diff --cached --quiet; then
+            echo "No version change to commit; skipping commit."
+          else
+            git commit -m "chore: bump version to ${{ steps.version.outputs.version }} [skip ci]"
+          fi
+
+          if git rev-parse "v${{ steps.version.outputs.version }}" >/dev/null 2>&1; then
+            echo "Tag v${{ steps.version.outputs.version }} already exists; skipping tag creation."
+          else
+            git tag "v${{ steps.version.outputs.version }}"
+          fi
+
+          git push origin HEAD:main --follow-tags
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
