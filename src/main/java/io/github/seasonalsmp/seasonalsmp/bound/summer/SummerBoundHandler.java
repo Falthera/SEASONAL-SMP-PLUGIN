@@ -76,8 +76,29 @@ public class SummerBoundHandler {
         if (currentSeason == Season.SUMMER) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 120, 0));
             player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 120, 0));
+            meltNearbyIce(player);
         } else {
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 120, 0));
+        }
+    }
+
+    private void meltNearbyIce(Player player) {
+        Location center = player.getLocation();
+        int radius = 4;
+        for (int x = -radius; x <= radius; x++) {
+            for (int y = -radius; y <= 2; y++) {
+                for (int z = -radius; z <= radius; z++) {
+                    org.bukkit.block.Block block = center.clone().add(x, y, z).getBlock();
+                    org.bukkit.Material type = block.getType();
+                    if (type == org.bukkit.Material.ICE || type == org.bukkit.Material.FROSTED_ICE || type == org.bukkit.Material.BLUE_ICE) {
+                        block.setType(org.bukkit.Material.WATER);
+                    } else if (type == org.bukkit.Material.SNOW_BLOCK || type == org.bukkit.Material.SNOW) {
+                        block.setType(org.bukkit.Material.AIR);
+                    } else if (type == org.bukkit.Material.POWDER_SNOW) {
+                        block.setType(org.bukkit.Material.AIR);
+                    }
+                }
+            }
         }
     }
 }

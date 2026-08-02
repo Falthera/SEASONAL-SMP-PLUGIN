@@ -64,7 +64,7 @@ public class UIManager {
         if (oldBar != null) {
             player.hideBossBar(oldBar);
         }
-        String prefix = configManager.getString("general.plugin-prefix", "&r");
+        String prefix = configManager.getString("general.plugin-prefix", "&r").replace("&", "§");
         Component name = Component.text(prefix).append(Component.space())
             .append(Component.text(season.getDisplayName(), TextColor.color(season.getHexColor())));
         float progress = 1.0f;
@@ -100,11 +100,55 @@ public class UIManager {
         subtitleRaw = subtitleRaw.replace("{season_name}", newSeason.getDisplayName()).replace("{season}", newSeason.getColorCode());
         String seasonTag = newSeason.getColorCode();
         String processedTitle = titleRaw.replace("{season}", seasonTag);
-        Component title = net.kyori.adventure.text.minimessage.MiniMessage.miniMessage().deserialize(processedTitle);
-        Component subtitle = net.kyori.adventure.text.minimessage.MiniMessage.miniMessage().deserialize(subtitleRaw);
+        Component title = net.kyori.adventure.text.minimessage.MiniMessage.miniMessage().deserialize(convertLegacyToMiniMessage(processedTitle));
+        Component subtitle = net.kyori.adventure.text.minimessage.MiniMessage.miniMessage().deserialize(convertLegacyToMiniMessage(subtitleRaw));
         plugin.getServer().getScheduler().runTask(plugin, () -> {
             player.showTitle(net.kyori.adventure.title.Title.title(title, subtitle));
         });
+    }
+
+    private String convertLegacyToMiniMessage(String input) {
+        if (input == null) {
+            return null;
+        }
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < input.length(); i++) {
+            char c = input.charAt(i);
+            if ((c == '&' || c == '§') && i + 1 < input.length()) {
+                char next = input.charAt(i + 1);
+                result.append(switch (next) {
+                    case '0' -> "<black>";
+                    case '1' -> "<dark_blue>";
+                    case '2' -> "<dark_green>";
+                    case '3' -> "<dark_aqua>";
+                    case '4' -> "<dark_red>";
+                    case '5' -> "<dark_purple>";
+                    case '6' -> "<gold>";
+                    case '7' -> "<gray>";
+                    case '8' -> "<dark_gray>";
+                    case '9' -> "<blue>";
+                    case 'a' -> "<green>";
+                    case 'b' -> "<aqua>";
+                    case 'c' -> "<red>";
+                    case 'd' -> "<light_purple>";
+                    case 'e' -> "<yellow>";
+                    case 'f' -> "<white>";
+                    case 'l' -> "<bold>";
+                    case 'm' -> "<strikethrough>";
+                    case 'n' -> "<underline>";
+                    case 'o' -> "<italic>";
+                    case 'r' -> "<reset>";
+                    default -> {
+                        result.append(c);
+                        yield "";
+                    }
+                });
+                i++;
+            } else {
+                result.append(c);
+            }
+        }
+        return result.toString();
     }
 
     public void showActionBar(Player player, Component message) {

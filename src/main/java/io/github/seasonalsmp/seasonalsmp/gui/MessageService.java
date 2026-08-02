@@ -22,6 +22,50 @@ public class MessageService {
         this.miniMessage = MiniMessage.miniMessage();
     }
 
+    private String convertLegacyToMiniMessage(String input) {
+        if (input == null) {
+            return null;
+        }
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < input.length(); i++) {
+            char c = input.charAt(i);
+            if ((c == '&' || c == '§') && i + 1 < input.length()) {
+                char next = input.charAt(i + 1);
+                result.append(switch (next) {
+                    case '0' -> "<black>";
+                    case '1' -> "<dark_blue>";
+                    case '2' -> "<dark_green>";
+                    case '3' -> "<dark_aqua>";
+                    case '4' -> "<dark_red>";
+                    case '5' -> "<dark_purple>";
+                    case '6' -> "<gold>";
+                    case '7' -> "<gray>";
+                    case '8' -> "<dark_gray>";
+                    case '9' -> "<blue>";
+                    case 'a' -> "<green>";
+                    case 'b' -> "<aqua>";
+                    case 'c' -> "<red>";
+                    case 'd' -> "<light_purple>";
+                    case 'e' -> "<yellow>";
+                    case 'f' -> "<white>";
+                    case 'l' -> "<bold>";
+                    case 'm' -> "<strikethrough>";
+                    case 'n' -> "<underline>";
+                    case 'o' -> "<italic>";
+                    case 'r' -> "<reset>";
+                    default -> {
+                        result.append(c);
+                        yield "";
+                    }
+                });
+                i++;
+            } else {
+                result.append(c);
+            }
+        }
+        return result.toString();
+    }
+
     public void send(Player player, String key) {
         send(player, key, Collections.emptyMap());
     }
@@ -35,7 +79,7 @@ public class MessageService {
             return;
         }
         String parsed = applyPlaceholders(raw, placeholders);
-        Component message = miniMessage.deserialize(parsed);
+        Component message = miniMessage.deserialize(convertLegacyToMiniMessage(parsed));
         player.sendMessage(message);
     }
 
@@ -48,12 +92,12 @@ public class MessageService {
     }
 
     public Component parse(String raw) {
-        return miniMessage.deserialize(raw);
+        return miniMessage.deserialize(convertLegacyToMiniMessage(raw));
     }
 
     public Component parse(String raw, Map<String, String> placeholders) {
         String parsed = applyPlaceholders(raw, placeholders);
-        return miniMessage.deserialize(parsed);
+        return miniMessage.deserialize(convertLegacyToMiniMessage(parsed));
     }
 
     public String parseRaw(String raw) {

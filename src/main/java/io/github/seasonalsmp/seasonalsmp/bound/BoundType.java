@@ -8,10 +8,10 @@ import java.util.*;
 
 public enum BoundType {
 
-    SPRING("Spring", "&a", 0x55FF55, Season.SPRING),
-    SUMMER("Summer", "&e", 0xFFFF55, Season.SUMMER),
-    AUTUMN("Autumn", "&6", 0xFFAA55, Season.AUTUMN),
-    WINTER("Winter", "&b", 0x55FFFF, Season.WINTER);
+    SPRING("Spring", "§a", 0x55FF55, Season.SPRING),
+    SUMMER("Summer", "§e", 0xFFFF55, Season.SUMMER),
+    AUTUMN("Autumn", "§6", 0xFFAA55, Season.AUTUMN),
+    WINTER("Winter", "§b", 0x55FFFF, Season.WINTER);
 
     private final String displayName;
     private final String colorCode;

@@ -1,5 +1,5 @@
 spring-sword:
-  material: DIAMOND_SWORD
+  material: NETHERITE_SWORD
   custom-model-data: 1001
   display-name: "&a&l[SPRING] Bloom Sword"
   lore:
@@ -37,7 +37,7 @@ spring-sword:
   attack-speed: 1.6
 
 summer-sword:
-  material: DIAMOND_SWORD
+  material: NETHERITE_SWORD
   custom-model-data: 1002
   display-name: "&e&l[SUMMER] Solstice Blade"
   lore:
@@ -70,7 +70,7 @@ summer-sword:
   attack-speed: 1.4
 
 autumn-sword:
-  material: DIAMOND_SWORD
+  material: NETHERITE_SWORD
   custom-model-data: 1003
   display-name: "&6&l[AUTUMN] Harvest Blade"
   lore:
@@ -103,7 +103,7 @@ autumn-sword:
   attack-speed: 1.8
 
 winter-sword:
-  material: DIAMOND_SWORD
+  material: NETHERITE_SWORD
   custom-model-data: 1004
   display-name: "&b&l[WINTER] Frostreaver"
   lore:

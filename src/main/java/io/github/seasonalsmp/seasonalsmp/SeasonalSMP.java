@@ -30,6 +30,7 @@ import io.github.seasonalsmp.seasonalsmp.whitelist.WhitelistAPIServer;
 import io.github.seasonalsmp.seasonalsmp.whitelist.WhitelistManager;
 import io.github.seasonalsmp.seasonalsmp.trust.TrustManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.Particle;
@@ -60,6 +61,7 @@ public final class SeasonalSMP extends JavaPlugin {
     private WhitelistAPIServer whitelistAPIServer;
     private BukkitTask seasonCycleTask;
     private BukkitTask ambientEffectTask;
+    private final MiniMessage miniMessage = MiniMessage.miniMessage();
 
     @Override
     public void onEnable() {
@@ -101,9 +103,9 @@ public final class SeasonalSMP extends JavaPlugin {
         long elapsedMs = (System.nanoTime() - startTime) / 1_000_000;
         getLogger().info("SeasonalSMP v" + getDescription().getVersion() + " enabled in " + elapsedMs + "ms");
         Bukkit.broadcast(Component.text(""));
-        Bukkit.broadcast(Component.text("  &6&lSeasonal SMP &ehas been enabled!"));
-        Bukkit.broadcast(Component.text("  &7Current season: &f" + seasonManager.getCurrentSeason().getDisplayName()));
-        Bukkit.broadcast(Component.text("  &7Next change in: &f2 hours"));
+        Bukkit.broadcast(miniMessage.deserialize("<gold><bold>Seasonal SMP</bold></gold> <yellow>has been enabled!</yellow>"));
+        Bukkit.broadcast(miniMessage.deserialize("<gray>Current season: <white>" + seasonManager.getCurrentSeason().getDisplayName() + "</white></gray>"));
+        Bukkit.broadcast(miniMessage.deserialize("<gray>Next change in: <white>2 hours</white></gray>"));
         Bukkit.broadcast(Component.text(""));
     }
 
@@ -307,13 +309,30 @@ public final class SeasonalSMP extends JavaPlugin {
             case WINTER -> configManager.getDouble("weather.winter.snow-chance");
         };
         if (random.nextDouble() < chance) {
+            int duration;
+            switch (season) {
+                case WINTER -> duration = random.nextInt(20000) + 24000;
+                case SPRING, case AUTUMN -> duration = random.nextInt(16000) + 12000;
+                case SUMMER -> duration = random.nextInt(8000) + 4000;
+                default -> duration = 12000;
+            }
             if (season == Season.WINTER) {
                 world.setStorm(true);
-                world.setWeatherDuration(24000);
+                world.setWeatherDuration(duration);
             } else if (season == Season.SPRING || season == Season.AUTUMN) {
                 world.setStorm(true);
-                world.setWeatherDuration(12000);
-                world.setThunderDuration(random.nextDouble() < configManager.getDouble("weather.autumn.thunder-chance") ? 200 : 0);
+                world.setWeatherDuration(duration);
+                double thunderChance = season == Season.AUTUMN
+                        ? configManager.getDouble("weather.autumn.thunder-chance")
+                        : configManager.getDouble("weather.spring.thunder-chance");
+                int thunderDuration = random.nextDouble() < thunderChance ? random.nextInt(400) + 200 : 0;
+                world.setThunderDuration(thunderDuration);
+            } else if (season == Season.SUMMER) {
+                if (random.nextDouble() < 0.5) {
+                    world.setStorm(true);
+                    world.setWeatherDuration(duration);
+                    world.setThunderDuration(random.nextInt(600) + 300);
+                }
             }
         }
     }

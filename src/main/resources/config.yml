@@ -101,18 +101,18 @@ crops:
 
 weather:
   spring:
-    rain-chance: 0.5
-    thunder-chance: 0.1
+    rain-chance: 0.7
+    thunder-chance: 0.25
   summer:
-    rain-chance: 0.15
-    thunder-chance: 0.05
-    clear-chance: 0.8
+    rain-chance: 0.25
+    thunder-chance: 0.2
+    clear-chance: 0.35
   autumn:
-    rain-chance: 0.4
-    thunder-chance: 0.08
+    rain-chance: 0.65
+    thunder-chance: 0.3
   winter:
-    snow-chance: 0.6
-    thunder-chance: 0.02
+    snow-chance: 0.85
+    thunder-chance: 0.05
 
 world-transformation:
   water-freeze-enabled: true

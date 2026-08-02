@@ -11,10 +11,10 @@ import java.util.*;
 
 public enum Season {
 
-    SPRING("Spring", "&a", 0x55FF55),
-    SUMMER("Summer", "&e", 0xFFFF55),
-    AUTUMN("Autumn", "&6", 0xFFAA55),
-    WINTER("Winter", "&b", 0x55FFFF);
+    SPRING("Spring", "§a", 0x55FF55),
+    SUMMER("Summer", "§e", 0xFFFF55),
+    AUTUMN("Autumn", "§6", 0xFFAA55),
+    WINTER("Winter", "§b", 0x55FFFF);
 
     private final String displayName;
     private final String colorCode;

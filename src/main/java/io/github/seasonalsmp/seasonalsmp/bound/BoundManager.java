@@ -37,6 +37,7 @@ public class BoundManager {
         this.plugin = plugin;
         this.configManager = plugin.getConfigManager();
         this.boundDataService = new BoundDataService(plugin, dataStorage);
+        this.boundDataService.initialize();
         this.messageService = new MessageService(plugin);
         this.uiManager = plugin.getUIManager();
         this.swordManager = plugin.getSwordManager();
@@ -116,6 +117,22 @@ public class BoundManager {
             uiManager.updateBossBar(player, plugin.getSeasonManager().getCurrentSeason());
         });
         return true;
+    }
+
+    public void forceAssignBound(Player player, BoundType bound) {
+        if (player == null || bound == null) {
+            return;
+        }
+        boundDataService.setBound(player, bound);
+        plugin.getServer().getScheduler().runTask(plugin, () -> {
+            messageService.send(player, "bound.assign.first-join",
+                Map.of("bound", bound.getColorCode(), "bound_name", bound.getDisplayName()));
+            soundService.play(player, "transition");
+            if (configManager.getBoolean("swords.give-on-bound-assign")) {
+                swordManager.giveSword(player, bound);
+            }
+            uiManager.updateBossBar(player, plugin.getSeasonManager().getCurrentSeason());
+        });
     }
 
     public boolean assignRandomBound(Player player) {

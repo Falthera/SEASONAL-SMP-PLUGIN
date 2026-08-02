@@ -110,23 +110,23 @@ public class SwordManager implements Listener {
 
     public ItemStack buildSword(BoundType bound) {
         String path = "swords." + bound.name().toLowerCase() + "-sword";
-        ConfigManager cm = configManager;
-        String materialName = cm.getString(path + ".material", "DIAMOND_SWORD");
-        String displayName = cm.getString(path + ".display-name", bound.getColorCode() + bound.getDisplayName() + " Sword");
-        List<String> rawLore = cm.getStringList(path + ".lore");
-        int modelData = cm.getInt(path + ".custom-model-data", 1000 + bound.ordinal());
-        boolean unbreakable = cm.getBoolean(path + ".unbreakable", true);
+        org.bukkit.configuration.ConfigurationSection swordConfig = configManager.getConfig("swords.yml").getConfigurationSection(path);
+        String materialName = swordConfig != null ? swordConfig.getString("material", "NETHERITE_SWORD") : "NETHERITE_SWORD";
+        String displayName = swordConfig != null ? swordConfig.getString("display-name", bound.getColorCode() + bound.getDisplayName() + " Sword") : bound.getColorCode() + bound.getDisplayName() + " Sword";
+        List<String> rawLore = swordConfig != null ? swordConfig.getStringList("lore") : new ArrayList<>();
+        int modelData = swordConfig != null ? swordConfig.getInt("custom-model-data", 1000 + bound.ordinal()) : 1000 + bound.ordinal();
+        boolean unbreakable = swordConfig != null ? swordConfig.getBoolean("unbreakable", true) : true;
 
         org.bukkit.Material material = org.bukkit.Material.getMaterial(materialName);
         if (material == null) {
-            material = org.bukkit.Material.DIAMOND_SWORD;
+            material = org.bukkit.Material.NETHERITE_SWORD;
         }
         ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
         if (meta == null) {
             return item;
         }
-        meta.setDisplayName(displayName);
+        meta.setDisplayName(displayName.replace("&", "§"));
         List<String> lore = new ArrayList<>();
         for (String line : rawLore) {
             lore.add(line.replace("&", "§"));

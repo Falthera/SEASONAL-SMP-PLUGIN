@@ -12,10 +12,12 @@ public class AbilityCommand implements CommandExecutor {
 
     private final SeasonalSMP plugin;
     private final BoundManager boundManager;
+    private final SwordManager swordManager;
 
     public AbilityCommand(SeasonalSMP plugin) {
         this.plugin = plugin;
         this.boundManager = plugin.getBoundManager();
+        this.swordManager = plugin.getSwordManager();
     }
 
     @Override
@@ -31,6 +33,10 @@ public class AbilityCommand implements CommandExecutor {
         BoundType bound = boundManager.getBound(player);
         if (bound == null) {
             player.sendMessage("§cYou do not have a bound assigned.");
+            return true;
+        }
+        if (swordManager.isOnCooldown(player)) {
+            player.sendMessage("§cAbility is on cooldown!");
             return true;
         }
         boundManager.activateAbility(player, bound, false);
