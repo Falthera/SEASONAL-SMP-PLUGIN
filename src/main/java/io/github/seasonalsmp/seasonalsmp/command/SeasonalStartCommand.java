@@ -162,8 +162,8 @@ public class SeasonalStartCommand implements CommandExecutor {
                             String colorCode = bound.getColorCode();
                             String displayName = bound.getDisplayName();
                             player.sendTitle(colorCode + "§l" + displayName, "§r§7Your peak season is " + bound.getPeakSeason().getDisplayName() + "§7", 10, 100, 10);
-                            Bukkit.broadcastMessage("§8" + player.getName() + " §r§8has been bound to §r" + colorCode + "§l" + displayName + "§r§8!");
-                            player.sendMessage("§6§l" + displayName + " §r§6has chosen you!");
+                            Bukkit.broadcastMessage("§8§l[SEASONAL] §r§8" + player.getName() + " §r§8has been bound to §r" + colorCode + "§l" + displayName + "§r§8!");
+                            player.sendMessage("§6§l" + displayName + " §r§6has chosen you! Your bound has been set.");
 
                             Vector velocity = new Vector((random.nextDouble() - 0.5) * 0.3, 0.6, (random.nextDouble() - 0.5) * 0.3);
                             player.setVelocity(velocity);
