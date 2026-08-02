@@ -4,7 +4,9 @@ import io.github.seasonalsmp.seasonalsmp.SeasonalSMP;
 import io.github.seasonalsmp.seasonalsmp.bound.BoundType;
 import io.github.seasonalsmp.seasonalsmp.config.ConfigManager;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -55,7 +57,18 @@ public class RelicPurgeManager {
             RelicType relic = RelicType.fromBound(entry.getKey());
             if (relic != null) {
                 data.addRelic(target, relic);
-                target.sendMessage("§6§lTHE RELIC OF " + entry.getKey().getDisplayName().toUpperCase() + " §r§6has claimed you!");
+                ItemStack relicItem = relic.createItem();
+                HashMap<Integer, ItemStack> leftover = target.getInventory().addItem(relicItem);
+                if (!leftover.isEmpty()) {
+                    target.sendMessage("§c§lYour inventory is full! Drop something to make room for the relic!");
+                    for (ItemStack drop : leftover.values()) {
+                        Item entity = target.getWorld().dropItemNaturally(target.getLocation(), drop);
+                        entity.setPickupDelay(0);
+                        entity.setTicksLived(1);
+                    }
+                } else {
+                    target.sendMessage("§6§lTHE RELIC OF " + entry.getKey().getDisplayName().toUpperCase() + " §r§6has claimed you!");
+                }
             }
         }
         Bukkit.broadcastMessage("§c§lRELIC PURGE HAS BEGUN!");

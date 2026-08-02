@@ -29,14 +29,19 @@ import io.github.seasonalsmp.seasonalsmp.sword.SwordManager;
 import io.github.seasonalsmp.seasonalsmp.whitelist.WhitelistAPIServer;
 import io.github.seasonalsmp.seasonalsmp.whitelist.WhitelistManager;
 import io.github.seasonalsmp.seasonalsmp.trust.TrustManager;
+import io.github.seasonalsmp.seasonalsmp.event.relic.RelicType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.recipe.RecipeChoice;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -93,6 +98,7 @@ public final class SeasonalSMP extends JavaPlugin {
             whitelistAPIServer.start();
             registerListeners();
             registerCommands();
+            registerRelicRecipe();
             startSeasonCycle();
             startAmbientEffects();
         } catch (Exception e) {
@@ -202,6 +208,16 @@ public final class SeasonalSMP extends JavaPlugin {
         if (trust != null) {
             trust.setExecutor(new TrustCommand(this));
         }
+    }
+
+    private void registerRelicRecipe() {
+        ShapedRecipe recipe = new ShapedRecipe(new org.bukkit.NamespacedKey(this, "bloodborn_relic"), RelicType.BLOODBORN_RELIC.createItem());
+        recipe.shape("AB", "CD");
+        recipe.setIngredient('A', new RecipeChoice.ExactChoice(RelicType.SPRING_RELIC.createItem()));
+        recipe.setIngredient('B', new RecipeChoice.ExactChoice(RelicType.SUMMER_RELIC.createItem()));
+        recipe.setIngredient('C', new RecipeChoice.ExactChoice(RelicType.AUTUMN_RELIC.createItem()));
+        recipe.setIngredient('D', new RecipeChoice.ExactChoice(RelicType.WINTER_RELIC.createItem()));
+        Bukkit.addRecipe(recipe);
     }
 
     private void startSeasonCycle() {

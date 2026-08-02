@@ -14,6 +14,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.inventory.CraftingInventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -114,6 +117,52 @@ public class RelicPurgeListener implements Listener {
             }
         }
         data.clearPlayer(victim);
+    }
+
+    @EventHandler
+    public void onCraftItem(CraftItemEvent event) {
+        if (!RelicPurgeManager.isRunning()) {
+            return;
+        }
+        RelicData data = RelicPurgeManager.getData();
+        if (data == null) {
+            return;
+        }
+        CraftingInventory inventory = event.getInventory();
+        ItemStack[] matrix = inventory.getMatrix();
+        Set<RelicType> foundRelics = new HashSet<>();
+        for (ItemStack item : matrix) {
+            if (item == null || item.getType().isAir()) {
+                continue;
+            }
+            RelicType relic = RelicType.fromItem(item);
+            if (relic == null || relic == RelicType.BLOODBORN_RELIC) {
+                return;
+            }
+            foundRelics.add(relic);
+        }
+        if (foundRelics.size() != 4) {
+            return;
+        }
+        event.setCancelled(true);
+        Player player = (Player) event.getView().getPlayer();
+        for (ItemStack item : matrix) {
+            if (item != null && !item.getType().isAir()) {
+                item.setAmount(item.getAmount() - 1);
+            }
+        }
+        data.grantBloodbornRelic(player);
+        ItemStack bloodborn = RelicType.BLOODBORN_RELIC.createItem();
+        HashMap<Integer, ItemStack> leftover = player.getInventory().addItem(bloodborn);
+        if (!leftover.isEmpty()) {
+            player.sendMessage("§c§lYour inventory is full! Drop something to make room for the Bloodborn Relic!");
+            for (ItemStack drop : leftover.values()) {
+                Item entity = player.getWorld().dropItemNaturally(player.getLocation(), drop);
+                entity.setPickupDelay(0);
+                entity.setTicksLived(1);
+            }
+        }
+        Bukkit.broadcastMessage("§4§l" + player.getName() + " §r§4has crafted the BLOODBORN RELIC!");
     }
 
     @EventHandler
