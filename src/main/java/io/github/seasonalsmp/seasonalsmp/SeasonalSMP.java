@@ -212,7 +212,7 @@ public final class SeasonalSMP extends JavaPlugin {
 
     private void registerRelicRecipe() {
         ShapedRecipe recipe = new ShapedRecipe(new org.bukkit.NamespacedKey(this, "bloodborn_relic"), RelicType.BLOODBORN_RELIC.createItem());
-        recipe.shape("AB", "CD");
+        recipe.shape("ABC", "DEF", "GHI");
         recipe.setIngredient('A', new RecipeChoice.ExactChoice(RelicType.SPRING_RELIC.createItem()));
         recipe.setIngredient('B', new RecipeChoice.ExactChoice(RelicType.SUMMER_RELIC.createItem()));
         recipe.setIngredient('C', new RecipeChoice.ExactChoice(RelicType.AUTUMN_RELIC.createItem()));
@@ -223,6 +223,8 @@ public final class SeasonalSMP extends JavaPlugin {
     private void startSeasonCycle() {
         long durationSeconds = configManager.getLong("season.duration-seconds", 7200);
         long cycleTicks = durationSeconds * 20L;
+        long warningSeconds = configManager.getLong("season.transition-announce-seconds", 30);
+        long warningTicks = warningSeconds * 20L;
         seasonCycleTask = new BukkitRunnable() {
             @Override
             public void run() {
@@ -232,6 +234,18 @@ public final class SeasonalSMP extends JavaPlugin {
                 applySeasonChange();
             }
         }.runTaskTimer(this, cycleTicks, cycleTicks);
+        if (warningTicks > 0 && warningTicks < cycleTicks) {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    if (!isEnabled() || seasonManager == null) {
+                        return;
+                    }
+                    Season next = seasonManager.getNextSeason();
+                    Bukkit.broadcastMessage("§6§lSeason changing to " + next.getDisplayName() + " in " + warningSeconds + " seconds!");
+                }
+            }.runTaskTimer(this, cycleTicks - warningTicks, cycleTicks);
+        }
     }
 
     private void startAmbientEffects() {

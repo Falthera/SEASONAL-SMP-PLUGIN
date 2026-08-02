@@ -38,17 +38,7 @@ class WorldTimeEffect implements SeasonEffectsManager.SeasonEffect {
             if (current != null) {
                 previousDaylightCycle.put(world.getName(), current);
             }
-            double multiplier = 1.0;
-            switch (season) {
-                case SUMMER -> multiplier = configManager.getDouble("world-transformation.day-length-multiplier.summer", 1.3);
-                case WINTER -> multiplier = configManager.getDouble("world-transformation.night-length-multiplier.winter", 1.3);
-                default -> multiplier = 1.0;
-            }
-            if (multiplier > 1.0) {
-                world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-            } else if (multiplier < 1.0) {
-                world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-            }
+            world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
         }
         timeTask = new org.bukkit.scheduler.BukkitRunnable() {
             @Override
@@ -65,12 +55,22 @@ class WorldTimeEffect implements SeasonEffectsManager.SeasonEffect {
                     }
                     long time = world.getTime();
                     long dayTicks = 24000L;
-                    double multiplier = 1.0;
-                    switch (season) {
-                        case SUMMER -> multiplier = configManager.getDouble("world-transformation.day-length-multiplier.summer", 1.3);
-                        case WINTER -> multiplier = configManager.getDouble("world-transformation.night-length-multiplier.winter", 1.3);
-                        default -> multiplier = 1.0;
-                    }
+                    double dayMultiplier = switch (season) {
+                        case SPRING -> configManager.getDouble("world-transformation.day-length-multiplier.spring", 1.0);
+                        case SUMMER -> configManager.getDouble("world-transformation.day-length-multiplier.summer", 1.3);
+                        case AUTUMN -> configManager.getDouble("world-transformation.day-length-multiplier.autumn", 1.0);
+                        case WINTER -> configManager.getDouble("world-transformation.day-length-multiplier.winter", 0.7);
+                        default -> 1.0;
+                    };
+                    double nightMultiplier = switch (season) {
+                        case SPRING -> configManager.getDouble("world-transformation.night-length-multiplier.spring", 1.0);
+                        case SUMMER -> configManager.getDouble("world-transformation.night-length-multiplier.summer", 0.7);
+                        case AUTUMN -> configManager.getDouble("world-transformation.night-length-multiplier.autumn", 1.0);
+                        case WINTER -> configManager.getDouble("world-transformation.night-length-multiplier.winter", 1.3);
+                        default -> 1.0;
+                    };
+                    boolean isDaytime = time < 12000;
+                    double multiplier = isDaytime ? dayMultiplier : nightMultiplier;
                     long increment = Math.max(1L, (long) Math.ceil(1.0 * multiplier));
                     long newTime = (time + increment) % dayTicks;
                     world.setTime(newTime);

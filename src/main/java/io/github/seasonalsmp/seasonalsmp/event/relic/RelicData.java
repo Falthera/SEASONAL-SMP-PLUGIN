@@ -73,6 +73,13 @@ public class RelicData {
         return playerRelics.getOrDefault(player.getUniqueId(), Collections.emptySet()).contains(RelicType.BLOODBORN_RELIC);
     }
 
+    public Set<RelicType> getPlayerRelics(UUID uuid) {
+        if (uuid == null) {
+            return Collections.emptySet();
+        }
+        return Collections.unmodifiableSet(playerRelics.getOrDefault(uuid, Collections.emptySet()));
+    }
+
     public void clearPlayer(Player player) {
         if (player == null) {
             return;
