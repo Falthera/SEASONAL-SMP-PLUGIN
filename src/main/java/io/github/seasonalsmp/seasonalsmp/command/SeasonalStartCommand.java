@@ -60,6 +60,7 @@ public class SeasonalStartCommand implements CommandExecutor {
         for (Player player : players) {
             BoundType bound = BoundType.getRandom(random);
             assignments.put(player, bound);
+            plugin.getLogger().info("Assigning bound " + bound.name() + " to " + player.getName());
         }
 
         Season firstSeason = Season.values()[random.nextInt(Season.values().length)];
@@ -156,10 +157,12 @@ public class SeasonalStartCommand implements CommandExecutor {
                             player.spawnParticle(Particle.TOTEM_OF_UNDYING, center, 20, 2, 2, 2, 0.1);
 
                             boundManager.forceAssignBound(player, bound);
+                            plugin.getLogger().info("Bound assigned: " + player.getName() + " -> " + bound.name());
 
                             String colorCode = bound.getColorCode();
                             String displayName = bound.getDisplayName();
                             player.sendTitle(colorCode + "§l" + displayName, "§r§7Your peak season is " + bound.getPeakSeason().getDisplayName() + "§7", 10, 100, 10);
+                            Bukkit.broadcastMessage("§8" + player.getName() + " §r§8has been bound to §r" + colorCode + "§l" + displayName + "§r§8!");
                             player.sendMessage("§6§l" + displayName + " §r§6has chosen you!");
 
                             Vector velocity = new Vector((random.nextDouble() - 0.5) * 0.3, 0.6, (random.nextDouble() - 0.5) * 0.3);
