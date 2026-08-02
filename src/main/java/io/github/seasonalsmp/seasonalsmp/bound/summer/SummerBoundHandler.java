@@ -36,7 +36,7 @@ public class SummerBoundHandler {
         double igniteSeconds = configManager.getDouble("bounds.summer-bound.ignite-seconds", 4.0);
         double knockback = configManager.getDouble("bounds.summer-bound.knockback-strength", 1.5);
         for (Entity entity : player.getNearbyEntities(radius, radius, radius)) {
-            if (entity instanceof LivingEntity living && !(entity instanceof Player)) {
+            if (entity instanceof LivingEntity living) {
                 living.damage(damage, player);
                 living.setFireTicks((int) (igniteSeconds * 20));
                 Vector direction = entity.getLocation().toVector().subtract(center.toVector()).normalize();
@@ -57,7 +57,7 @@ public class SummerBoundHandler {
         double radius = configManager.getDouble("swords.summer-sword.ability.radius", 9.0);
         double damage = configManager.getDouble("swords.summer-sword.ability.damage", 12.0);
         for (Entity entity : player.getNearbyEntities(radius, radius, radius)) {
-            if (entity instanceof LivingEntity living && !(entity instanceof Player)) {
+            if (entity instanceof LivingEntity living) {
                 living.damage(damage, player);
                 living.setFireTicks(60);
             }

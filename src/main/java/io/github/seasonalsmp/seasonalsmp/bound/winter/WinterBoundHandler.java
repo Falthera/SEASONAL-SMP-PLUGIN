@@ -53,7 +53,7 @@ public class WinterBoundHandler {
         double radius = configManager.getDouble("swords.winter-sword.ability.radius", 7.0);
         int freezeDuration = configManager.getInt("swords.winter-sword.ability.duration-seconds", 6);
         for (Entity entity : player.getNearbyEntities(radius, radius, radius)) {
-            if (entity instanceof LivingEntity living && !(entity instanceof Player)) {
+            if (entity instanceof LivingEntity living) {
                 living.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, freezeDuration * 20, 4));
                 living.addPotionEffect(new PotionEffect(PotionEffectType.MINING_FATIGUE, freezeDuration * 20, 3));
                 living.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, freezeDuration * 20, 1));

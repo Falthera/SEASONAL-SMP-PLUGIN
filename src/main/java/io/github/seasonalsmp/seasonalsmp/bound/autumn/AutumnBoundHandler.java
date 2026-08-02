@@ -51,7 +51,7 @@ public class AutumnBoundHandler {
         Location center = player.getLocation();
         double radius = configManager.getDouble("swords.autumn-sword.ability.radius", 10.0);
         for (Entity entity : player.getNearbyEntities(radius, radius, radius)) {
-            if (entity instanceof LivingEntity living && !(entity instanceof Player)) {
+            if (entity instanceof LivingEntity living) {
                 if (living.getHealth() < living.getMaxHealth() * 0.3) {
                     living.setHealth(0);
                     particleService.spawn(living.getLocation(), Particle.CRIT, 20, 0.5);

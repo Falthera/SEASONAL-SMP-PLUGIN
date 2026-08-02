@@ -65,7 +65,7 @@ public class SpringBoundHandler {
         Location center = player.getLocation();
         double radius = configManager.getDouble("swords.spring-sword.ability.radius", 8.0);
         for (Entity entity : player.getNearbyEntities(radius, radius, radius)) {
-            if (entity instanceof LivingEntity living && !(entity instanceof Player)) {
+            if (entity instanceof LivingEntity living) {
                 living.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 100, 2));
                 living.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 80, 1));
             }
