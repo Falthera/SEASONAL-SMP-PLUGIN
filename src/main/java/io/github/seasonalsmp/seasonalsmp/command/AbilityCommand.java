@@ -3,6 +3,7 @@ package io.github.seasonalsmp.seasonalsmp.command;
 import io.github.seasonalsmp.seasonalsmp.SeasonalSMP;
 import io.github.seasonalsmp.seasonalsmp.bound.BoundManager;
 import io.github.seasonalsmp.seasonalsmp.bound.BoundType;
+import io.github.seasonalsmp.seasonalsmp.sword.SwordManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
