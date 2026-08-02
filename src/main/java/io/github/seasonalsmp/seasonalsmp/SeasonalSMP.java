@@ -312,7 +312,7 @@ public final class SeasonalSMP extends JavaPlugin {
             int duration;
             switch (season) {
                 case WINTER -> duration = random.nextInt(20000) + 24000;
-                case SPRING, case AUTUMN -> duration = random.nextInt(16000) + 12000;
+                case SPRING, AUTUMN -> duration = random.nextInt(16000) + 12000;
                 case SUMMER -> duration = random.nextInt(8000) + 4000;
                 default -> duration = 12000;
             }
