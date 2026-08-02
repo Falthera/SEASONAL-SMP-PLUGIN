@@ -24,6 +24,7 @@ public class LegendaryItemTracker {
         "summer_sword",
         "autumn_sword",
         "winter_sword",
+        "minecraft:mace",
         "seasonal_blade"
     );
 

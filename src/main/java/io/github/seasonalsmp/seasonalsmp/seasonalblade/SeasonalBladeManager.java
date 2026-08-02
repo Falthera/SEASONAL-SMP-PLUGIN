@@ -93,6 +93,14 @@ public class SeasonalBladeManager {
         return itemTracker.canCraft("seasonal_blade");
     }
 
+    public boolean canCraftMace() {
+        return itemTracker.canCraft("minecraft:mace");
+    }
+
+    public void markMaceCrafted() {
+        itemTracker.markCrafted("minecraft:mace");
+    }
+
     public boolean isOnCooldown(Player player) {
         if (player == null) {
             return true;

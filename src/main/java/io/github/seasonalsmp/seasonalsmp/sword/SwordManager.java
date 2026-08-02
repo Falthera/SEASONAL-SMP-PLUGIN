@@ -213,8 +213,23 @@ public class SwordManager implements Listener {
                     return;
                 }
                 markSwordCrafted(bound);
+                String swordName = bound.getColorCode() + bound.getDisplayName() + " Sword";
+                Bukkit.broadcastMessage(formatOminousMessage(player.getName(), swordName));
             }
         }
+    }
+
+    private String formatOminousMessage(String playerName, String itemName) {
+        String obfuscated = "§k" + generateObfuscatedText(5) + "§r";
+        return "§8" + obfuscated + " §r§8has crafted §r" + obfuscated + " §r" + itemName + " §r§8" + obfuscated + "§r";
+    }
+
+    private String generateObfuscatedText(int length) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            sb.append((char) ('\u00A0' + (int) (Math.random() * 10)));
+        }
+        return sb.toString();
     }
 
     @EventHandler

@@ -43,6 +43,27 @@ public class SeasonalBladeListener implements Listener {
         event.getInventory().setResult(result);
     }
 
+    @EventHandler
+    public void onPrepareMaceCraft(PrepareItemCraftEvent event) {
+        org.bukkit.inventory.Recipe recipe = event.getRecipe();
+        if (recipe instanceof org.bukkit.inventory.ShapedRecipe shaped && shaped.getKey().getKey().equals("minecraft:mace")) {
+            if (!bladeManager.canCraftMace()) {
+                event.getInventory().setResult(new ItemStack(Material.AIR));
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPrepareSpearCraft(PrepareItemCraftEvent event) {
+        org.bukkit.inventory.Recipe recipe = event.getRecipe();
+        if (recipe instanceof org.bukkit.inventory.ShapedRecipe shaped) {
+            String key = shaped.getKey().getKey().toLowerCase();
+            if (key.contains("spear") || key.contains("tridents")) {
+                event.getInventory().setResult(new ItemStack(Material.AIR));
+            }
+        }
+    }
+
     private boolean isValidSeasonalBladeRecipe(ItemStack[] matrix) {
         if (matrix == null || matrix.length != 9) {
             return false;
@@ -143,13 +164,35 @@ public class SeasonalBladeListener implements Listener {
                 double z = (Math.random() - 0.5) * 10;
                 player.spawnParticle(org.bukkit.Particle.FIREWORK, player.getLocation().add(x, y, z), 10, 0.2, 0.2, 0.2, 0.1);
             }
-            Bukkit.broadcastMessage("§6§l" + player.getName() + " §r§6has forged the legendary SEASONAL BLADE!");
+            Bukkit.broadcastMessage(formatOminousMessage(player.getName(), "§6§lSeasonal Blade"));
             consumeItem(matrix, 1);
             consumeItem(matrix, 3);
             consumeItem(matrix, 4);
             consumeItem(matrix, 5);
             consumeItem(matrix, 7);
+        } else if (recipe instanceof org.bukkit.inventory.ShapedRecipe shaped && shaped.getKey().getKey().equals("minecraft:mace")) {
+            if (!bladeManager.canCraftMace()) {
+                event.setCancelled(true);
+                event.getInventory().setResult(new org.bukkit.inventory.ItemStack(org.bukkit.Material.AIR));
+                player.sendMessage("§cThe Mace has already been forged on this server!");
+                return;
+            }
+            bladeManager.markMaceCrafted();
+            Bukkit.broadcastMessage(formatOminousMessage(player.getName(), "§b§lMace"));
         }
+    }
+
+    private String formatOminousMessage(String playerName, String itemName) {
+        String obfuscated = "§k" + generateObfuscatedText(5) + "§r";
+        return "§8" + obfuscated + " §r§8has crafted §r" + obfuscated + " §r" + itemName + " §r§8" + obfuscated + "§r";
+    }
+
+    private String generateObfuscatedText(int length) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            sb.append((char) ('\u00A0' + (int) (Math.random() * 10)));
+        }
+        return sb.toString();
     }
 
     private void consumeItem(ItemStack[] matrix, int slot) {
