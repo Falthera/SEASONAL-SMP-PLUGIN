@@ -173,7 +173,7 @@ public class SeasonalBladeManager {
             double angle = (i / 30.0) * Math.PI * 2;
             double x = Math.cos(angle) * radius;
             double z = Math.sin(angle) * radius;
-            particleService.spawn(center.clone().add(x, 0, z), Particle.VILLAGER_HAPPY, 3, 0.0);
+            particleService.spawn(center.clone().add(x, 0, z), Particle.HEART, 3, 0.0);
         }
     }
 
@@ -291,26 +291,26 @@ public class SeasonalBladeManager {
     }
 
     private void applySpringPassive(Player player) {
-        if (player.getRandom().nextDouble() < 0.15) {
+        if (new java.util.Random().nextDouble() < 0.15) {
             player.setHealth(Math.min(player.getHealth() + 4.0, player.getMaxHealth()));
             particleService.spawn(player.getLocation().add(0, 1, 0), Particle.HEART, 3, 0.0);
         }
     }
 
     private void applySummerPassive(Player player) {
-        if (player.getRandom().nextDouble() < 0.25) {
+        if (new java.util.Random().nextDouble() < 0.25) {
             player.setFireTicks(60);
         }
     }
 
     private void applyAutumnPassive(Player player) {
-        if (player.getRandom().nextDouble() < 0.3) {
+        if (new java.util.Random().nextDouble() < 0.3) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, 0));
         }
     }
 
     private void applyWinterPassive(Player player) {
-        if (player.getRandom().nextDouble() < 0.2) {
+        if (new java.util.Random().nextDouble() < 0.2) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 40, 0));
         }
     }
