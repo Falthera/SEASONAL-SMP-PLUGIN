@@ -1,137 +1,138 @@
-spring-sword:
-  material: NETHERITE_SWORD
-  custom-model-data: 1001
-  display-name: "&a&l[SPRING] Bloom Sword"
-  lore:
-    - "&8Legendary Sword"
-    - "&7Bound to the Spring Season."
-    - ""
-    - "&aAbility: Bloom"
-    - "&7Heals and cleanses allies around you."
-    - ""
-    - "&7Passive: Regeneration I"
-    - ""
-    - "&eRight-click to activate Bloom."
-  texture-id: "seasonalsmp:bloom_sword"
-  model-id: "seasonalsmp:bloom_sword"
-  passive-enabled: true
-  ability:
-    name: "Bloom"
-    cooldown-seconds: 60
-    radius: 8.0
-    heal-amount: 6.0
-    cleanse-potions:
-      - "POISON"
-      - "WITHER"
-      - "WEAKNESS"
-      - "SLOWNESS"
-      - "BLINDNESS"
-      - "NAUSEA"
-    particles:
-      type: "HEART"
-      count: 30
-      speed: 0.5
-    sound-key: "bloom"
-  unbreakable: true
-  damage-base: 7.0
-  attack-speed: 1.6
+swords:
+  spring-sword:
+    material: NETHERITE_SWORD
+    custom-model-data: 1001
+    display-name: "&a&l[SPRING] Bloom Sword"
+    lore:
+      - "&8Legendary Sword"
+      - "&7Bound to the Spring Season."
+      - ""
+      - "&aAbility: Bloom"
+      - "&7Heals and cleanses allies around you."
+      - ""
+      - "&7Passive: Regeneration I"
+      - ""
+      - "&eRight-click to activate Bloom."
+    texture-id: "seasonalsmp:bloom_sword"
+    model-id: "seasonalsmp:bloom_sword"
+    passive-enabled: true
+    ability:
+      name: "Bloom"
+      cooldown-seconds: 60
+      radius: 8.0
+      heal-amount: 6.0
+      cleanse-potions:
+        - "POISON"
+        - "WITHER"
+        - "WEAKNESS"
+        - "SLOWNESS"
+        - "BLINDNESS"
+        - "NAUSEA"
+      particles:
+        type: "HEART"
+        count: 30
+        speed: 0.5
+      sound-key: "bloom"
+    unbreakable: true
+    damage-base: 7.0
+    attack-speed: 1.6
 
-summer-sword:
-  material: NETHERITE_SWORD
-  custom-model-data: 1002
-  display-name: "&e&l[SUMMER] Solstice Blade"
-  lore:
-    - "&8Legendary Sword"
-    - "&7Bound to the Summer Season."
-    - ""
-    - "&eAbility: Solar Burst"
-    - "&7Ignites and knocks back enemies."
-    - ""
-    - "&7Passive: Fire Resistance"
-    - ""
-    - "&eRight-click to activate Solar Burst."
-  texture-id: "seasonalsmp:solar_sword"
-  model-id: "seasonalsmp:solar_sword"
-  passive-enabled: true
-  ability:
-    name: "Solar Burst"
-    cooldown-seconds: 45
-    radius: 7.0
-    ignite-seconds: 4
-    knockback-strength: 1.5
-    damage: 6.0
-    particles:
-      type: "FLAME"
-      count: 50
-      speed: 1.0
-    sound-key: "solar_burst"
-  unbreakable: true
-  damage-base: 8.0
-  attack-speed: 1.4
+  summer-sword:
+    material: NETHERITE_SWORD
+    custom-model-data: 1002
+    display-name: "&e&l[SUMMER] Solstice Blade"
+    lore:
+      - "&8Legendary Sword"
+      - "&7Bound to the Summer Season."
+      - ""
+      - "&eAbility: Solar Burst"
+      - "&7Ignites and knocks back enemies."
+      - ""
+      - "&7Passive: Fire Resistance"
+      - ""
+      - "&eRight-click to activate Solar Burst."
+    texture-id: "seasonalsmp:solar_sword"
+    model-id: "seasonalsmp:solar_sword"
+    passive-enabled: true
+    ability:
+      name: "Solar Burst"
+      cooldown-seconds: 45
+      radius: 7.0
+      ignite-seconds: 4
+      knockback-strength: 1.5
+      damage: 6.0
+      particles:
+        type: "FLAME"
+        count: 50
+        speed: 1.0
+      sound-key: "solar_burst"
+    unbreakable: true
+    damage-base: 8.0
+    attack-speed: 1.4
 
-autumn-sword:
-  material: NETHERITE_SWORD
-  custom-model-data: 1003
-  display-name: "&6&l[AUTUMN] Harvest Blade"
-  lore:
-    - "&8Legendary Sword"
-    - "&7Bound to the Autumn Season."
-    - ""
-    - "&6Ability: Harvest"
-    - "&7Instantly harvests crops and boosts loot."
-    - ""
-    - "&7Passive: Fortune"
-    - ""
-    - "&eRight-click to activate Harvest."
-  texture-id: "seasonalsmp:harvest_sword"
-  model-id: "seasonalsmp:harvest_sword"
-  passive-enabled: true
-  ability:
-    name: "Harvest"
-    cooldown-seconds: 50
-    radius: 10.0
-    crop-radius: 6.0
-    loot-duration-seconds: 10
-    loot-boost: 2.0
-    particles:
-      type: "CRIT"
-      count: 40
-      speed: 0.8
-    sound-key: "harvest"
-  unbreakable: true
-  damage-base: 6.5
-  attack-speed: 1.8
+  autumn-sword:
+    material: NETHERITE_SWORD
+    custom-model-data: 1003
+    display-name: "&6&l[AUTUMN] Harvest Blade"
+    lore:
+      - "&8Legendary Sword"
+      - "&7Bound to the Autumn Season."
+      - ""
+      - "&6Ability: Harvest"
+      - "&7Instantly harvests crops and boosts loot."
+      - ""
+      - "&7Passive: Fortune"
+      - ""
+      - "&eRight-click to activate Harvest."
+    texture-id: "seasonalsmp:harvest_sword"
+    model-id: "seasonalsmp:harvest_sword"
+    passive-enabled: true
+    ability:
+      name: "Harvest"
+      cooldown-seconds: 50
+      radius: 10.0
+      crop-radius: 6.0
+      loot-duration-seconds: 10
+      loot-boost: 2.0
+      particles:
+        type: "CRIT"
+        count: 40
+        speed: 0.8
+      sound-key: "harvest"
+    unbreakable: true
+    damage-base: 6.5
+    attack-speed: 1.8
 
-winter-sword:
-  material: NETHERITE_SWORD
-  custom-model-data: 1004
-  display-name: "&b&l[WINTER] Frostreaver"
-  lore:
-    - "&8Legendary Sword"
-    - "&7Bound to the Winter Season."
-    - ""
-    - "&bAbility: Frozen Heart"
-    - "&7Become resilient and slow enemies."
-    - ""
-    - "&7Passive: Resistance I"
-    - ""
-    - "&eRight-click to activate Frozen Heart."
-  texture-id: "seasonalsmp:winter_sword"
-  model-id: "seasonalsmp:winter_sword"
-  passive-enabled: true
-  ability:
-    name: "Frozen Heart"
-    cooldown-seconds: 40
-    duration-seconds: 8
-    resistance-level: 3
-    slow-radius: 6.0
-    slow-amplifier: 2
-    slow-duration-seconds: 5
-    particles:
-      type: "SNOWFLAKE"
-      count: 60
-      speed: 0.4
-    sound-key: "frozen_heart"
-  unbreakable: true
-  damage-base: 7.5
-  attack-speed: 1.5
+  winter-sword:
+    material: NETHERITE_SWORD
+    custom-model-data: 1004
+    display-name: "&b&l[WINTER] Frostreaver"
+    lore:
+      - "&8Legendary Sword"
+      - "&7Bound to the Winter Season."
+      - ""
+      - "&bAbility: Frozen Heart"
+      - "&7Become resilient and slow enemies."
+      - ""
+      - "&7Passive: Resistance I"
+      - ""
+      - "&eRight-click to activate Frozen Heart."
+    texture-id: "seasonalsmp:winter_sword"
+    model-id: "seasonalsmp:winter_sword"
+    passive-enabled: true
+    ability:
+      name: "Frozen Heart"
+      cooldown-seconds: 40
+      duration-seconds: 8
+      resistance-level: 3
+      slow-radius: 6.0
+      slow-amplifier: 2
+      slow-duration-seconds: 5
+      particles:
+        type: "SNOWFLAKE"
+        count: 60
+        speed: 0.4
+      sound-key: "frozen_heart"
+    unbreakable: true
+    damage-base: 7.5
+    attack-speed: 1.5
