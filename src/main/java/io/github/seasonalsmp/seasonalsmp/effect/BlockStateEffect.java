@@ -111,9 +111,9 @@ class BlockStateEffect implements SeasonEffectsManager.SeasonEffect {
                     for (int z = pz - radius; z <= pz + radius && checked < 20; z += 4) {
                         for (int y = py + 3; y >= py - 2 && checked < 20; y--) {
                             Block block = world.getBlockAt(x, y, z);
-                            if (block.getType() == Material.AIR && isExposedToAir(block)) {
+                            if (block.getType().isSolid() && block.getRelative(0, 1, 0).getType() == Material.AIR) {
                                 if (random.nextInt(40) == 0) {
-                                    block.setType(Material.SNOW);
+                                    block.getRelative(0, 1, 0).setType(Material.SNOW);
                                 }
                                 checked++;
                                 break;
