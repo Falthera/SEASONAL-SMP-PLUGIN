@@ -5,6 +5,7 @@ import io.github.seasonalsmp.seasonalsmp.bound.BoundType;
 import io.github.seasonalsmp.seasonalsmp.config.ConfigManager;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -137,6 +138,12 @@ public class SwordManager implements Listener {
         meta.getPersistentDataContainer().set(boundKey, PersistentDataType.STRING, bound.name());
         NamespacedKey abilityReadyKey = new NamespacedKey(plugin, "ability_ready");
         meta.getPersistentDataContainer().set(abilityReadyKey, PersistentDataType.BYTE, (byte) 1);
+        meta.addEnchant(Enchantment.SHARPNESS, 6, true);
+        meta.addEnchant(Enchantment.LOOTING, 3, true);
+        meta.addEnchant(Enchantment.UNBREAKING, 3, true);
+        meta.addEnchant(Enchantment.FIRE_ASPECT, 2, true);
+        meta.addEnchant(Enchantment.MENDING, 1, true);
+        meta.addEnchant(Enchantment.SWEEPING_EDGE, 3, true);
         item.setItemMeta(meta);
         return item;
     }

@@ -39,22 +39,11 @@ public class SwordCombatListener implements Listener {
             return;
         }
         double damage = event.getDamage();
-        double baseDamage = getBaseDamage(bound);
-        double finalDamage = baseDamage;
         Season current = plugin.getSeasonManager().getCurrentSeason();
         if (bound.isPeakSeason(current)) {
-            finalDamage *= configManager.getDouble("bound.peak-season-bonus-multiplier", 1.5);
+            damage *= configManager.getDouble("bound.peak-season-bonus-multiplier", 1.5);
         }
-        event.setDamage(finalDamage);
-    }
-
-    private double getBaseDamage(BoundType bound) {
-        return switch (bound) {
-            case SPRING -> configManager.getDouble("swords.spring-sword.damage-base", 7.0);
-            case SUMMER -> configManager.getDouble("swords.summer-sword.damage-base", 8.0);
-            case AUTUMN -> configManager.getDouble("swords.autumn-sword.damage-base", 6.5);
-            case WINTER -> configManager.getDouble("swords.winter-sword.damage-base", 7.5);
-        };
+        event.setDamage(damage);
     }
 
     private BoundType getSwordBound(ItemStack item) {
