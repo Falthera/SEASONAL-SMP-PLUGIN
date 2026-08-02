@@ -29,7 +29,6 @@ import io.github.seasonalsmp.seasonalsmp.sword.SwordManager;
 import io.github.seasonalsmp.seasonalsmp.whitelist.WhitelistAPIServer;
 import io.github.seasonalsmp.seasonalsmp.whitelist.WhitelistManager;
 import io.github.seasonalsmp.seasonalsmp.trust.TrustManager;
-import io.github.seasonalsmp.seasonalsmp.event.relic.RelicType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
@@ -39,8 +38,6 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -97,7 +94,6 @@ public final class SeasonalSMP extends JavaPlugin {
             whitelistAPIServer.start();
             registerListeners();
             registerCommands();
-            registerRelicRecipe();
             startSeasonCycle();
             startAmbientEffects();
         } catch (Exception e) {
@@ -207,16 +203,6 @@ public final class SeasonalSMP extends JavaPlugin {
         if (trust != null) {
             trust.setExecutor(new TrustCommand(this));
         }
-    }
-
-    private void registerRelicRecipe() {
-        ShapedRecipe recipe = new ShapedRecipe(new org.bukkit.NamespacedKey(this, "bloodborn_relic"), RelicType.BLOODBORN_RELIC.createItem());
-        recipe.shape("ABC", "DEF", "GHI");
-        recipe.setIngredient('A', Material.TOTEM_OF_UNDYING);
-        recipe.setIngredient('B', Material.BLAZE_ROD);
-        recipe.setIngredient('C', Material.NETHER_STAR);
-        recipe.setIngredient('D', Material.HEART_OF_THE_SEA);
-        Bukkit.addRecipe(recipe);
     }
 
     private void startSeasonCycle() {
