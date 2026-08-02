@@ -41,7 +41,6 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
-import org.bukkit.inventory.recipe.RecipeChoice;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -213,10 +212,10 @@ public final class SeasonalSMP extends JavaPlugin {
     private void registerRelicRecipe() {
         ShapedRecipe recipe = new ShapedRecipe(new org.bukkit.NamespacedKey(this, "bloodborn_relic"), RelicType.BLOODBORN_RELIC.createItem());
         recipe.shape("ABC", "DEF", "GHI");
-        recipe.setIngredient('A', new RecipeChoice.ExactChoice(RelicType.SPRING_RELIC.createItem()));
-        recipe.setIngredient('B', new RecipeChoice.ExactChoice(RelicType.SUMMER_RELIC.createItem()));
-        recipe.setIngredient('C', new RecipeChoice.ExactChoice(RelicType.AUTUMN_RELIC.createItem()));
-        recipe.setIngredient('D', new RecipeChoice.ExactChoice(RelicType.WINTER_RELIC.createItem()));
+        recipe.setIngredient('A', Material.TOTEM_OF_UNDYING);
+        recipe.setIngredient('B', Material.BLAZE_ROD);
+        recipe.setIngredient('C', Material.NETHER_STAR);
+        recipe.setIngredient('D', Material.HEART_OF_THE_SEA);
         Bukkit.addRecipe(recipe);
     }
 
