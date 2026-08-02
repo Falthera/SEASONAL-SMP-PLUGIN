@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -194,5 +195,32 @@ public class SwordManager implements Listener {
             return swordConfig.getString("ability.name");
         }
         return bound.getAbilityDisplayName();
+    }
+
+    @EventHandler
+    public void onCraftItem(CraftItemEvent event) {
+        if (!(event.getView().getPlayer() instanceof Player player)) {
+            return;
+        }
+        org.bukkit.inventory.Recipe recipe = event.getRecipe();
+        if (recipe instanceof ShapedRecipe shaped && shaped.getKey().getNamespace().equals("seasonalsmp")) {
+            String key = shaped.getKey().getKey();
+            BoundType requiredBound = switch (key) {
+                case "spring_sword" -> BoundType.SPRING;
+                case "summer_sword" -> BoundType.SUMMER;
+                case "autumn_sword" -> BoundType.AUTUMN;
+                case "winter_sword" -> BoundType.WINTER;
+                default -> null;
+            };
+            if (requiredBound == null) {
+                return;
+            }
+            BoundType playerBound = plugin.getBoundManager().getBound(player);
+            if (playerBound != requiredBound) {
+                event.setCancelled(true);
+                player.sendMessage("§cYou must be bound to " + requiredBound.getDisplayName() + " §cto craft this sword!");
+                player.closeInventory();
+            }
+        }
     }
 }

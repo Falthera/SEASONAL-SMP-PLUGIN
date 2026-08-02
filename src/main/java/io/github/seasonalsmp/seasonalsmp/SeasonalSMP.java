@@ -34,14 +34,18 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.Map;
 import java.util.Random;
 
 public final class SeasonalSMP extends JavaPlugin {
@@ -94,6 +98,7 @@ public final class SeasonalSMP extends JavaPlugin {
             whitelistAPIServer.start();
             registerListeners();
             registerCommands();
+            registerSwordRecipes();
             startSeasonCycle();
             startAmbientEffects();
         } catch (Exception e) {
@@ -203,6 +208,27 @@ public final class SeasonalSMP extends JavaPlugin {
         if (trust != null) {
             trust.setExecutor(new TrustCommand(this));
         }
+    }
+
+    private void registerSwordRecipes() {
+        registerSwordRecipe(BoundType.SPRING, "spring_sword", new String[]{" R ", "S H", " N "},
+                Map.of('S', Material.NETHERITE_SWORD, 'R', Material.RED_TULIP, 'H', Material.HONEY_BOTTLE, 'N', Material.OAK_SAPLING));
+        registerSwordRecipe(BoundType.SUMMER, "summer_sword", new String[]{" B ", "S M", " F "},
+                Map.of('S', Material.NETHERITE_SWORD, 'B', Material.BLAZE_ROD, 'M', Material.MAGMA_BLOCK, 'F', Material.FIRE_CHARGE));
+        registerSwordRecipe(BoundType.AUTUMN, "autumn_sword", new String[]{" G ", "S P", " H "},
+                Map.of('S', Material.NETHERITE_SWORD, 'G', Material.GOLDEN_CARROT, 'P', Material.PUMPKIN, 'H', Material.HAY_BLOCK));
+        registerSwordRecipe(BoundType.WINTER, "winter_sword", new String[]{" I ", "S B", "SN "},
+                Map.of('S', Material.NETHERITE_SWORD, 'I', Material.ICE, 'B', Material.BLUE_ICE, 'N', Material.SNOW_BLOCK));
+    }
+
+    private void registerSwordRecipe(BoundType bound, String key, String[] shape, Map<Character, Material> ingredients) {
+        org.bukkit.inventory.ItemStack result = plugin.getSwordManager().buildSword(bound);
+        ShapedRecipe recipe = new ShapedRecipe(new NamespacedKey(this, key), result);
+        recipe.shape(shape);
+        for (Map.Entry<Character, Material> entry : ingredients.entrySet()) {
+            recipe.setIngredient(entry.getKey(), entry.getValue());
+        }
+        Bukkit.addRecipe(recipe);
     }
 
     private void startSeasonCycle() {
