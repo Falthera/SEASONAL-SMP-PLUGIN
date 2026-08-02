@@ -175,14 +175,24 @@ public class SwordManager implements Listener {
         if (bound == null || player == null) {
             return;
         }
+        String swordAbilityName = getSwordAbilityName(bound);
         int cooldownSeconds = switch (bound) {
             case SPRING -> configManager.getInt("swords.cooldown-seconds.bloom", 60);
             case SUMMER -> configManager.getInt("swords.cooldown-seconds.solar-burst", 45);
             case AUTUMN -> configManager.getInt("swords.cooldown-seconds.harvest", 50);
             case WINTER -> configManager.getInt("swords.cooldown-seconds.frozen-heart", 40);
         };
-        plugin.getUIManager().startCooldownTimer(player, bound.getAbilityDisplayName() + " (Sword)", cooldownSeconds);
+        plugin.getUIManager().startCooldownTimer(player, swordAbilityName + " (Sword)", cooldownSeconds);
         plugin.getBoundManager().activateAbility(player, bound, true);
         setCooldown(player, cooldownSeconds);
+    }
+
+    private String getSwordAbilityName(BoundType bound) {
+        String path = "swords." + bound.name().toLowerCase() + "-sword.ability.name";
+        org.bukkit.configuration.ConfigurationSection swordConfig = configManager.getConfig("swords.yml").getConfigurationSection("swords." + bound.name().toLowerCase() + "-sword");
+        if (swordConfig != null && swordConfig.isString("ability.name")) {
+            return swordConfig.getString("ability.name");
+        }
+        return bound.getAbilityDisplayName();
     }
 }
