@@ -217,7 +217,7 @@ public final class SeasonalSMP extends JavaPlugin {
                 Map.of('S', Material.NETHERITE_SWORD, 'B', Material.BLAZE_ROD, 'M', Material.MAGMA_BLOCK, 'F', Material.FIRE_CHARGE));
         registerSwordRecipe(BoundType.AUTUMN, "autumn_sword", new String[]{" G ", "S P", " H "},
                 Map.of('S', Material.NETHERITE_SWORD, 'G', Material.GOLDEN_CARROT, 'P', Material.PUMPKIN, 'H', Material.HAY_BLOCK));
-        registerSwordRecipe(BoundType.WINTER, "winter_sword", new String[]{" I ", "S B", "SN "},
+        registerSwordRecipe(BoundType.WINTER, "winter_sword", new String[]{" I ", "BSN", "   "},
                 Map.of('S', Material.NETHERITE_SWORD, 'I', Material.ICE, 'B', Material.BLUE_ICE, 'N', Material.SNOW_BLOCK));
     }
 
