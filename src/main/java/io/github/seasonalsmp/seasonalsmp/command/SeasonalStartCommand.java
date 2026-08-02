@@ -1,4 +1,4 @@
- package io.github.seasonalsmp.seasonalsmp.command;
+package io.github.seasonalsmp.seasonalsmp.command;
 
 import io.github.seasonalsmp.seasonalsmp.SeasonalSMP;
 import io.github.seasonalsmp.seasonalsmp.bound.BoundManager;
