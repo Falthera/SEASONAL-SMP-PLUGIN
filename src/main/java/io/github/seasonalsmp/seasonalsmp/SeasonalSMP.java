@@ -76,8 +76,8 @@ public final class SeasonalSMP extends JavaPlugin {
             dataStorage = new io.github.seasonalsmp.seasonalsmp.data.DataStorage(this);
             seasonManager = new SeasonManager(this);
             effectManager = new EffectManager(this);
-            boundManager = new BoundManager(this, dataStorage);
             swordManager = new SwordManager(this);
+            boundManager = new BoundManager(this, dataStorage);
             configManager.loadAll();
             dataStorage.initialize();
             seasonManager.initialize();
@@ -324,7 +324,7 @@ public final class SeasonalSMP extends JavaPlugin {
             case WINTER -> configManager.getDouble("weather.winter.snow-chance");
         };
         if (season == Season.WINTER && !canWorldSnow(world)) {
-            chance = chance * 0.1;
+            return;
         }
         if (random.nextDouble() < chance) {
             int duration;
@@ -334,10 +334,7 @@ public final class SeasonalSMP extends JavaPlugin {
                 case SUMMER -> duration = random.nextInt(8000) + 4000;
                 default -> duration = 12000;
             }
-            if (season == Season.WINTER) {
-                world.setStorm(true);
-                world.setWeatherDuration(duration);
-            } else if (season == Season.SPRING || season == Season.AUTUMN) {
+            if (season == Season.SPRING || season == Season.AUTUMN) {
                 world.setStorm(true);
                 world.setWeatherDuration(duration);
                 double thunderChance = season == Season.AUTUMN
