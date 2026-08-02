@@ -4,6 +4,7 @@ import io.github.seasonalsmp.seasonalsmp.SeasonalSMP;
 import io.github.seasonalsmp.seasonalsmp.bound.BoundType;
 import io.github.seasonalsmp.seasonalsmp.config.ConfigManager;
 import io.github.seasonalsmp.seasonalsmp.seasonalblade.LegendaryItemTracker;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.enchantments.Enchantment;
@@ -192,96 +193,6 @@ public class SwordManager implements Listener {
 
     @EventHandler
     public void onCraftItem(CraftItemEvent event) {
-        if (!(event.getView().getPlayer() instanceof org.bukkit.entity.Player player)) {
-            return;
-        }
-        org.bukkit.inventory.Recipe recipe = event.getRecipe();
-        if (recipe instanceof org.bukkit.inventory.ShapedRecipe shaped) {
-            String key = shaped.getKey().getKey();
-            BoundType bound = switch (key) {
-                case "spring_sword" -> BoundType.SPRING;
-                case "summer_sword" -> BoundType.SUMMER;
-                case "autumn_sword" -> BoundType.AUTUMN;
-                case "winter_sword" -> BoundType.WINTER;
-                default -> null;
-            };
-            if (bound != null) {
-                if (!canCraftSword(bound)) {
-                    event.setCancelled(true);
-                    event.getInventory().setResult(new org.bukkit.inventory.ItemStack(org.bukkit.Material.AIR));
-                    player.sendMessage("§cThis sword has already been forged on this server!");
-                    return;
-                }
-                markSwordCrafted(bound);
-                String swordName = bound.getColorCode() + bound.getDisplayName() + " Sword";
-                Bukkit.broadcastMessage(formatOminousMessage(player.getName(), swordName));
-            }
-        }
-    }
-
-    private String formatOminousMessage(String playerName, String itemName) {
-        String obfuscated = "§k" + generateObfuscatedText(5) + "§r";
-        return "§8" + obfuscated + " §r§8has crafted §r" + obfuscated + " §r" + itemName + " §r§8" + obfuscated + "§r";
-    }
-
-    private String generateObfuscatedText(int length) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < length; i++) {
-            sb.append((char) ('\u00A0' + (int) (Math.random() * 10)));
-        }
-        return sb.toString();
-    }
-
-    @EventHandler
-    public void onInteract(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
-        if (player == null) {
-            return;
-        }
-        if (!isSword(player.getInventory().getItemInMainHand())) {
-            return;
-        }
-        if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
-            return;
-        }
-        event.setCancelled(true);
-        BoundType bound = getSwordBound(player.getInventory().getItemInMainHand());
-        if (bound == null) {
-            return;
-        }
-        if (isOnCooldown(player)) {
-            return;
-        }
-        activateAbility(player, bound);
-    }
-
-    private void activateAbility(Player player, BoundType bound) {
-        if (bound == null || player == null) {
-            return;
-        }
-        String swordAbilityName = getSwordAbilityName(bound);
-        int cooldownSeconds = switch (bound) {
-            case SPRING -> configManager.getInt("swords.cooldown-seconds.bloom", 60);
-            case SUMMER -> configManager.getInt("swords.cooldown-seconds.solar-burst", 45);
-            case AUTUMN -> configManager.getInt("swords.cooldown-seconds.harvest", 50);
-            case WINTER -> configManager.getInt("swords.cooldown-seconds.frozen-heart", 40);
-        };
-        plugin.getUIManager().startCooldownTimer(player, swordAbilityName + " (Sword)", cooldownSeconds);
-        plugin.getBoundManager().activateAbility(player, bound, true);
-        setCooldown(player, cooldownSeconds);
-    }
-
-    private String getSwordAbilityName(BoundType bound) {
-        String path = "swords." + bound.name().toLowerCase() + "-sword.ability.name";
-        org.bukkit.configuration.ConfigurationSection swordConfig = configManager.getConfig("swords.yml").getConfigurationSection("swords." + bound.name().toLowerCase() + "-sword");
-        if (swordConfig != null && swordConfig.isString("ability.name")) {
-            return swordConfig.getString("ability.name");
-        }
-        return bound.getAbilityDisplayName();
-    }
-
-    @EventHandler
-    public void onCraftItem(CraftItemEvent event) {
         if (!(event.getView().getPlayer() instanceof Player player)) {
             return;
         }
@@ -303,7 +214,30 @@ public class SwordManager implements Listener {
                 event.setCancelled(true);
                 player.sendMessage("§cYou must be bound to " + requiredBound.getDisplayName() + " §cto craft this sword!");
                 player.closeInventory();
+                return;
             }
+            if (!canCraftSword(requiredBound)) {
+                event.setCancelled(true);
+                event.getInventory().setResult(new org.bukkit.inventory.ItemStack(org.bukkit.Material.AIR));
+                player.sendMessage("§cThis sword has already been forged on this server!");
+                return;
+            }
+            markSwordCrafted(requiredBound);
+            String swordName = requiredBound.getColorCode() + requiredBound.getDisplayName() + " Sword";
+            Bukkit.broadcastMessage(formatOminousMessage(player.getName(), swordName));
         }
+    }
+
+    private String formatOminousMessage(String playerName, String itemName) {
+        String obfuscated = "§k" + generateObfuscatedText(5) + "§r";
+        return "§8" + obfuscated + " §r§8has crafted §r" + obfuscated + " §r" + itemName + " §r§8" + obfuscated + "§r";
+    }
+
+    private String generateObfuscatedText(int length) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            sb.append((char) ('\u00A0' + (int) (Math.random() * 10)));
+        }
+        return sb.toString();
     }
 }

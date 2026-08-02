@@ -1,7 +1,9 @@
 package io.github.seasonalsmp.seasonalsmp.seasonalblade;
 
 import io.github.seasonalsmp.seasonalsmp.SeasonalSMP;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

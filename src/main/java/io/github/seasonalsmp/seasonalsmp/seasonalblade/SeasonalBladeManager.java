@@ -10,9 +10,13 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
@@ -169,7 +173,7 @@ public class SeasonalBladeManager {
             double angle = (i / 30.0) * Math.PI * 2;
             double x = Math.cos(angle) * radius;
             double z = Math.sin(angle) * radius;
-            particleService.spawn(center.clone().add(x, 0, z), Particle.VILLAGER_HAPPY, 3, 0.3, 0.3, 0.3, 0.0);
+            particleService.spawn(center.clone().add(x, 0, z), Particle.VILLAGER_HAPPY, 3, 0.0);
         }
     }
 
@@ -183,7 +187,7 @@ public class SeasonalBladeManager {
             target = player.getLocation().add(player.getLocation().getDirection().multiply(10));
         }
         for (int y = 0; y < 20; y++) {
-            particleService.spawn(target.clone().add(0, y, 0), Particle.FLAME, 2, 0.2, 0.5, 0.2, 0.0);
+            particleService.spawn(target.clone().add(0, y, 0), Particle.FLAME, 2, 0.0);
         }
         for (Entity entity : target.getWorld().getNearbyEntities(target, 3, 3, 3)) {
             if (entity instanceof LivingEntity living) {
@@ -204,7 +208,7 @@ public class SeasonalBladeManager {
         for (int i = 0; i < 40; i++) {
             double x = (Math.random() - 0.5) * 6;
             double z = (Math.random() - 0.5) * 6;
-            particleService.spawn(loc.clone().add(x, 0, z), Particle.CLOUD, 1, 0.3, 0.3, 0.3, 0.0);
+            particleService.spawn(loc.clone().add(x, 0, z), Particle.CLOUD, 1, 0.0);
         }
         for (Entity entity : player.getNearbyEntities(3, 3, 3)) {
             if (entity instanceof LivingEntity living && !(entity instanceof Player)) {
@@ -228,7 +232,7 @@ public class SeasonalBladeManager {
                 for (int z = -2; z <= 2; z++) {
                     Block block = target.clone().add(x, y, z).getBlock();
                     if (block.getType() == Material.AIR) {
-                        particleService.spawn(block.getLocation().add(0.5, 0.5, 0.5), Particle.SNOWFLAKE, 5, 0.3, 0.3, 0.3, 0.0);
+                        particleService.spawn(block.getLocation().add(0.5, 0.5, 0.5), Particle.SNOWFLAKE, 5, 0.0);
                     }
                 }
             }
@@ -289,7 +293,7 @@ public class SeasonalBladeManager {
     private void applySpringPassive(Player player) {
         if (player.getRandom().nextDouble() < 0.15) {
             player.setHealth(Math.min(player.getHealth() + 4.0, player.getMaxHealth()));
-            particleService.spawn(player.getLocation().add(0, 1, 0), Particle.HEART, 3, 0.5, 0.5, 0.5, 0.0);
+            particleService.spawn(player.getLocation().add(0, 1, 0), Particle.HEART, 3, 0.0);
         }
     }
 
@@ -325,11 +329,11 @@ public class SeasonalBladeManager {
         Random random = new Random();
         if (random.nextDouble() < 0.2) {
             victim.setFireTicks(60);
-            particleService.spawn(victim.getLocation().add(0, 1, 0), Particle.FLAME, 5, 0.3, 0.3, 0.3, 0.0);
+            particleService.spawn(victim.getLocation().add(0, 1, 0), Particle.FLAME, 5, 0.0);
         }
         if (random.nextDouble() < 0.15) {
             victim.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 40, 0));
-            particleService.spawn(victim.getLocation().add(0, 1, 0), Particle.SNOWFLAKE, 5, 0.3, 0.3, 0.3, 0.0);
+            particleService.spawn(victim.getLocation().add(0, 1, 0), Particle.SNOWFLAKE, 5, 0.0);
         }
         if (random.nextDouble() < 0.1) {
             victim.addPotionEffect(new PotionEffect(PotionEffectType.MINING_FATIGUE, 60, 0));
@@ -342,8 +346,8 @@ public class SeasonalBladeManager {
         if (!isSeasonalBlade(mainHand)) {
             return;
         }
-        if (player.getRandom().nextDouble() < 0.3) {
-            particleService.spawn(player.getLocation().add(0, 0.5, 0), Particle.CLOUD, 1, 0.2, 0.2, 0.2, 0.0);
+        if (new java.util.Random().nextDouble() < 0.3) {
+            particleService.spawn(player.getLocation().add(0, 0.5, 0), Particle.CLOUD, 1, 0.0);
         }
     }
 }

@@ -2,6 +2,7 @@ package io.github.seasonalsmp.seasonalsmp.seasonalblade;
 
 import io.github.seasonalsmp.seasonalsmp.SeasonalSMP;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
