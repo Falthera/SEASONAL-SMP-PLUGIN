@@ -223,7 +223,7 @@ public final class SeasonalSMP extends JavaPlugin {
     }
 
     private void registerSwordRecipe(BoundType bound, String key, String[] shape, Map<Character, Material> ingredients) {
-        org.bukkit.inventory.ItemStack result = plugin.getSwordManager().buildSword(bound);
+        ItemStack result = getSwordManager().buildSword(bound);
         ShapedRecipe recipe = new ShapedRecipe(new NamespacedKey(this, key), result);
         recipe.shape(shape);
         for (Map.Entry<Character, Material> entry : ingredients.entrySet()) {

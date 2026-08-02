@@ -89,14 +89,14 @@ public class SeasonalStartCommand implements CommandExecutor {
                             double x = Math.cos(angle) * 1.5;
                             double z = Math.sin(angle) * 1.5;
                             Location particleLoc = loc.clone().add(x, 0, z);
-                            player.spawnParticle(Particle.SPELL_WITCH, particleLoc, 1, 0.1, 0.1, 0.1, 0.0);
+                            player.spawnParticle(Particle.WITCH, particleLoc, 1, 0.1, 0.1, 0.1, 0.0);
                         }
                         player.spawnParticle(Particle.ENCHANT, loc, 2, 0.5, 0.5, 0.5, 0.0);
                         if (tick % 5 == 0) {
                             player.playSound(player.getLocation(), Sound.BLOCK_PORTAL_AMBIENT, 0.3f, 0.5f + (tick * 0.02f));
                         }
                         if (tick % 10 == 0) {
-                            player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 20, 0));
+                            player.addPotionEffect(new PotionEffect(PotionEffectType.NAUSEA, 20, 0));
                         }
                     }
                 }
@@ -117,7 +117,7 @@ public class SeasonalStartCommand implements CommandExecutor {
                             Location center = player.getLocation();
                             player.removePotionEffect(PotionEffectType.BLINDNESS);
                             player.removePotionEffect(PotionEffectType.SLOWNESS);
-                            player.removePotionEffect(PotionEffectType.CONFUSION);
+                            player.removePotionEffect(PotionEffectType.NAUSEA);
 
                             player.playSound(center, Sound.ENTITY_LIGHTNING_BOLT_IMPACT, 3.0f, 1.0f);
                             player.playSound(center, Sound.ENTITY_FIREWORK_ROCKET_LARGE_BLAST, 2.0f, 1.0f);
