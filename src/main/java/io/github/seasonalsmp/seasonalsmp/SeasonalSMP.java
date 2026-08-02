@@ -1,6 +1,7 @@
 package io.github.seasonalsmp.seasonalsmp;
 
 import io.github.seasonalsmp.seasonalsmp.bound.BoundManager;
+import io.github.seasonalsmp.seasonalsmp.bound.BoundType;
 import io.github.seasonalsmp.seasonalsmp.command.AbilityCommand;
 import io.github.seasonalsmp.seasonalsmp.command.BoundCommand;
 import io.github.seasonalsmp.seasonalsmp.command.BoundCommandTabCompleter;
