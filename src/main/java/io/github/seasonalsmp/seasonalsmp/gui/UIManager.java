@@ -70,8 +70,11 @@ public class UIManager {
             player.hideBossBar(oldBar);
         }
         String prefix = configManager.getString("general.plugin-prefix", "&r").replace("&", "§");
+        String timeRemaining = formatTimeRemaining();
         Component name = Component.text(prefix).append(Component.space())
-            .append(Component.text(season.getDisplayName(), TextColor.color(season.getHexColor())));
+            .append(Component.text(season.getDisplayName(), TextColor.color(season.getHexColor())))
+            .append(Component.text(" - "))
+            .append(Component.text(timeRemaining));
         float progress = 1.0f;
         BossBar.Color barColor = switch (season) {
             case SPRING -> BossBar.Color.GREEN;
@@ -94,7 +97,24 @@ public class UIManager {
         if (bar != null) {
             double progress = plugin.getSeasonManager().getSeasonProgress();
             bar.progress((float) Math.max(0.0f, Math.min(1.0f, progress)));
+            String timeRemaining = formatTimeRemaining();
+            Season currentSeason = plugin.getSeasonManager().getCurrentSeason();
+            Component name = Component.text(configManager.getString("general.plugin-prefix", "&r").replace("&", "§")).append(Component.space())
+                .append(Component.text(currentSeason.getDisplayName(), TextColor.color(currentSeason.getHexColor())))
+                .append(Component.text(" - "))
+                .append(Component.text(timeRemaining));
+            bar.name(name);
         }
+    }
+
+    private String formatTimeRemaining() {
+        long durationSeconds = plugin.getConfigManager().getLong("season.duration-seconds", 7200);
+        double progress = plugin.getSeasonManager().getSeasonProgress();
+        long remainingSeconds = (long) (progress * durationSeconds);
+        long hours = remainingSeconds / 3600;
+        long minutes = (remainingSeconds % 3600) / 60;
+        long seconds = remainingSeconds % 60;
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 
     public void removeBossBar(Player player) {
