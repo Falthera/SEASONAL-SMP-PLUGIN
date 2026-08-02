@@ -324,6 +324,9 @@ public final class SeasonalSMP extends JavaPlugin {
             case AUTUMN -> configManager.getDouble("weather.autumn.rain-chance");
             case WINTER -> configManager.getDouble("weather.winter.snow-chance");
         };
+        if (season == Season.WINTER && !canWorldSnow(world)) {
+            chance = chance * 0.1;
+        }
         if (random.nextDouble() < chance) {
             int duration;
             switch (season) {
@@ -351,6 +354,20 @@ public final class SeasonalSMP extends JavaPlugin {
                 }
             }
         }
+    }
+
+    private boolean canWorldSnow(World world) {
+        org.bukkit.block.Block spawnBlock = world.getSpawnLocation().getBlock();
+        double temperature = spawnBlock.getTemperature();
+        if (temperature < 0.15) {
+            return true;
+        }
+        for (Player player : world.getPlayers()) {
+            if (player.getLocation().getBlock().getTemperature() < 0.15) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void applySeasonBoundEffects(Player player) {
