@@ -85,9 +85,9 @@ commands:
     description: Start the seasonal event
     usage: /<command> start
     permission: seasonalsmp.command.season.admin
-  whitelist:
-    description: Whitelist management commands
-    usage: /<command> <add|remove|lookup|stats|reload>
+  seasonalsmpdiscordbotdebug:
+    description: Debug Discord bot and whitelist integration
+    usage: /<command> <info|reload|test>
     permission: seasonalsmp.command.whitelist.admin
   trust:
     description: Manage trusted allies

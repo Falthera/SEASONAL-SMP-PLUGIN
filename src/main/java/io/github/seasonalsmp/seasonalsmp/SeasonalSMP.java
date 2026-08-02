@@ -15,7 +15,7 @@ import io.github.seasonalsmp.seasonalsmp.combat.CombatManager;
 import io.github.seasonalsmp.seasonalsmp.combat.CombatListener;
 import io.github.seasonalsmp.seasonalsmp.command.SeasonalStartCommand;
 import io.github.seasonalsmp.seasonalsmp.command.TrustCommand;
-import io.github.seasonalsmp.seasonalsmp.command.WhitelistCommand;
+import io.github.seasonalsmp.seasonalsmp.command.DiscordBotDebugCommand;
 import io.github.seasonalsmp.seasonalsmp.config.ConfigManager;
 import io.github.seasonalsmp.seasonalsmp.core.PluginManager;
 import io.github.seasonalsmp.seasonalsmp.effect.EffectManager;
@@ -194,9 +194,9 @@ public final class SeasonalSMP extends JavaPlugin {
         if (seasonal != null) {
             seasonal.setExecutor(new SeasonalStartCommand(this));
         }
-        org.bukkit.command.PluginCommand whitelist = getCommand("whitelist");
-        if (whitelist != null) {
-            whitelist.setExecutor(new WhitelistCommand(this));
+        org.bukkit.command.PluginCommand discordBotDebug = getCommand("seasonalsmpdiscordbotdebug");
+        if (discordBotDebug != null) {
+            discordBotDebug.setExecutor(new DiscordBotDebugCommand(this));
         }
         org.bukkit.command.PluginCommand trust = getCommand("trust");
         if (trust != null) {
