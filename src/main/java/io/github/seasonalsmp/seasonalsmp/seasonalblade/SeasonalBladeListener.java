@@ -53,17 +53,6 @@ public class SeasonalBladeListener implements Listener {
         }
     }
 
-    @EventHandler
-    public void onPrepareSpearCraft(PrepareItemCraftEvent event) {
-        org.bukkit.inventory.Recipe recipe = event.getRecipe();
-        if (recipe instanceof org.bukkit.inventory.ShapedRecipe shaped) {
-            String key = shaped.getKey().getKey().toLowerCase();
-            if (key.contains("spear") || key.contains("tridents")) {
-                event.getInventory().setResult(new ItemStack(Material.AIR));
-            }
-        }
-    }
-
     private boolean isValidSeasonalBladeRecipe(ItemStack[] matrix) {
         if (matrix == null || matrix.length != 9) {
             return false;
