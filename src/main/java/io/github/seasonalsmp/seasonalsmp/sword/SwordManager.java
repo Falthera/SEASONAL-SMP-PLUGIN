@@ -3,6 +3,7 @@ package io.github.seasonalsmp.seasonalsmp.sword;
 import io.github.seasonalsmp.seasonalsmp.SeasonalSMP;
 import io.github.seasonalsmp.seasonalsmp.bound.BoundType;
 import io.github.seasonalsmp.seasonalsmp.config.ConfigManager;
+import io.github.seasonalsmp.seasonalsmp.seasonalblade.LegendaryItemTracker;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.enchantments.Enchantment;
@@ -11,6 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
@@ -29,6 +31,7 @@ public class SwordManager implements Listener {
     private final Map<UUID, BukkitTask> cooldownTasks;
     private final Map<UUID, Long> cooldowns;
     private final NamespacedKey boundKey;
+    private final LegendaryItemTracker itemTracker;
 
     public SwordManager(SeasonalSMP plugin) {
         this.plugin = plugin;
@@ -36,6 +39,7 @@ public class SwordManager implements Listener {
         this.cooldownTasks = new ConcurrentHashMap<>();
         this.cooldowns = new ConcurrentHashMap<>();
         this.boundKey = new NamespacedKey(plugin, "bound_type");
+        this.itemTracker = new LegendaryItemTracker(plugin);
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
@@ -62,6 +66,20 @@ public class SwordManager implements Listener {
             return null;
         }
         return BoundType.fromString(value);
+    }
+
+    public void markSwordCrafted(BoundType bound) {
+        if (bound == null) {
+            return;
+        }
+        itemTracker.markCrafted(bound.name().toLowerCase() + "_sword");
+    }
+
+    public boolean canCraftSword(BoundType bound) {
+        if (bound == null) {
+            return false;
+        }
+        return itemTracker.canCraft(bound.name().toLowerCase() + "_sword");
     }
 
     public boolean isOnCooldown(Player player) {
@@ -112,6 +130,10 @@ public class SwordManager implements Listener {
     }
 
     public ItemStack buildSword(BoundType bound) {
+        String itemKey = bound.name().toLowerCase() + "_sword";
+        if (!itemTracker.canCraft(itemKey)) {
+            return null;
+        }
         String path = "swords." + bound.name().toLowerCase() + "-sword";
         org.bukkit.configuration.ConfigurationSection swordConfig = configManager.getConfig("swords.yml").getConfigurationSection(path);
         String materialName = swordConfig != null ? swordConfig.getString("material", "NETHERITE_SWORD") : "NETHERITE_SWORD";
@@ -148,6 +170,51 @@ public class SwordManager implements Listener {
         meta.addEnchant(Enchantment.SWEEPING_EDGE, 3, true);
         item.setItemMeta(meta);
         return item;
+    }
+
+    @EventHandler
+    public void onPrepareItemCraft(PrepareItemCraftEvent event) {
+        org.bukkit.inventory.Recipe recipe = event.getRecipe();
+        if (recipe instanceof org.bukkit.inventory.ShapedRecipe shaped) {
+            String key = shaped.getKey().getKey();
+            BoundType bound = switch (key) {
+                case "spring_sword" -> BoundType.SPRING;
+                case "summer_sword" -> BoundType.SUMMER;
+                case "autumn_sword" -> BoundType.AUTUMN;
+                case "winter_sword" -> BoundType.WINTER;
+                default -> null;
+            };
+            if (bound != null && !canCraftSword(bound)) {
+                event.getInventory().setResult(new org.bukkit.inventory.ItemStack(org.bukkit.Material.AIR));
+            }
+        }
+    }
+
+    @EventHandler
+    public void onCraftItem(CraftItemEvent event) {
+        if (!(event.getView().getPlayer() instanceof org.bukkit.entity.Player player)) {
+            return;
+        }
+        org.bukkit.inventory.Recipe recipe = event.getRecipe();
+        if (recipe instanceof org.bukkit.inventory.ShapedRecipe shaped) {
+            String key = shaped.getKey().getKey();
+            BoundType bound = switch (key) {
+                case "spring_sword" -> BoundType.SPRING;
+                case "summer_sword" -> BoundType.SUMMER;
+                case "autumn_sword" -> BoundType.AUTUMN;
+                case "winter_sword" -> BoundType.WINTER;
+                default -> null;
+            };
+            if (bound != null) {
+                if (!canCraftSword(bound)) {
+                    event.setCancelled(true);
+                    event.getInventory().setResult(new org.bukkit.inventory.ItemStack(org.bukkit.Material.AIR));
+                    player.sendMessage("§cThis sword has already been forged on this server!");
+                    return;
+                }
+                markSwordCrafted(bound);
+            }
+        }
     }
 
     @EventHandler

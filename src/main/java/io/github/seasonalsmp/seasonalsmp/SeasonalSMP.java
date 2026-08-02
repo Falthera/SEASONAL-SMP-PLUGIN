@@ -25,6 +25,9 @@ import io.github.seasonalsmp.seasonalsmp.listener.PlayerJoinListener;
 import io.github.seasonalsmp.seasonalsmp.listener.SeasonWorldListener;
 import io.github.seasonalsmp.seasonalsmp.season.Season;
 import io.github.seasonalsmp.seasonalsmp.season.SeasonManager;
+import io.github.seasonalsmp.seasonalsmp.seasonalblade.SeasonalBladeListener;
+import io.github.seasonalsmp.seasonalsmp.seasonalblade.SeasonalBladeManager;
+import io.github.seasonalsmp.seasonalsmp.seasonalblade.LegendaryItemProtectionListener;
 import io.github.seasonalsmp.seasonalsmp.sword.SwordCombatListener;
 import io.github.seasonalsmp.seasonalsmp.sword.SwordManager;
 import io.github.seasonalsmp.seasonalsmp.whitelist.WhitelistAPIServer;
@@ -58,6 +61,7 @@ public final class SeasonalSMP extends JavaPlugin {
     private SeasonManager seasonManager;
     private BoundManager boundManager;
     private SwordManager swordManager;
+    private SeasonalBladeManager seasonalBladeManager;
     private EffectManager effectManager;
     private UIManager uiManager;
     private io.github.seasonalsmp.seasonalsmp.effect.SeasonEffectsManager seasonEffectsManager;
@@ -83,6 +87,7 @@ public final class SeasonalSMP extends JavaPlugin {
             seasonManager = new SeasonManager(this);
             effectManager = new EffectManager(this);
             swordManager = new SwordManager(this);
+            seasonalBladeManager = new SeasonalBladeManager(this);
             boundManager = new BoundManager(this, dataStorage);
             configManager.loadAll();
             dataStorage.initialize();
@@ -101,6 +106,7 @@ public final class SeasonalSMP extends JavaPlugin {
             registerListeners();
             registerCommands();
             registerSwordRecipes();
+            registerSeasonalBladeRecipe();
             startSeasonCycle();
             startAmbientEffects();
         } catch (Exception e) {
@@ -159,6 +165,8 @@ public final class SeasonalSMP extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new SeasonWorldListener(this), this);
         Bukkit.getPluginManager().registerEvents(new SwordCombatListener(this), this);
         Bukkit.getPluginManager().registerEvents(new CombatListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new SeasonalBladeListener(this, seasonalBladeManager), this);
+        Bukkit.getPluginManager().registerEvents(new LegendaryItemProtectionListener(this, swordManager), this);
         io.github.seasonalsmp.seasonalsmp.event.RelicPurgeListener relicListener = new io.github.seasonalsmp.seasonalsmp.event.RelicPurgeListener(this);
         relicListener.initialize();
     }
@@ -230,6 +238,17 @@ public final class SeasonalSMP extends JavaPlugin {
         for (Map.Entry<Character, Material> entry : ingredients.entrySet()) {
             recipe.setIngredient(entry.getKey(), entry.getValue());
         }
+        Bukkit.addRecipe(recipe);
+    }
+
+    private void registerSeasonalBladeRecipe() {
+        ItemStack result = getSeasonalBladeManager().buildSeasonalBlade();
+        ShapedRecipe recipe = new ShapedRecipe(new NamespacedKey(this, "seasonal_blade"), result);
+        recipe.shape(" B ", "HMH", " F ");
+        recipe.setIngredient('H', Material.DIAMOND_SWORD);
+        recipe.setIngredient('M', Material.MACE);
+        recipe.setIngredient('B', Material.BLAZE_ROD);
+        recipe.setIngredient('F', Material.FIRE_CHARGE);
         Bukkit.addRecipe(recipe);
     }
 
@@ -419,6 +438,10 @@ public final class SeasonalSMP extends JavaPlugin {
 
     public SwordManager getSwordManager() {
         return swordManager;
+    }
+
+    public SeasonalBladeManager getSeasonalBladeManager() {
+        return seasonalBladeManager;
     }
 
     public EffectManager getEffectManager() {

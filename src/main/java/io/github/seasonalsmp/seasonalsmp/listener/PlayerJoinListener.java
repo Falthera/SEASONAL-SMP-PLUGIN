@@ -28,6 +28,9 @@ public class PlayerJoinListener implements Listener {
         }
         plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             plugin.getUIManager().updateBossBar(player, plugin.getSeasonManager().getCurrentSeason());
+            if (plugin.getSeasonalBladeManager().isSeasonalBlade(player.getInventory().getItemInMainHand())) {
+                plugin.getSeasonalBladeManager().startPassiveEffects(player);
+            }
         }, 40L);
     }
 }

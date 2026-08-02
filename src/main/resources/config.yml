@@ -226,3 +226,20 @@ combat:
   prevent-encrusted-golden-apples: false
   prevent-bucket-draining: true
   netherite-pickaxe-only: true
+
+seasonal-blade:
+  cooldown:
+    spring: 60
+    summer: 50
+    autumn: 45
+    winter: 55
+  damage:
+    solar-judgment: 12.0
+    frostpiercer: 10.0
+  range:
+    abilities: 15
+  effects:
+    particles: true
+    sounds: true
+  ability:
+    duration: 3

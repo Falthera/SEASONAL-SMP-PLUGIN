@@ -2,6 +2,7 @@ package io.github.seasonalsmp.seasonalsmp.command;
 
 import io.github.seasonalsmp.seasonalsmp.SeasonalSMP;
 import io.github.seasonalsmp.seasonalsmp.bound.BoundType;
+import io.github.seasonalsmp.seasonalsmp.seasonalblade.SeasonalBladeManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -22,12 +23,7 @@ public class GiveSwordCommand implements CommandExecutor {
             return true;
         }
         if (args.length == 0) {
-            sender.sendMessage("§cUsage: /givesword <spring|summer|autumn|winter> [player]");
-            return true;
-        }
-        BoundType bound = BoundType.fromString(args[0]);
-        if (bound == null) {
-            sender.sendMessage("§cInvalid bound. Available: spring, summer, autumn, winter");
+            sender.sendMessage("§cUsage: /givesword <spring|summer|autumn|winter|seasonal_blade> [player]");
             return true;
         }
         Player target;
@@ -41,6 +37,21 @@ public class GiveSwordCommand implements CommandExecutor {
             target = player;
         } else {
             sender.sendMessage("§cSpecify a player.");
+            return true;
+        }
+        if (args[0].equalsIgnoreCase("seasonal_blade") || args[0].equalsIgnoreCase("blade")) {
+            SeasonalBladeManager bladeManager = plugin.getSeasonalBladeManager();
+            target.getInventory().addItem(bladeManager.buildSeasonalBlade());
+            if (sender == target) {
+                sender.sendMessage("§aReceived §6§lSeasonal Blade§a!");
+            } else {
+                sender.sendMessage("§aGave §6§lSeasonal Blade§a to " + target.getName() + "!");
+            }
+            return true;
+        }
+        BoundType bound = BoundType.fromString(args[0]);
+        if (bound == null) {
+            sender.sendMessage("§cInvalid bound. Available: spring, summer, autumn, winter, seasonal_blade");
             return true;
         }
         plugin.getSwordManager().giveSword(target, bound);
