@@ -150,7 +150,7 @@ public final class SeasonalSMP extends JavaPlugin {
     private void registerListeners() {
         Bukkit.getPluginManager().registerEvents(new PlayerJoinListener(this), this);
         Bukkit.getPluginManager().registerEvents(new SeasonWorldListener(this), this);
-        Bukkit.getPluginManager().registerEvents(new SwordCombatListener(), this);
+        Bukkit.getPluginManager().registerEvents(new SwordCombatListener(this), this);
         Bukkit.getPluginManager().registerEvents(new CombatListener(this), this);
         io.github.seasonalsmp.seasonalsmp.event.RelicPurgeListener relicListener = new io.github.seasonalsmp.seasonalsmp.event.RelicPurgeListener(this);
         relicListener.initialize();
