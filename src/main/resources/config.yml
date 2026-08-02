@@ -223,6 +223,6 @@ combat:
   prevent-spears: true
   prevent-trident-combat: true
   prevent-debuff-potions: true
-  prevent-encrusted-golden-apples: true
+  prevent-encrusted-golden-apples: false
   prevent-bucket-draining: true
   netherite-pickaxe-only: true
