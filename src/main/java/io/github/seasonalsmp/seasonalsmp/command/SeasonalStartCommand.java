@@ -108,12 +108,13 @@ public class SeasonalStartCommand implements CommandExecutor {
                     }
                 }
 
-                if (tick >= 60 && tick <= 120) {
+                if (tick >= 60 && tick <= 200) {
                     int index = 0;
                     for (Map.Entry<Player, BoundType> entry : assignments.entrySet()) {
                         Player player = entry.getKey();
                         BoundType bound = entry.getValue();
-                        if (tick == 60 + (index * 5)) {
+                        int boundTick = 60 + (index * 8);
+                        if (tick == boundTick && tick <= 180) {
                             Location center = player.getLocation();
                             player.removePotionEffect(PotionEffectType.BLINDNESS);
                             player.removePotionEffect(PotionEffectType.SLOWNESS);
@@ -130,31 +131,38 @@ public class SeasonalStartCommand implements CommandExecutor {
                                 case WINTER -> Color.fromRGB(0x55FFFF);
                             };
 
-                            Firework firework = center.getWorld().spawn(center.clone().add(0, 3, 0), Firework.class);
-                            FireworkMeta meta = firework.getFireworkMeta();
-                            FireworkEffect effect = FireworkEffect.builder()
-                                    .withColor(color)
-                                    .withFade(Color.WHITE)
-                                    .with(FireworkEffect.Type.BURST)
-                                    .withTrail()
-                                    .build();
-                            meta.addEffect(effect);
-                            meta.setPower(2);
-                            firework.setFireworkMeta(meta);
+                            for (int i = 0; i < 8; i++) {
+                                double angle = (i * Math.PI * 2) / 8;
+                                double x = Math.cos(angle) * 2.5;
+                                double z = Math.sin(angle) * 2.5;
+                                Location fireworkLoc = center.clone().add(x, 4 + i * 0.5, z);
+                                Firework firework = center.getWorld().spawn(fireworkLoc, Firework.class);
+                                FireworkMeta meta = firework.getFireworkMeta();
+                                FireworkEffect effect = FireworkEffect.builder()
+                                        .withColor(color)
+                                        .withFade(Color.WHITE)
+                                        .with(FireworkEffect.Type.BURST)
+                                        .withTrail()
+                                        .build();
+                                meta.addEffect(effect);
+                                meta.setPower(1);
+                                firework.setFireworkMeta(meta);
+                            }
 
-                            player.spawnParticle(Particle.FIREWORK, center, 50, 2, 3, 2, 0.1);
-                            player.spawnParticle(Particle.FLASH, center, 10, 1, 1, 1, 0.0);
-                            player.spawnParticle(Particle.HEART, center, 20, 1, 2, 1, 0.0);
-                            player.spawnParticle(Particle.CRIT, center, 30, 2, 1, 2, 0.2);
+                            player.spawnParticle(Particle.FIREWORK, center, 120, 4, 5, 4, 0.15);
+                            player.spawnParticle(Particle.FLASH, center, 30, 3, 3, 3, 0.0);
+                            player.spawnParticle(Particle.HEART, center, 40, 3, 4, 3, 0.0);
+                            player.spawnParticle(Particle.CRIT, center, 60, 4, 3, 4, 0.3);
+                            player.spawnParticle(Particle.TOTEM_OF_UNDYING, center, 20, 2, 2, 2, 0.1);
 
                             boundManager.forceAssignBound(player, bound);
 
                             String colorCode = bound.getColorCode();
                             String displayName = bound.getDisplayName();
-                            player.sendTitle(colorCode + "§l" + displayName, "§r§7Your peak season is " + bound.getPeakSeason().getDisplayName() + "§7", 10, 60, 10);
+                            player.sendTitle(colorCode + "§l" + displayName, "§r§7Your peak season is " + bound.getPeakSeason().getDisplayName() + "§7", 10, 100, 10);
                             player.sendMessage("§6§l" + displayName + " §r§6has chosen you!");
 
-                            Vector velocity = new Vector(0, 0.5, 0);
+                            Vector velocity = new Vector((random.nextDouble() - 0.5) * 0.3, 0.6, (random.nextDouble() - 0.5) * 0.3);
                             player.setVelocity(velocity);
                         }
                         index++;
