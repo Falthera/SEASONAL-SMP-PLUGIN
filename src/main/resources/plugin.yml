@@ -4,7 +4,7 @@ main: io.github.seasonalsmp.seasonalsmp.SeasonalSMP
 api-version: '1.21'
 author: SeasonalSMP Team
 description: A production-ready Minecraft Paper plugin featuring seasonal world transformations and bound-based gameplay.
-depend: [ProtocolLib, PacketEvents]
+depend: [ProtocolLib, packetevents]
 permissions:
   seasonalsmp.admin:
     description: Full access to all SeasonalSMP admin commands
