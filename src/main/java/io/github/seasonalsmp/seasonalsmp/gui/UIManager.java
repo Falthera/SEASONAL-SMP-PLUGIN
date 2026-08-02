@@ -37,6 +37,11 @@ public class UIManager {
                 updateBossBar(player, plugin.getSeasonManager().getCurrentSeason());
             }
         });
+        plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
+            for (Player player : plugin.getServer().getOnlinePlayers()) {
+                updateBossBarProgress(player);
+            }
+        }, 20L, 20L);
         this.initialized = true;
     }
 
@@ -78,6 +83,18 @@ public class UIManager {
         BossBar bar = BossBar.bossBar(name, progress, barColor, overlay);
         player.showBossBar(bar);
         playerBossBars.put(uuid, bar);
+    }
+
+    public void updateBossBarProgress(Player player) {
+        if (player == null || !configManager.getBoolean("ui.bossbar-enabled")) {
+            return;
+        }
+        UUID uuid = player.getUniqueId();
+        BossBar bar = playerBossBars.get(uuid);
+        if (bar != null) {
+            double progress = plugin.getSeasonManager().getSeasonProgress();
+            bar.progress((float) Math.max(0.0f, Math.min(1.0f, progress)));
+        }
     }
 
     public void removeBossBar(Player player) {

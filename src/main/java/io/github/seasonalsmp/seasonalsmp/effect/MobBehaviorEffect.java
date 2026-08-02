@@ -77,7 +77,8 @@ class MobBehaviorEffect implements SeasonEffectsManager.SeasonEffect {
     private void applySummerMobEffects(LivingEntity entity) {
         if (entity instanceof Monster) {
             if (random.nextDouble() < 0.2) {
-                entity.setHealth(entity.getHealth() * 1.2);
+                double newHealth = Math.min(entity.getHealth() * 1.2, entity.getMaxHealth());
+                entity.setHealth(newHealth);
             }
             if (random.nextDouble() < 0.1) {
                 entity.getWorld().spawnParticle(Particle.FLAME, entity.getLocation().add(0, 1, 0), 3, 0.4, 0.4, 0.4, 0.05);

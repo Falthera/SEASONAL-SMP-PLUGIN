@@ -103,7 +103,7 @@ public class SeasonWorldListener implements Listener {
         Season current = plugin.getSeasonManager().getCurrentSeason();
         if (current == Season.SUMMER && configManager.getBoolean("world-transformation.extra-hostile-spawns")) {
             if (event.getEntity() instanceof LivingEntity living) {
-                living.setHealth(living.getHealth() * 1.2);
+                living.setHealth(Math.min(living.getHealth() * 1.2, living.getMaxHealth()));
             }
         }
     }

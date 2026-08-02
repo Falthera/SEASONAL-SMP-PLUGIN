@@ -12,6 +12,7 @@ public class SeasonManager {
     private final ConfigManager configManager;
     private final SeasonDataService dataService;
     private Season currentSeason;
+    private long seasonStartTime;
 
     public SeasonManager(SeasonalSMP plugin) {
         this.plugin = Objects.requireNonNull(plugin, "plugin");
@@ -21,6 +22,7 @@ public class SeasonManager {
         if (currentSeason == null) {
             currentSeason = Season.SPRING;
         }
+        this.seasonStartTime = System.currentTimeMillis();
     }
 
     public void initialize() {
@@ -29,12 +31,14 @@ public class SeasonManager {
         if (saved != null) {
             currentSeason = saved;
         }
+        this.seasonStartTime = System.currentTimeMillis();
         plugin.getLogger().info("Season system initialized: " + currentSeason);
     }
 
     public boolean advanceSeason() {
         Season previous = currentSeason;
         currentSeason = currentSeason.getNext();
+        this.seasonStartTime = System.currentTimeMillis();
         dataService.saveSeason(currentSeason);
         plugin.getLogger().info("Season changed from " + previous + " to " + currentSeason);
         return true;
@@ -45,7 +49,10 @@ public class SeasonManager {
     }
 
     public double getSeasonProgress() {
-        return 0.0;
+        long durationSeconds = configManager.getLong("season.duration-seconds", 7200);
+        long elapsedSeconds = (System.currentTimeMillis() - seasonStartTime) / 1000;
+        double progress = 1.0 - (elapsedSeconds / (double) durationSeconds);
+        return Math.max(0.0, Math.min(1.0, progress));
     }
 
     public Season getNextSeason() {
@@ -62,6 +69,7 @@ public class SeasonManager {
         }
         Season previous = currentSeason;
         this.currentSeason = season;
+        this.seasonStartTime = System.currentTimeMillis();
         dataService.saveSeason(currentSeason);
         plugin.getLogger().info("Season force-set from " + previous + " to " + currentSeason);
     }
