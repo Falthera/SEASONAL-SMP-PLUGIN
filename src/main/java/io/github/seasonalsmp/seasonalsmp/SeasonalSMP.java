@@ -19,6 +19,7 @@ import io.github.seasonalsmp.seasonalsmp.command.TrustCommand;
 import io.github.seasonalsmp.seasonalsmp.command.DiscordBotDebugCommand;
 import io.github.seasonalsmp.seasonalsmp.config.ConfigManager;
 import io.github.seasonalsmp.seasonalsmp.core.PluginManager;
+import io.github.seasonalsmp.seasonalsmp.data.DataStorage;
 import io.github.seasonalsmp.seasonalsmp.effect.EffectManager;
 import io.github.seasonalsmp.seasonalsmp.gui.UIManager;
 import io.github.seasonalsmp.seasonalsmp.listener.PlayerJoinListener;
