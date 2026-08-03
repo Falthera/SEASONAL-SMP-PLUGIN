@@ -201,7 +201,7 @@ whitelist:
 
 combat:
   enabled: true
-  combat-duration-seconds: 1.5
+  combat-duration-seconds: 15
   enforce-item-restrictions: true
   max-totems: 1
   max-wolves: 1

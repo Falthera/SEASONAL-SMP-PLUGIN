@@ -21,12 +21,14 @@ public class CombatManager {
     private final Map<UUID, CombatEntry> combatTracker;
     private BukkitTask cleanupTask;
 
-    private static final long COMBAT_DURATION_TICKS = 30L;
+    private static final long COMBAT_DURATION_TICKS = 300L;
+    private final long combatDurationMs;
 
     public CombatManager(SeasonalSMP plugin) {
         this.plugin = plugin;
         this.configManager = plugin.getConfigManager();
         this.combatTracker = new ConcurrentHashMap<>();
+        this.combatDurationMs = configManager.getLong("combat.combat-duration-seconds", 15) * 1000L;
         startCleanupTask();
     }
 
@@ -53,7 +55,7 @@ public class CombatManager {
             return false;
         }
         long elapsed = System.currentTimeMillis() - entry.startedAt;
-        return elapsed < (COMBAT_DURATION_TICKS * 50L);
+        return elapsed < combatDurationMs;
     }
 
     public void removeFromCombat(Player player) {
@@ -71,7 +73,7 @@ public class CombatManager {
                 Iterator<Map.Entry<UUID, CombatEntry>> iterator = combatTracker.entrySet().iterator();
                 while (iterator.hasNext()) {
                     Map.Entry<UUID, CombatEntry> entry = iterator.next();
-                    if (now - entry.getValue().startedAt >= (COMBAT_DURATION_TICKS * 50L)) {
+                    if (now - entry.getValue().startedAt >= combatDurationMs) {
                         iterator.remove();
                     }
                 }

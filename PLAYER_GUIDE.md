@@ -97,7 +97,7 @@ These restrictions are **always enforced** when in combat:
 | Mining | Netherite Pickaxe only |
 | Combat Logging | Quitting during combat is broadcast to the server |
 
-Combat lasts **1.5 seconds** after hitting or being hit.
+Combat lasts **15 seconds** after hitting or being hit.
 
 ---
 
