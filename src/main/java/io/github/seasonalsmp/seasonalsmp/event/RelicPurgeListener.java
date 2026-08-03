@@ -7,7 +7,9 @@ import io.github.seasonalsmp.seasonalsmp.effect.particle.ParticleService;
 import io.github.seasonalsmp.seasonalsmp.event.relic.RelicData;
 import io.github.seasonalsmp.seasonalsmp.event.relic.RelicPurgeManager;
 import io.github.seasonalsmp.seasonalsmp.event.relic.RelicType;
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
+import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.*;
@@ -60,7 +62,7 @@ public class RelicPurgeListener implements Listener {
                     if (dataStorage.hasBloodborn(uuid)) {
                         player.getWorld().spawnParticle(Particle.TOTEM_OF_UNDYING, player.getLocation().clone().add(0, 1, 0), 25, 1.5, 1.5, 1.5, 0.15);
                         player.getWorld().spawnParticle(Particle.SOUL_FIRE_FLAME, player.getLocation().clone().add(0, 1, 0), 15, 2, 1, 2, 0.05);
-                        player.getWorld().spawnParticle(Particle.REDSTONE, player.getLocation().clone().add(0, 1.5, 0), 12, 1.5, 1, 1.5, 0,
+                        player.getWorld().spawnParticle(Particle.DUST, player.getLocation().clone().add(0, 1.5, 0), 12, 1.5, 1, 1.5, 0,
                             new Particle.DustOptions(Color.fromRGB(139, 0, 0), 2.5f));
                         if (player.isOnGround()) {
                             player.getWorld().spawnParticle(Particle.LAVA, player.getLocation().clone().add(0, 0.1, 0), 8, 1.5, 0.1, 1.5, 0);
@@ -128,8 +130,7 @@ public class RelicPurgeListener implements Listener {
         }
         if (dataStorage.hasBloodborn(killer.getUniqueId())) {
             event.setDroppedExp(event.getDroppedExp() * 4);
-            killer.getWorld().spawnParticle(PotionEffectType.HEALTH_BOOST.getType().getKey().getKey().equals("health_boost")
-                ? Particle.TOTEM_OF_UNDYING : Particle.TOTEM_OF_UNDYING, entity.getLocation().clone().add(0, 1, 0), 40, 1.5, 1, 1.5, 0.1);
+            killer.getWorld().spawnParticle(Particle.TOTEM_OF_UNDYING, entity.getLocation().clone().add(0, 1, 0), 40, 1.5, 1, 1.5, 0.1);
             killer.playSound(killer.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.5f);
         }
     }
@@ -209,7 +210,7 @@ public class RelicPurgeListener implements Listener {
                 Location loc = player.getLocation().clone().add(0, 1.5, 0);
                 player.getWorld().spawnParticle(Particle.TOTEM_OF_UNDYING, loc, 40, 1.5, 2, 1.5, 0.15);
                 player.getWorld().spawnParticle(Particle.SOUL_FIRE_FLAME, loc, 25, 2.5, 1, 2.5, 0.05);
-                player.getWorld().spawnParticle(Particle.REDSTONE, loc, 15, 2, 1.5, 2, 0,
+                player.getWorld().spawnParticle(Particle.DUST, loc, 15, 2, 1.5, 2, 0,
                     new Particle.DustOptions(Color.fromRGB(139, 0, 0), 3.0f));
                 player.getWorld().spawnParticle(Particle.LAVA, loc, 10, 1.5, 0.5, 1.5, 0);
                 if (t % 10 == 0) {

@@ -5,6 +5,7 @@ import io.github.seasonalsmp.seasonalsmp.bound.BoundType;
 import io.github.seasonalsmp.seasonalsmp.config.ConfigManager;
 import io.github.seasonalsmp.seasonalsmp.data.DataStorage;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Item;
@@ -70,7 +71,7 @@ public class RelicPurgeManager {
                 for (Player player : online) {
                     if (!player.isOnline()) continue;
                     for (double y = player.getLocation().getY() + 40; y > player.getLocation().getY() - 5; y -= 2) {
-                        player.getWorld().spawnParticle(Particle.REDSTONE, player.getLocation().add(0, y - player.getLocation().getY(), 0), 3, 8, 0.2, 8, 0,
+                        player.getWorld().spawnParticle(Particle.DUST, player.getLocation().add(0, y - player.getLocation().getY(), 0), 3, 8, 0.2, 8, 0,
                             new Particle.DustOptions(org.bukkit.Color.fromRGB(139, 0, 0), 2.0f));
                     }
                     if (tick % 5 == 0) {
@@ -133,7 +134,7 @@ public class RelicPurgeManager {
                     Location loc = player.getLocation().clone().add(0, 1, 0);
                     player.getWorld().spawnParticle(Particle.TOTEM_OF_UNDYING, loc, 30, 1, 2, 1, 0.1);
                     player.getWorld().spawnParticle(Particle.SOUL_FIRE_FLAME, loc, 20, 2, 1, 2, 0.05);
-                    player.getWorld().spawnParticle(Particle.REDSTONE, loc, 10, 1, 1, 1, 0,
+                    player.getWorld().spawnParticle(Particle.DUST, loc, 10, 1, 1, 1, 0,
                         new Particle.DustOptions(org.bukkit.Color.fromRGB(139, 0, 0), 2.5f));
                     t++;
                 }
