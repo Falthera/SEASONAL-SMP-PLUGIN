@@ -162,7 +162,7 @@ public final class SeasonalSMP extends JavaPlugin {
         if (seasonalBladeManager != null) {
             seasonalBladeManager.shutdown();
         }
-        io.github.seasonalsmp.seasonalsmp.event.RelicPurgeManager.endRelicPurge(this);
+        io.github.seasonalsmp.seasonalsmp.event.relic.RelicPurgeManager.endRelicPurge(this);
         if (whitelistAPIServer != null) {
             whitelistAPIServer.stop();
         }
