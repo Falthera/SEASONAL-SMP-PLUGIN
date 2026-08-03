@@ -1,7 +1,10 @@
 package io.github.seasonalsmp.seasonalsmp.event;
 
 import io.github.seasonalsmp.seasonalsmp.SeasonalSMP;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Color;
+import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -33,15 +36,17 @@ public class InvisibleKillerListener implements Listener {
             return;
         }
 
-        String originalDeathMessage = event.deathMessage();
+        Component originalDeathMessage = event.deathMessage();
         if (originalDeathMessage == null) {
             return;
         }
 
         String killerName = killer.getName();
         String obfuscatedKiller = generateObfuscatedText(killerName.length());
-        String modifiedDeathMessage = originalDeathMessage.replace(killerName, obfuscatedKiller);
-        event.setDeathMessage(modifiedDeathMessage);
+        Component modifiedDeathMessage = MiniMessage.miniMessage().deserialize(
+            originalDeathMessage.toString().replace(killerName, obfuscatedKiller)
+        );
+        event.deathMessage(modifiedDeathMessage);
 
         spawnInvisibleKillerVFX(killer);
     }

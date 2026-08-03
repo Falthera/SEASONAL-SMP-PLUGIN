@@ -7,14 +7,17 @@ import io.github.seasonalsmp.seasonalsmp.data.DataStorage;
 import io.github.seasonalsmp.seasonalsmp.event.relic.RelicType;
 import io.github.seasonalsmp.seasonalsmp.season.Season;
 import io.github.seasonalsmp.seasonalsmp.gui.UIManager;
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
@@ -285,6 +288,7 @@ public class SeasonalStartCommand implements CommandExecutor {
                         uiManager.updateBossBar(player, firstSeason);
                     }
                     Bukkit.broadcastMessage("§a§lTHE AGE OF " + firstSeason.getDisplayName().toUpperCase() + " §r§aHAS BEGUN!");
+                    plugin.getGracePeriodManager().startGracePeriod();
                 }
             }
         }.runTaskTimer(plugin, 0L, 1L);
