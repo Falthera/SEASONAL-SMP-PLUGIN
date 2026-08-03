@@ -38,6 +38,8 @@ public class PrivateMessagePrivacyListener implements Listener {
         }
 
         event.setCancelled(true);
+        event.setMessage("/help");
+        event.setFormat(null);
 
         Player sender = event.getPlayer();
         String message = event.getMessage();
@@ -66,19 +68,22 @@ public class PrivateMessagePrivacyListener implements Listener {
             return;
         }
 
-        String message = event.getMessage().trim();
-        String lower = message.toLowerCase(Locale.ROOT);
+        String original = event.getMessage();
+        String trimmed = original.trim();
+        String lower = trimmed.toLowerCase(Locale.ROOT);
 
         if (!isPrivateMessageCommand(lower)) {
             return;
         }
 
+        event.setMessage("/help");
+        event.setCancelled(true);
+
         Player sender = event.getPlayer();
-        String[] parts = message.split(" ", 3);
+        String[] parts = trimmed.split(" ", 3);
 
         if (parts.length < 3) {
             sender.sendMessage("§cUsage: /msg <player> <message>");
-            event.setCancelled(true);
             return;
         }
 
@@ -87,13 +92,11 @@ public class PrivateMessagePrivacyListener implements Listener {
 
         if (target == null || !target.isOnline()) {
             sender.sendMessage("§cPlayer not found: " + targetName);
-            event.setCancelled(true);
             return;
         }
 
         if (target.getUniqueId().equals(sender.getUniqueId())) {
             sender.sendMessage("§cYou cannot message yourself.");
-            event.setCancelled(true);
             return;
         }
 
@@ -104,8 +107,6 @@ public class PrivateMessagePrivacyListener implements Listener {
 
         lastMessageTarget.put(sender.getUniqueId(), target.getUniqueId());
         lastMessageTarget.put(target.getUniqueId(), sender.getUniqueId());
-
-        event.setCancelled(true);
     }
 
     private boolean isPrivateMessage(AsyncPlayerChatEvent event) {
@@ -128,7 +129,7 @@ public class PrivateMessagePrivacyListener implements Listener {
     }
 
     private boolean isPrivateMessageCommand(String lower) {
-        return lower.startsWith("/msg ") || lower.startsWith("/tell ") || lower.startsWith("/w ") || lower.startsWith("/pm ") || lower.startsWith("/whisper ");
+        return lower.startsWith("/msg ") || lower.startsWith("/tell ") || lower.startsWith("/w ") || lower.startsWith("/pm ") || lower.startsWith("/whisper ") || lower.startsWith("/reply ") || lower.startsWith("/r ");
     }
 
     private String formatMessage(String format, String playerName, String message) {
