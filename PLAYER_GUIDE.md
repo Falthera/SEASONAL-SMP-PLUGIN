@@ -5,7 +5,7 @@ On first join, you are automatically assigned a **Bound** — your elemental aff
 
 | Bound | Element | Passive Effect | Season Bonus | Season Penalty |
 |-------|---------|----------------|--------------|----------------|
-| **Spring** | Bloom | Regeneration I + Speed II | Spring: Speed II (8 min) | Other seasons: Hunger |
+| **Spring** | Bloom | Regeneration I + Speed I | Spring: Speed I (8 min) | Other seasons: Hunger |
 | **Summer** | Solar | Fire Resistance I | Summer: Fire Res + Strength | Other seasons: Slowness |
 | **Autumn** | Harvest | Hero of the Village | Autumn: Haste | Other seasons: Slowness |
 | **Winter** | Frost | Resistance I | Winter: Resistance | Other seasons: Hunger |
