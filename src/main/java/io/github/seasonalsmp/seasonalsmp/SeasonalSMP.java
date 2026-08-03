@@ -172,6 +172,7 @@ public final class SeasonalSMP extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new SpearBlockerListener(this), this);
         io.github.seasonalsmp.seasonalsmp.event.RelicPurgeListener relicListener = new io.github.seasonalsmp.seasonalsmp.event.RelicPurgeListener(this);
         relicListener.initialize();
+        Bukkit.getPluginManager().registerEvents(new io.github.seasonalsmp.seasonalsmp.event.InvisibleKillerListener(this), this);
     }
 
     private void registerCommands() {
