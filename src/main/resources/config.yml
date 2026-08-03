@@ -185,7 +185,7 @@ sound:
 
 relic-purge:
   enabled: true
-  duration-seconds: 600
+  duration-seconds: 3600
   drop-on-death: true
   kill-credit-player-only: true
   allow-pet-kill-credit: true

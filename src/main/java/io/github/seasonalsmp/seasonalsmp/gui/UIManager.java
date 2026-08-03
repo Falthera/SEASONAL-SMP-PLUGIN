@@ -20,6 +20,7 @@ public class UIManager {
     private final SeasonalSMP plugin;
     private final ConfigManager configManager;
     private final Map<UUID, BossBar> playerBossBars;
+    private final Map<UUID, BossBar> purgeBossBars;
     private final Map<UUID, BukkitTask> cooldownTasks;
     private boolean initialized;
 
@@ -27,6 +28,7 @@ public class UIManager {
         this.plugin = plugin;
         this.configManager = plugin.getConfigManager();
         this.playerBossBars = new ConcurrentHashMap<>();
+        this.purgeBossBars = new ConcurrentHashMap<>();
         this.cooldownTasks = new ConcurrentHashMap<>();
         this.initialized = false;
     }
@@ -35,6 +37,11 @@ public class UIManager {
         plugin.getServer().getScheduler().runTask(plugin, () -> {
             for (Player player : plugin.getServer().getOnlinePlayers()) {
                 updateBossBar(player, plugin.getSeasonManager().getCurrentSeason());
+                if (io.github.seasonalsmp.seasonalsmp.event.relic.RelicPurgeManager.isRunning()) {
+                    io.github.seasonalsmp.seasonalsmp.event.relic.RelicPurgeManager.getData();
+                    int duration = plugin.getConfigManager().getInt("relic-purge.duration-seconds", 3600);
+                    showPurgeBossBar(player, duration, duration);
+                }
             }
         });
         plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
@@ -58,6 +65,12 @@ public class UIManager {
             }
         }
         playerBossBars.clear();
+        for (BossBar bar : purgeBossBars.values()) {
+            for (Player online : plugin.getServer().getOnlinePlayers()) {
+                online.hideBossBar(bar);
+            }
+        }
+        purgeBossBars.clear();
     }
 
     public void updateBossBar(Player player, Season season) {
@@ -86,6 +99,60 @@ public class UIManager {
         BossBar bar = BossBar.bossBar(name, progress, barColor, overlay);
         player.showBossBar(bar);
         playerBossBars.put(uuid, bar);
+    }
+
+    public void showPurgeBossBar(Player player, long totalSeconds, long remainingSeconds) {
+        if (player == null || !configManager.getBoolean("ui.bossbar-enabled")) {
+            return;
+        }
+        UUID uuid = player.getUniqueId();
+        BossBar oldBar = purgeBossBars.remove(uuid);
+        if (oldBar != null) {
+            player.hideBossBar(oldBar);
+        }
+        float progress = totalSeconds > 0 ? (float) remainingSeconds / totalSeconds : 0.0f;
+        Component name = Component.text("§4§lRELIC PURGE")
+            .append(Component.text(" §7- §f"))
+            .append(Component.text(formatPurgeTime(remainingSeconds)));
+        BossBar.Color barColor = BossBar.Color.RED;
+        BossBar.Overlay overlay = BossBar.Overlay.PROGRESS;
+        BossBar bar = BossBar.bossBar(name, Math.max(0.0f, Math.min(1.0f, progress)), barColor, overlay);
+        player.showBossBar(bar);
+        purgeBossBars.put(uuid, bar);
+    }
+
+    public void updatePurgeBossBarProgress(Player player, long totalSeconds, long remainingSeconds) {
+        if (player == null || !configManager.getBoolean("ui.bossbar-enabled")) {
+            return;
+        }
+        UUID uuid = player.getUniqueId();
+        BossBar bar = purgeBossBars.get(uuid);
+        if (bar != null) {
+            float progress = totalSeconds > 0 ? (float) remainingSeconds / totalSeconds : 0.0f;
+            bar.progress(Math.max(0.0f, Math.min(1.0f, progress)));
+            Component name = Component.text("§4§lRELIC PURGE")
+                .append(Component.text(" §7- §f"))
+                .append(Component.text(formatPurgeTime(remainingSeconds)));
+            bar.name(name);
+        }
+    }
+
+    public void hidePurgeBossBar(Player player) {
+        if (player == null) {
+            return;
+        }
+        UUID uuid = player.getUniqueId();
+        BossBar bar = purgeBossBars.remove(uuid);
+        if (bar != null) {
+            player.hideBossBar(bar);
+        }
+    }
+
+    private String formatPurgeTime(long seconds) {
+        long hours = seconds / 3600;
+        long minutes = (seconds % 3600) / 60;
+        long secs = seconds % 60;
+        return String.format("%02d:%02d:%02d", hours, minutes, secs);
     }
 
     public void updateBossBarProgress(Player player) {

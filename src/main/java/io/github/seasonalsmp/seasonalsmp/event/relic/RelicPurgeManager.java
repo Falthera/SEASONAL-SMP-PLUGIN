@@ -30,13 +30,21 @@ public class RelicPurgeManager {
         data.startEvent();
         running = true;
         ConfigManager config = plugin.getConfigManager();
+        int durationSeconds = config.getInt("relic-purge.duration-seconds", 3600);
+        for (Player player : new ArrayList<>(Bukkit.getOnlinePlayers())) {
+            plugin.getUIManager().showPurgeBossBar(player, durationSeconds, durationSeconds);
+        }
         broadcastTask = new BukkitRunnable() {
-            int ticksLeft = config.getInt("relic-purge.duration-seconds", 600) * 20;
+            int ticksLeft = durationSeconds * 20;
             @Override
             public void run() {
                 if (ticksLeft <= 0) {
                     endRelicPurge(plugin);
                     return;
+                }
+                int remainingSeconds = ticksLeft / 20;
+                for (Player player : new ArrayList<>(Bukkit.getOnlinePlayers())) {
+                    plugin.getUIManager().updatePurgeBossBarProgress(player, durationSeconds, remainingSeconds);
                 }
                 ticksLeft -= 20;
             }
@@ -153,11 +161,15 @@ public class RelicPurgeManager {
         if (broadcastTask != null && !broadcastTask.isCancelled()) {
             broadcastTask.cancel();
         }
+        if (vfxTask != null && !vfxTask.isCancelled()) {
+            vfxTask.cancel();
+        }
         if (data != null) {
             data.endEvent();
         }
         List<Player> online = new ArrayList<>(Bukkit.getOnlinePlayers());
         for (Player player : online) {
+            plugin.getUIManager().hidePurgeBossBar(player);
             player.sendTitle("§8§lTHE END", "§7The relics fade into darkness...", 10, 80, 20);
             player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_DEATH, 1.5f, 0.8f);
         }
