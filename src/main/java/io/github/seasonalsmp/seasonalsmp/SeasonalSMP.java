@@ -361,6 +361,7 @@ public final class SeasonalSMP extends JavaPlugin {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private void applySeasonGamerules(World world, Season season) {
         if (!configManager.getBoolean("world.apply-gamerule-changes")) {
             return;

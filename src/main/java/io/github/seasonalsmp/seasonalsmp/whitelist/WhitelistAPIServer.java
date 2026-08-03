@@ -94,7 +94,15 @@ public class WhitelistAPIServer {
             String discordId = String.valueOf(request.get("discordId"));
             String username = String.valueOf(request.get("username"));
 
+            if (discordId.isBlank() || username.isBlank()) {
+                sendJson(exchange, 400, Map.of("error", "discordId and username must not be blank"));
+                return;
+            }
+
             whitelistManager.addPlayer(discordId, username).thenAccept(result -> {
+                if (exchange.getResponseCode() != -1) {
+                    return;
+                }
                 Map<String, Object> response = new LinkedHashMap<>();
                 if (result.success) {
                     response.put("success", true);
@@ -107,6 +115,13 @@ public class WhitelistAPIServer {
                     response.put("message", result.message);
                     sendJson(exchange, 400, response);
                 }
+            }).exceptionally(ex -> {
+                if (exchange.getResponseCode() != -1) {
+                    return null;
+                }
+                plugin.getLogger().log(java.util.logging.Level.SEVERE, "Whitelist add failed", ex);
+                sendJson(exchange, 500, Map.of("error", "Internal server error"));
+                return null;
             });
 
         } catch (Exception e) {
@@ -133,7 +148,15 @@ public class WhitelistAPIServer {
             }
 
             String uuid = String.valueOf(request.get("uuid"));
+            if (uuid.isBlank()) {
+                sendJson(exchange, 400, Map.of("error", "uuid must not be blank"));
+                return;
+            }
+
             whitelistManager.removePlayer(uuid).thenAccept(result -> {
+                if (exchange.getResponseCode() != -1) {
+                    return;
+                }
                 Map<String, Object> response = new LinkedHashMap<>();
                 if (result.success) {
                     response.put("success", true);
@@ -144,6 +167,13 @@ public class WhitelistAPIServer {
                     response.put("message", result.message);
                     sendJson(exchange, 400, response);
                 }
+            }).exceptionally(ex -> {
+                if (exchange.getResponseCode() != -1) {
+                    return null;
+                }
+                plugin.getLogger().log(java.util.logging.Level.SEVERE, "Whitelist remove failed", ex);
+                sendJson(exchange, 500, Map.of("error", "Internal server error"));
+                return null;
             });
 
         } catch (Exception e) {
@@ -169,19 +199,39 @@ public class WhitelistAPIServer {
 
             if (uuid != null && !uuid.isBlank()) {
                 whitelistManager.lookupByUuid(uuid).thenAccept(result -> {
+                    if (exchange.getResponseCode() != -1) {
+                        return;
+                    }
                     Map<String, Object> response = new LinkedHashMap<>();
                     response.put("found", result.found);
                     response.put("message", result.message);
                     response.put("data", result.data);
                     sendJson(exchange, result.found ? 200 : 404, response);
+                }).exceptionally(ex -> {
+                    if (exchange.getResponseCode() != -1) {
+                        return null;
+                    }
+                    plugin.getLogger().log(java.util.logging.Level.SEVERE, "Whitelist lookup failed", ex);
+                    sendJson(exchange, 500, Map.of("error", "Internal server error"));
+                    return null;
                 });
             } else if (username != null && !username.isBlank()) {
                 whitelistManager.lookupByUsername(username).thenAccept(result -> {
+                    if (exchange.getResponseCode() != -1) {
+                        return;
+                    }
                     Map<String, Object> response = new LinkedHashMap<>();
                     response.put("found", result.found);
                     response.put("message", result.message);
                     response.put("data", result.data);
                     sendJson(exchange, result.found ? 200 : 404, response);
+                }).exceptionally(ex -> {
+                    if (exchange.getResponseCode() != -1) {
+                        return null;
+                    }
+                    plugin.getLogger().log(java.util.logging.Level.SEVERE, "Whitelist lookup failed", ex);
+                    sendJson(exchange, 500, Map.of("error", "Internal server error"));
+                    return null;
                 });
             } else {
                 sendJson(exchange, 400, Map.of("error", "Required query parameter missing: uuid or username"));

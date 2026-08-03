@@ -12,8 +12,8 @@ public class GracePeriodManager {
 
     private final SeasonalSMP plugin;
     private BukkitTask timerTask;
-    private long endTime;
-    private boolean active;
+    private volatile long endTime;
+    private volatile boolean active;
 
     public GracePeriodManager(SeasonalSMP plugin) {
         this.plugin = plugin;

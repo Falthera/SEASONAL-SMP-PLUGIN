@@ -22,6 +22,7 @@ class WorldTimeEffect implements SeasonEffectsManager.SeasonEffect {
         this.previousDaylightCycle = new ConcurrentHashMap<>();
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void apply(Season season) {
         if (timeTask != null && !timeTask.isCancelled()) {
@@ -79,6 +80,7 @@ class WorldTimeEffect implements SeasonEffectsManager.SeasonEffect {
         }.runTaskTimer(plugin, 0L, 20L);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void remove(Season season) {
         if (timeTask != null && !timeTask.isCancelled()) {

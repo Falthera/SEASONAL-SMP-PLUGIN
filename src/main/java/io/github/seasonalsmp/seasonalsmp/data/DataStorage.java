@@ -110,6 +110,88 @@ public final class DataStorage {
         loadSeasonFromDisk();
         loadRelicsFromDisk();
         loadGraceFromDisk();
+        validateAndMigrate();
+    }
+
+    private void validateAndMigrate() {
+        validateBounds();
+        validateRelics();
+        validateSeason();
+    }
+
+    private void validateBounds() {
+        synchronized (boundCache) {
+            Set<UUID> invalid = new HashSet<>();
+            for (Map.Entry<UUID, BoundType> entry : boundCache.entrySet()) {
+                if (entry.getValue() == null || !isValidBoundType(entry.getValue())) {
+                    invalid.add(entry.getKey());
+                }
+            }
+            for (UUID uuid : invalid) {
+                boundCache.remove(uuid);
+                changedBounds.add(uuid);
+            }
+            if (!invalid.isEmpty()) {
+                plugin.getLogger().warning("Removed " + invalid.size() + " invalid bound entries");
+            }
+        }
+    }
+
+    private void validateRelics() {
+        synchronized (relicCache) {
+            Set<UUID> invalid = new HashSet<>();
+            for (Map.Entry<UUID, Set<RelicType>> entry : relicCache.entrySet()) {
+                Set<RelicType> valid = new HashSet<>();
+                for (RelicType relic : entry.getValue()) {
+                    if (isValidRelicType(relic)) {
+                        valid.add(relic);
+                    }
+                }
+                if (valid.isEmpty()) {
+                    invalid.add(entry.getKey());
+                } else {
+                    entry.setValue(valid);
+                }
+            }
+            for (UUID uuid : invalid) {
+                relicCache.remove(uuid);
+            }
+            if (!invalid.isEmpty()) {
+                plugin.getLogger().warning("Removed " + invalid.size() + " invalid relic entries");
+            }
+        }
+    }
+
+    private void validateSeason() {
+        if (savedSeason == null || !isValidSeason(savedSeason)) {
+            this.savedSeason = null;
+            this.savedDay = 1;
+            plugin.getLogger().warning("Reset invalid saved season data");
+        }
+    }
+
+    private boolean isValidBoundType(BoundType type) {
+        try {
+            return BoundType.valueOf(type.name()) != null;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    private boolean isValidRelicType(RelicType type) {
+        try {
+            return RelicType.valueOf(type.name()) != null;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    private boolean isValidSeason(Season season) {
+        try {
+            return Season.valueOf(season.name()) != null;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 
     public void loadBoundsFromDisk() {
