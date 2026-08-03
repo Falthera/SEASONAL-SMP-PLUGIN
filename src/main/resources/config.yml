@@ -199,6 +199,9 @@ whitelist:
   discord-whitelist-channel-id: ""
   discord-whitelisted-role-id: ""
 
+grace-period:
+  duration-seconds: 3600
+
 combat:
   enabled: true
   combat-duration-seconds: 15

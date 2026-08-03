@@ -42,6 +42,9 @@ permissions:
   seasonalsmp.command.trust:
     description: Manage trusted allies
     default: true
+  seasonalsmp.command.grace:
+    description: Manage grace period
+    default: op
 commands:
   season:
     description: View or modify the current season
@@ -93,3 +96,7 @@ commands:
     description: Manage trusted allies
     usage: /<command> <add|remove|list>
     permission: seasonalsmp.command.trust
+  gp:
+    description: Manage grace period
+    usage: /<command> <start|end|status>
+    permission: seasonalsmp.command.grace

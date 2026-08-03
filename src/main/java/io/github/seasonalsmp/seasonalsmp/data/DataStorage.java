@@ -24,17 +24,20 @@ public final class DataStorage {
     private final File boundDataFile;
     private final File seasonDataFile;
     private final File relicDataFile;
+    private final File graceDataFile;
     private final Map<UUID, BoundType> boundCache;
     private final Set<UUID> changedBounds;
     private final Map<UUID, Set<RelicType>> relicCache;
     private final Set<UUID> bloodbornCache;
     private final Set<UUID> changedRelics;
+    private long graceEndTime;
     private Season savedSeason;
     private int savedDay;
 
     private static final String BOUND_DATA_FILENAME = "bounds.json";
     private static final String SEASON_DATA_FILENAME = "season.json";
     private static final String RELIC_DATA_FILENAME = "relics.json";
+    private static final String GRACE_DATA_FILENAME = "grace.json";
 
     public DataStorage(SeasonalSMP plugin) {
         this.plugin = plugin;
@@ -43,11 +46,13 @@ public final class DataStorage {
         this.boundDataFile = new File(dataDir, BOUND_DATA_FILENAME);
         this.seasonDataFile = new File(dataDir, SEASON_DATA_FILENAME);
         this.relicDataFile = new File(dataDir, RELIC_DATA_FILENAME);
+        this.graceDataFile = new File(dataDir, GRACE_DATA_FILENAME);
         this.boundCache = new HashMap<>();
         this.changedBounds = new HashSet<>();
         this.relicCache = new HashMap<>();
         this.bloodbornCache = new HashSet<>();
         this.changedRelics = new HashSet<>();
+        this.graceEndTime = 0L;
         this.savedSeason = null;
         this.savedDay = 1;
     }
@@ -81,6 +86,14 @@ public final class DataStorage {
                     gson.toJson(seedData, writer);
                 }
             }
+            if (!graceDataFile.exists()) {
+                graceDataFile.createNewFile();
+                try (Writer writer = new FileWriter(graceDataFile)) {
+                    Map<String, Object> seedData = new LinkedHashMap<>();
+                    seedData.put("graceEndTime", 0L);
+                    gson.toJson(seedData, writer);
+                }
+            }
             loadAllFromDisk();
         } catch (IOException e) {
             plugin.getLogger().log(Level.SEVERE, "Failed to initialize data storage", e);
@@ -95,6 +108,7 @@ public final class DataStorage {
         loadBoundsFromDisk();
         loadSeasonFromDisk();
         loadRelicsFromDisk();
+        loadGraceFromDisk();
     }
 
     public void loadBoundsFromDisk() {
@@ -197,6 +211,36 @@ public final class DataStorage {
         }
     }
 
+    public void loadGraceFromDisk() {
+        if (!graceDataFile.exists()) {
+            this.graceEndTime = 0L;
+            return;
+        }
+        try (Reader reader = new FileReader(graceDataFile)) {
+            Type type = new TypeToken<Map<String, Object>>() {
+            }.getType();
+            Map<String, Object> data = gson.fromJson(reader, type);
+            if (data != null) {
+                Object graceEnd = data.get("graceEndTime");
+                if (graceEnd instanceof Number n) {
+                    this.graceEndTime = n.longValue();
+                }
+            }
+        } catch (IOException e) {
+            plugin.getLogger().log(Level.SEVERE, "Failed to load grace data", e);
+        }
+    }
+
+    public void persistGrace() {
+        try (Writer writer = new FileWriter(graceDataFile)) {
+            Map<String, Object> data = new LinkedHashMap<>();
+            data.put("graceEndTime", graceEndTime);
+            gson.toJson(data, writer);
+        } catch (IOException e) {
+            plugin.getLogger().log(Level.SEVERE, "Failed to persist grace data", e);
+        }
+    }
+
     public void persistRelics() {
         synchronized (relicCache) {
             Map<String, List<String>> serializable = new LinkedHashMap<>();
@@ -253,6 +297,7 @@ public final class DataStorage {
         persistBounds();
         persistSeason();
         persistRelics();
+        persistGrace();
     }
 
     public BoundType getBound(UUID playerId) {
@@ -411,5 +456,13 @@ public final class DataStorage {
             bloodbornCache.remove(uuid);
             changedRelics.add(uuid);
         }
+    }
+
+    public long getGraceEndTime() {
+        return graceEndTime;
+    }
+
+    public void setGraceEndTime(long graceEndTime) {
+        this.graceEndTime = graceEndTime;
     }
 }

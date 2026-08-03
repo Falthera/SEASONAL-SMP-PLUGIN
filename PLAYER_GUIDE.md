@@ -102,6 +102,23 @@ Combat lasts **15 seconds** after hitting or being hit.
 
 ---
 
+## Grace Period
+The grace period is a special peaceful period that can be activated by admins using `/gp start`.
+
+During the grace period:
+- **All damage is blocked** — you cannot take damage or deal damage to anyone
+- **Sword crafting is disabled** — bound swords and the Seasonal Blade cannot be crafted
+- A **green boss bar** at the top of your screen shows the remaining grace period time
+
+The grace period lasts for **1 hour** by default.
+
+Admins can use:
+- `/gp start` — Start the grace period
+- `/gp end` — End the grace period early
+- `/gp status` — Check if grace period is active and see remaining time
+
+---
+
 ## General
 - The server is **whitelisted** — only approved players can join.
 - Bound swords are **unbreakable**.

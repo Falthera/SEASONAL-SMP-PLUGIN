@@ -68,6 +68,7 @@ public final class SeasonalSMP extends JavaPlugin {
     private UIManager uiManager;
     private io.github.seasonalsmp.seasonalsmp.effect.SeasonEffectsManager seasonEffectsManager;
     private io.github.seasonalsmp.seasonalsmp.data.DataStorage dataStorage;
+    private io.github.seasonalsmp.seasonalsmp.grace.GracePeriodManager gracePeriodManager;
     private CombatManager combatManager;
     private TrustManager trustManager;
     private WhitelistManager whitelistManager;
@@ -88,7 +89,8 @@ public final class SeasonalSMP extends JavaPlugin {
             dataStorage = new io.github.seasonalsmp.seasonalsmp.data.DataStorage(this);
             seasonManager = new SeasonManager(this, dataStorage);
             effectManager = new EffectManager(this);
-            swordManager = new SwordManager(this);
+            gracePeriodManager = new io.github.seasonalsmp.seasonalsmp.grace.GracePeriodManager(this);
+            swordManager = new SwordManager(this, gracePeriodManager);
             seasonalBladeManager = new SeasonalBladeManager(this);
             boundManager = new BoundManager(this, dataStorage);
             configManager.loadAll();
@@ -173,6 +175,7 @@ public final class SeasonalSMP extends JavaPlugin {
         io.github.seasonalsmp.seasonalsmp.event.RelicPurgeListener relicListener = new io.github.seasonalsmp.seasonalsmp.event.RelicPurgeListener(this);
         relicListener.initialize();
         Bukkit.getPluginManager().registerEvents(new io.github.seasonalsmp.seasonalsmp.event.InvisibleKillerListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new io.github.seasonalsmp.seasonalsmp.grace.GracePeriodListener(this, gracePeriodManager), this);
     }
 
     private void registerCommands() {
@@ -221,6 +224,10 @@ public final class SeasonalSMP extends JavaPlugin {
         org.bukkit.command.PluginCommand trust = getCommand("trust");
         if (trust != null) {
             trust.setExecutor(new TrustCommand(this));
+        }
+        org.bukkit.command.PluginCommand gp = getCommand("gp");
+        if (gp != null) {
+            gp.setExecutor(new io.github.seasonalsmp.seasonalsmp.grace.GracePeriodCommand(this, gracePeriodManager));
         }
     }
 
@@ -458,6 +465,10 @@ public final class SeasonalSMP extends JavaPlugin {
 
     public io.github.seasonalsmp.seasonalsmp.effect.SeasonEffectsManager getSeasonEffectsManager() {
         return seasonEffectsManager;
+    }
+
+    public io.github.seasonalsmp.seasonalsmp.grace.GracePeriodManager getGracePeriodManager() {
+        return gracePeriodManager;
     }
 
     public CombatManager getCombatManager() {

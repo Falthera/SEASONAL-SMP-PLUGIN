@@ -21,6 +21,7 @@ public class UIManager {
     private final ConfigManager configManager;
     private final Map<UUID, BossBar> playerBossBars;
     private final Map<UUID, BossBar> purgeBossBars;
+    private final Map<UUID, BossBar> graceBossBars;
     private final Map<UUID, BukkitTask> cooldownTasks;
     private boolean initialized;
 
@@ -29,6 +30,7 @@ public class UIManager {
         this.configManager = plugin.getConfigManager();
         this.playerBossBars = new ConcurrentHashMap<>();
         this.purgeBossBars = new ConcurrentHashMap<>();
+        this.graceBossBars = new ConcurrentHashMap<>();
         this.cooldownTasks = new ConcurrentHashMap<>();
         this.initialized = false;
     }
@@ -41,6 +43,11 @@ public class UIManager {
                     io.github.seasonalsmp.seasonalsmp.event.relic.RelicPurgeManager.getData();
                     int duration = plugin.getConfigManager().getInt("relic-purge.duration-seconds", 3600);
                     showPurgeBossBar(player, duration, duration);
+                }
+                io.github.seasonalsmp.seasonalsmp.grace.GracePeriodManager graceManager = plugin.getGracePeriodManager();
+                if (graceManager != null && graceManager.isActive()) {
+                    long total = graceManager.getRemainingSeconds();
+                    showGraceBossBar(player, total, total);
                 }
             }
         });
@@ -71,6 +78,12 @@ public class UIManager {
             }
         }
         purgeBossBars.clear();
+        for (BossBar bar : graceBossBars.values()) {
+            for (Player online : plugin.getServer().getOnlinePlayers()) {
+                online.hideBossBar(bar);
+            }
+        }
+        graceBossBars.clear();
     }
 
     public void updateBossBar(Player player, Season season) {
@@ -149,6 +162,60 @@ public class UIManager {
     }
 
     private String formatPurgeTime(long seconds) {
+        long hours = seconds / 3600;
+        long minutes = (seconds % 3600) / 60;
+        long secs = seconds % 60;
+        return String.format("%02d:%02d:%02d", hours, minutes, secs);
+    }
+
+    public void showGraceBossBar(Player player, long totalSeconds, long remainingSeconds) {
+        if (player == null || !configManager.getBoolean("ui.bossbar-enabled")) {
+            return;
+        }
+        UUID uuid = player.getUniqueId();
+        BossBar oldBar = graceBossBars.remove(uuid);
+        if (oldBar != null) {
+            player.hideBossBar(oldBar);
+        }
+        float progress = totalSeconds > 0 ? (float) remainingSeconds / totalSeconds : 0.0f;
+        Component name = Component.text("§a§lGRACE PERIOD")
+            .append(Component.text(" §7- §f"))
+            .append(Component.text(formatGraceTime(remainingSeconds)));
+        BossBar.Color barColor = BossBar.Color.GREEN;
+        BossBar.Overlay overlay = BossBar.Overlay.PROGRESS;
+        BossBar bar = BossBar.bossBar(name, Math.max(0.0f, Math.min(1.0f, progress)), barColor, overlay);
+        player.showBossBar(bar);
+        graceBossBars.put(uuid, bar);
+    }
+
+    public void updateGraceBossBarProgress(Player player, long totalSeconds, long remainingSeconds) {
+        if (player == null || !configManager.getBoolean("ui.bossbar-enabled")) {
+            return;
+        }
+        UUID uuid = player.getUniqueId();
+        BossBar bar = graceBossBars.get(uuid);
+        if (bar != null) {
+            float progress = totalSeconds > 0 ? (float) remainingSeconds / totalSeconds : 0.0f;
+            bar.progress(Math.max(0.0f, Math.min(1.0f, progress)));
+            Component name = Component.text("§a§lGRACE PERIOD")
+                .append(Component.text(" §7- §f"))
+                .append(Component.text(formatGraceTime(remainingSeconds)));
+            bar.name(name);
+        }
+    }
+
+    public void hideGraceBossBar(Player player) {
+        if (player == null) {
+            return;
+        }
+        UUID uuid = player.getUniqueId();
+        BossBar bar = graceBossBars.remove(uuid);
+        if (bar != null) {
+            player.hideBossBar(bar);
+        }
+    }
+
+    private String formatGraceTime(long seconds) {
         long hours = seconds / 3600;
         long minutes = (seconds % 3600) / 60;
         long secs = seconds % 60;

@@ -3,6 +3,7 @@ package io.github.seasonalsmp.seasonalsmp.sword;
 import io.github.seasonalsmp.seasonalsmp.SeasonalSMP;
 import io.github.seasonalsmp.seasonalsmp.bound.BoundType;
 import io.github.seasonalsmp.seasonalsmp.config.ConfigManager;
+import io.github.seasonalsmp.seasonalsmp.grace.GracePeriodManager;
 import io.github.seasonalsmp.seasonalsmp.seasonalblade.LegendaryItemTracker;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -33,14 +34,16 @@ public class SwordManager implements Listener {
     private final Map<UUID, Long> cooldowns;
     private final NamespacedKey boundKey;
     private final LegendaryItemTracker itemTracker;
+    private final GracePeriodManager gracePeriodManager;
 
-    public SwordManager(SeasonalSMP plugin) {
+    public SwordManager(SeasonalSMP plugin, GracePeriodManager gracePeriodManager) {
         this.plugin = plugin;
         this.configManager = plugin.getConfigManager();
         this.cooldownTasks = new ConcurrentHashMap<>();
         this.cooldowns = new ConcurrentHashMap<>();
         this.boundKey = new NamespacedKey(plugin, "bound_type");
         this.itemTracker = new LegendaryItemTracker(plugin);
+        this.gracePeriodManager = gracePeriodManager;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
@@ -175,6 +178,10 @@ public class SwordManager implements Listener {
 
     @EventHandler
     public void onPrepareItemCraft(PrepareItemCraftEvent event) {
+        if (gracePeriodManager.isActive()) {
+            event.getInventory().setResult(new org.bukkit.inventory.ItemStack(org.bukkit.Material.AIR));
+            return;
+        }
         org.bukkit.inventory.Recipe recipe = event.getRecipe();
         if (recipe instanceof org.bukkit.inventory.ShapedRecipe shaped) {
             String key = shaped.getKey().getKey();
@@ -193,6 +200,9 @@ public class SwordManager implements Listener {
 
     @EventHandler
     public void onCraftItem(CraftItemEvent event) {
+        if (gracePeriodManager.isActive()) {
+            return;
+        }
         if (!(event.getView().getPlayer() instanceof Player player)) {
             return;
         }
