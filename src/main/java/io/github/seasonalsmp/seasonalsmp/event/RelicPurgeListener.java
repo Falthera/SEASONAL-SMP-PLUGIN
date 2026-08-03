@@ -50,6 +50,15 @@ public class RelicPurgeListener implements Listener {
         startPassiveRelicEffects();
     }
 
+    public void shutdown() {
+        if (passiveTask != null && !passiveTask.isCancelled()) {
+            passiveTask.cancel();
+        }
+        if (passiveEffectsTask != null && !passiveEffectsTask.isCancelled()) {
+            passiveEffectsTask.cancel();
+        }
+    }
+
     private void startPassiveEffects() {
         passiveTask = new BukkitRunnable() {
             @Override

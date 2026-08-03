@@ -52,6 +52,16 @@ public class SwordManager implements Listener {
         cooldowns.clear();
     }
 
+    public void shutdown() {
+        for (BukkitTask task : cooldownTasks.values()) {
+            if (task != null && !task.isCancelled()) {
+                task.cancel();
+            }
+        }
+        cooldownTasks.clear();
+        cooldowns.clear();
+    }
+
     public boolean isSword(ItemStack item) {
         if (item == null || item.getType().isAir() || !item.hasItemMeta()) {
             return false;
@@ -207,7 +217,7 @@ public class SwordManager implements Listener {
             return;
         }
         org.bukkit.inventory.Recipe recipe = event.getRecipe();
-        if (recipe instanceof ShapedRecipe shaped && shaped.getKey().getNamespace().equals("seasonalsmp")) {
+        if (recipe instanceof ShapedRecipe shaped && shaped.getKey().getNamespace().equals("SeasonalSMP")) {
             String key = shaped.getKey().getKey();
             BoundType requiredBound = switch (key) {
                 case "spring_sword" -> BoundType.SPRING;

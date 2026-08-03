@@ -51,6 +51,17 @@ public class GracePeriodManager {
         startTimer(durationSeconds);
     }
 
+    public void shutdown() {
+        if (timerTask != null && !timerTask.isCancelled()) {
+            timerTask.cancel();
+        }
+        timerTask = null;
+        this.active = false;
+        this.endTime = 0L;
+        plugin.getDataStorage().setGraceEndTime(0L);
+        plugin.getDataStorage().persistGrace();
+    }
+
     public void endGracePeriod() {
         if (!isActive()) {
             return;

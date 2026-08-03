@@ -329,6 +329,16 @@ public class SeasonalBladeManager {
         }
     }
 
+    public void shutdown() {
+        for (BukkitTask task : passiveTasks.values()) {
+            if (task != null && !task.isCancelled()) {
+                task.cancel();
+            }
+        }
+        passiveTasks.clear();
+        cooldowns.clear();
+    }
+
     private void applySpringPassive(Player player) {
         if (new java.util.Random().nextDouble() < 0.15) {
             player.setHealth(Math.min(player.getHealth() + 4.0, player.getMaxHealth()));

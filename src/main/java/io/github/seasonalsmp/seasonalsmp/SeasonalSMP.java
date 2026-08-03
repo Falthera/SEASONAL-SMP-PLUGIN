@@ -136,7 +136,7 @@ public final class SeasonalSMP extends JavaPlugin {
             ambientEffectTask.cancel();
         }
         if (boundManager != null) {
-            boundManager.saveAll();
+            boundManager.shutdown();
         }
         if (seasonManager != null) {
             seasonManager.shutdown();
@@ -153,8 +153,21 @@ public final class SeasonalSMP extends JavaPlugin {
         if (combatManager != null) {
             combatManager.shutdown();
         }
+        if (gracePeriodManager != null) {
+            gracePeriodManager.shutdown();
+        }
+        if (swordManager != null) {
+            swordManager.shutdown();
+        }
+        if (seasonalBladeManager != null) {
+            seasonalBladeManager.shutdown();
+        }
+        io.github.seasonalsmp.seasonalsmp.event.RelicPurgeManager.endRelicPurge(this);
         if (whitelistAPIServer != null) {
             whitelistAPIServer.stop();
+        }
+        if (dataStorage != null) {
+            dataStorage.shutdown();
         }
         instance = null;
         getLogger().info("SeasonalSMP disabled gracefully");

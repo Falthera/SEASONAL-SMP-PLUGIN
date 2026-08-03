@@ -154,6 +154,67 @@ public class RelicPurgeManager {
         }
     }
 
+    public static void grantRelicsToPlayer(SeasonalSMP plugin, Player player) {
+        if (player == null || !player.isOnline()) {
+            return;
+        }
+        DataStorage storage = plugin.getDataStorage();
+        UUID uuid = player.getUniqueId();
+        storage.addRelic(uuid, RelicType.SPRING_RELIC);
+        storage.addRelic(uuid, RelicType.SUMMER_RELIC);
+        storage.addRelic(uuid, RelicType.AUTUMN_RELIC);
+        storage.addRelic(uuid, RelicType.WINTER_RELIC);
+        if (storage.hasAllRelics(uuid)) {
+            storage.grantBloodborn(uuid);
+        }
+        for (RelicType relic : RelicType.values()) {
+            if (relic == RelicType.BLOODBORN_RELIC) continue;
+            ItemStack relicItem = relic.createItem();
+            HashMap<Integer, ItemStack> leftover = player.getInventory().addItem(relicItem);
+            if (!leftover.isEmpty()) {
+                player.sendMessage("§c§lYour inventory is full! Drop something to make room for the relic!");
+                for (ItemStack drop : leftover.values()) {
+                    Item entity = player.getWorld().dropItemNaturally(player.getLocation(), drop);
+                    entity.setPickupDelay(0);
+                    entity.setTicksLived(1);
+                }
+            }
+        }
+        if (storage.hasBloodborn(uuid)) {
+            player.sendTitle("§4§lBLOODBORN", "§7You have been claimed...", 10, 100, 20);
+            player.playSound(player.getLocation(), Sound.ENTITY_WITHER_DEATH, 2.0f, 0.5f);
+            player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_HURT, 1.0f, 0.8f);
+            new BukkitRunnable() {
+                int t = 0;
+                @Override
+                public void run() {
+                    if (!player.isOnline() || t > 40) {
+                        cancel();
+                        return;
+                    }
+                    Location loc = player.getLocation().clone().add(0, 1, 0);
+                    player.getWorld().spawnParticle(Particle.TOTEM_OF_UNDYING, loc, 30, 1, 2, 1, 0.1);
+                    player.getWorld().spawnParticle(Particle.SOUL_FIRE_FLAME, loc, 20, 2, 1, 2, 0.05);
+                    player.getWorld().spawnParticle(Particle.DUST, loc, 10, 1, 1, 1, 0,
+                        new Particle.DustOptions(org.bukkit.Color.fromRGB(139, 0, 0), 2.5f));
+                    t++;
+                }
+            }.runTaskTimer(plugin, 0L, 1L);
+            ItemStack bloodborn = RelicType.BLOODBORN_RELIC.createItem();
+            HashMap<Integer, ItemStack> leftover = player.getInventory().addItem(bloodborn);
+            if (!leftover.isEmpty()) {
+                for (ItemStack drop : leftover.values()) {
+                    Item entity = player.getWorld().dropItemNaturally(player.getLocation(), drop);
+                    entity.setPickupDelay(0);
+                    entity.setTicksLived(1);
+                }
+            }
+        } else {
+            player.sendMessage("§6§lALL RELICS HAVE BEEN CLAIMED!");
+            player.playSound(player.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1.0f, 0.8f);
+        }
+    }
+
     public static void endRelicPurge(SeasonalSMP plugin) {
         if (!running) {
             return;
@@ -201,5 +262,9 @@ public class RelicPurgeManager {
 
     public static RelicData getData() {
         return data;
+    }
+
+    public static void shutdown() {
+        endRelicPurge(io.github.seasonalsmp.seasonalsmp.SeasonalSMP.get());
     }
 }

@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 
 import java.io.*;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -30,7 +31,7 @@ public final class DataStorage {
     private final Map<UUID, Set<RelicType>> relicCache;
     private final Set<UUID> bloodbornCache;
     private final Set<UUID> changedRelics;
-    private long graceEndTime;
+    private volatile long graceEndTime;
     private Season savedSeason;
     private int savedDay;
 
@@ -64,13 +65,13 @@ public final class DataStorage {
             }
             if (!boundDataFile.exists()) {
                 boundDataFile.createNewFile();
-                try (Writer writer = new FileWriter(boundDataFile)) {
+                try (Writer writer = new OutputStreamWriter(new FileOutputStream(boundDataFile), StandardCharsets.UTF_8)) {
                     gson.toJson(Collections.emptyMap(), writer);
                 }
             }
             if (!seasonDataFile.exists()) {
                 seasonDataFile.createNewFile();
-                try (Writer writer = new FileWriter(seasonDataFile)) {
+                try (Writer writer = new OutputStreamWriter(new FileOutputStream(seasonDataFile), StandardCharsets.UTF_8)) {
                     Map<String, Object> seedData = new LinkedHashMap<>();
                     seedData.put("season", null);
                     seedData.put("day", 1);
@@ -79,7 +80,7 @@ public final class DataStorage {
             }
             if (!relicDataFile.exists()) {
                 relicDataFile.createNewFile();
-                try (Writer writer = new FileWriter(relicDataFile)) {
+                try (Writer writer = new OutputStreamWriter(new FileOutputStream(relicDataFile), StandardCharsets.UTF_8)) {
                     Map<String, Object> seedData = new LinkedHashMap<>();
                     seedData.put("relics", Collections.emptyMap());
                     seedData.put("bloodborn", Collections.emptyList());
@@ -88,7 +89,7 @@ public final class DataStorage {
             }
             if (!graceDataFile.exists()) {
                 graceDataFile.createNewFile();
-                try (Writer writer = new FileWriter(graceDataFile)) {
+                try (Writer writer = new OutputStreamWriter(new FileOutputStream(graceDataFile), StandardCharsets.UTF_8)) {
                     Map<String, Object> seedData = new LinkedHashMap<>();
                     seedData.put("graceEndTime", 0L);
                     gson.toJson(seedData, writer);
@@ -232,7 +233,7 @@ public final class DataStorage {
     }
 
     public void persistGrace() {
-        try (Writer writer = new FileWriter(graceDataFile)) {
+        try (Writer writer = new OutputStreamWriter(new FileOutputStream(graceDataFile), StandardCharsets.UTF_8)) {
             Map<String, Object> data = new LinkedHashMap<>();
             data.put("graceEndTime", graceEndTime);
             gson.toJson(data, writer);
@@ -258,7 +259,7 @@ public final class DataStorage {
             Map<String, Object> data = new LinkedHashMap<>();
             data.put("relics", serializable);
             data.put("bloodborn", bloodbornList);
-            try (Writer writer = new FileWriter(relicDataFile)) {
+            try (Writer writer = new OutputStreamWriter(new FileOutputStream(relicDataFile), StandardCharsets.UTF_8)) {
                 gson.toJson(data, writer);
             } catch (IOException e) {
                 plugin.getLogger().log(Level.SEVERE, "Failed to persist relic data", e);
@@ -273,7 +274,7 @@ public final class DataStorage {
             for (Map.Entry<UUID, BoundType> entry : boundCache.entrySet()) {
                 serializable.put(entry.getKey().toString(), entry.getValue());
             }
-            try (Writer writer = new FileWriter(boundDataFile)) {
+            try (Writer writer = new OutputStreamWriter(new FileOutputStream(boundDataFile), StandardCharsets.UTF_8)) {
                 gson.toJson(serializable, writer);
             } catch (IOException e) {
                 plugin.getLogger().log(Level.SEVERE, "Failed to persist bound data", e);
@@ -283,7 +284,7 @@ public final class DataStorage {
     }
 
     public void persistSeason() {
-        try (Writer writer = new FileWriter(seasonDataFile)) {
+        try (Writer writer = new OutputStreamWriter(new FileOutputStream(seasonDataFile), StandardCharsets.UTF_8)) {
             Map<String, Object> data = new LinkedHashMap<>();
             data.put("season", savedSeason != null ? savedSeason.name() : null);
             data.put("day", savedDay);

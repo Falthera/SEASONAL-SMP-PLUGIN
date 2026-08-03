@@ -221,64 +221,7 @@ public class SeasonalStartCommand implements CommandExecutor {
                     Bukkit.broadcastMessage("§cAll players have received the power of the relics...");
 
                     for (Player player : Bukkit.getOnlinePlayers()) {
-                        UUID uuid = player.getUniqueId();
-                        DataStorage storage = plugin.getDataStorage();
-                        storage.addRelic(uuid, RelicType.SPRING_RELIC);
-                        storage.addRelic(uuid, RelicType.SUMMER_RELIC);
-                        storage.addRelic(uuid, RelicType.AUTUMN_RELIC);
-                        storage.addRelic(uuid, RelicType.WINTER_RELIC);
-                        storage.grantBloodborn(uuid);
-
-                        for (RelicType relic : RelicType.values()) {
-                            if (relic == RelicType.BLOODBORN_RELIC) continue;
-                            ItemStack relicItem = relic.createItem();
-                            HashMap<Integer, ItemStack> leftover = player.getInventory().addItem(relicItem);
-                            if (!leftover.isEmpty()) {
-                                for (ItemStack drop : leftover.values()) {
-                                    org.bukkit.entity.Item entity = player.getWorld().dropItemNaturally(player.getLocation(), drop);
-                                    entity.setPickupDelay(0);
-                                    entity.setTicksLived(1);
-                                }
-                            }
-                        }
-
-                        ItemStack bloodborn = RelicType.BLOODBORN_RELIC.createItem();
-                        HashMap<Integer, ItemStack> leftover = player.getInventory().addItem(bloodborn);
-                        if (!leftover.isEmpty()) {
-                            for (ItemStack drop : leftover.values()) {
-                                org.bukkit.entity.Item entity = player.getWorld().dropItemNaturally(player.getLocation(), drop);
-                                entity.setPickupDelay(0);
-                                entity.setTicksLived(1);
-                            }
-                        }
-
-                        player.sendTitle("§4§lBLOODBORN", "§7The relics have claimed you...", 10, 100, 20);
-                        player.playSound(player.getLocation(), Sound.ENTITY_WITHER_SPAWN, 2.0f, 0.5f);
-                        player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1.5f, 0.8f);
-
-                        new BukkitRunnable() {
-                            int t = 0;
-                            @Override
-                            public void run() {
-                                if (!player.isOnline() || t > 60) {
-                                    cancel();
-                                    return;
-                                }
-                                Location loc = player.getLocation().clone().add(0, 1, 0);
-                                player.getWorld().spawnParticle(Particle.TOTEM_OF_UNDYING, loc, 40, 2, 3, 2, 0.2);
-                                player.getWorld().spawnParticle(Particle.SOUL_FIRE_FLAME, loc, 30, 3, 2, 3, 0.1);
-                                player.getWorld().spawnParticle(Particle.DUST, loc, 20, 2, 2, 2, 0,
-                                    new Particle.DustOptions(Color.fromRGB(139, 0, 0), 3.0f));
-                                player.getWorld().spawnParticle(Particle.LAVA, loc, 15, 2, 0.5, 2, 0);
-                                player.getWorld().spawnParticle(Particle.EXPLOSION_EMITTER, loc, 3, 0, 0, 0, 0);
-                                if (t % 10 == 0) {
-                                    player.getWorld().playSound(player.getLocation(), Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1.0f, 0.8f);
-                                    player.getWorld().strikeLightningEffect(player.getLocation().clone().add(
-                                        (random.nextDouble() - 0.5) * 8, 0, (random.nextDouble() - 0.5) * 8));
-                                }
-                                t++;
-                            }
-                        }.runTaskTimer(plugin, 0L, 1L);
+                        io.github.seasonalsmp.seasonalsmp.event.relic.RelicPurgeManager.grantRelicsToPlayer(plugin, player);
                     }
                 }
 

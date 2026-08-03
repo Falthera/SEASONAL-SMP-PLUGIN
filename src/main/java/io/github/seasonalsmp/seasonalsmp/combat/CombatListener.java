@@ -30,6 +30,10 @@ public class CombatListener implements Listener {
 
     @EventHandler
     public void onEntityDamage(EntityDamageByEntityEvent event) {
+        if (plugin.getGracePeriodManager().isActive()) {
+            event.setCancelled(true);
+            return;
+        }
         if (event.getEntity() instanceof Player victim && event.getDamager() instanceof Player attacker) {
             combatManager.markInCombat(victim);
             combatManager.markInCombat(attacker);

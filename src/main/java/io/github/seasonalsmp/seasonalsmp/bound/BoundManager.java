@@ -100,7 +100,7 @@ public class BoundManager {
     }
 
     public boolean assignBound(Player player, BoundType bound) {
-        if (player == null || bound == null) {
+        if (player == null || bound == null || !player.isOnline()) {
             return false;
         }
         if (hasBound(player)) {
@@ -108,6 +108,9 @@ public class BoundManager {
         }
         boundDataService.setBound(player, bound);
         plugin.getServer().getScheduler().runTask(plugin, () -> {
+            if (!player.isOnline()) {
+                return;
+            }
             messageService.send(player, "bound.assign.first-join",
                 Map.of("bound", bound.getColorCode(), "bound_name", bound.getDisplayName()));
             soundService.play(player, "transition");
@@ -120,11 +123,14 @@ public class BoundManager {
     }
 
     public void forceAssignBound(Player player, BoundType bound) {
-        if (player == null || bound == null) {
+        if (player == null || bound == null || !player.isOnline()) {
             return;
         }
         boundDataService.setBound(player, bound);
         plugin.getServer().getScheduler().runTask(plugin, () -> {
+            if (!player.isOnline()) {
+                return;
+            }
             messageService.send(player, "bound.assign.first-join",
                 Map.of("bound", bound.getColorCode(), "bound_name", bound.getDisplayName()));
             soundService.play(player, "transition");

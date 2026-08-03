@@ -86,10 +86,19 @@ public final class ConfigManager {
     }
 
     public void reloadAll() {
+        List<String> failed = new ArrayList<>();
         for (String name : configFiles.keySet()) {
-            reload(name);
+            try {
+                reload(name);
+            } catch (Exception e) {
+                failed.add(name);
+                plugin.getLogger().log(java.util.logging.Level.SEVERE, "Failed to reload configuration: " + name, e);
+            }
         }
         this.debugMode = getBoolean("general.debug-mode");
+        if (!failed.isEmpty()) {
+            plugin.getLogger().warning("Failed to reload configs: " + String.join(", ", failed));
+        }
         plugin.getLogger().info("All configurations loaded. Debug mode: " + debugMode);
     }
 
@@ -139,14 +148,14 @@ public final class ConfigManager {
         }
         String value = config.getString(path);
         if (value != null) {
-            value = value.replace("&", "§");
+            value = value.replaceAll("&([0-9a-fk-or])", "§$1");
         }
         return value;
     }
 
     public String getString(String path, String def) {
         String value = getString(path);
-        return value != null ? value : (def != null ? def.replace("&", "§") : null);
+        return value != null ? value : (def != null ? def.replaceAll("&([0-9a-fk-or])", "§$1") : null);
     }
 
     public int getInt(String path) {
