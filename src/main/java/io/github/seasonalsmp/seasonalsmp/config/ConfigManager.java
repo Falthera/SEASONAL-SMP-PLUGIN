@@ -32,7 +32,8 @@ public final class ConfigManager {
         "swords.cooldown-seconds.bloom",
         "effects.ambient-vfx-enabled",
         "ui.bossbar-enabled",
-        "resource-pack.url"
+        "resource-pack.url",
+        "privacy.hide-private-messages"
     };
 
     public ConfigManager(SeasonalSMP plugin) {

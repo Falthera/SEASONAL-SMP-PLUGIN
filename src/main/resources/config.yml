@@ -202,6 +202,9 @@ whitelist:
 grace-period:
   duration-seconds: 3600
 
+privacy:
+  hide-private-messages: true
+
 combat:
   enabled: true
   combat-duration-seconds: 15
