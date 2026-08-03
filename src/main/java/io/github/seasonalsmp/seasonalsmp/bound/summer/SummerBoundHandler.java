@@ -46,10 +46,19 @@ public class SummerBoundHandler {
                 entity.setVelocity(direction.multiply(knockback));
             }
         }
-        particleService.spawn(player.getLocation(), Particle.FLAME, 50, 1.0);
-        particleService.spawnCircle(center, radius, Particle.FLAME, 20, 0.8);
-        particleService.spawn(player.getLocation(), Particle.LAVA, 10, 0.3);
+        for (double y = 0; y < 5; y += 0.5) {
+            particleService.spawn(center.clone().add(0, y, 0), Particle.FLAME, 30, 0.8);
+            particleService.spawn(center.clone().add(0, y, 0), Particle.LAVA, 15, 0.4);
+            particleService.spawn(center.clone().add(0, y, 0), Particle.SOUL_FIRE_FLAME, 20, 0.6);
+        }
+        particleService.spawn(center, Particle.EXPLOSION_EMITTER, 1, 0);
+        particleService.spawnCircle(center, radius, Particle.FLAME, 100, 1.2);
+        particleService.spawnCircle(center, radius * 0.7, Particle.SOUL_FIRE_FLAME, 70, 1.0);
+        particleService.spawnCircle(center, radius * 1.3, Particle.LAVA, 50, 1.4);
+        particleService.spawnSphere(center, radius * 0.9, Particle.FLAME, 120);
+        particleService.spawnSphere(center, radius * 0.5, Particle.SOUL_FIRE_FLAME, 80);
         center.getWorld().playSound(center, Sound.ENTITY_BLAZE_SHOOT, 2.0f, 1.2f);
+        center.getWorld().playSound(center, Sound.ENTITY_GENERIC_EXPLODE, 2.0f, 0.8f);
     }
 
     public void activateSwordAbility(Player player) {
@@ -63,10 +72,19 @@ public class SummerBoundHandler {
             }
         }
         for (double y = center.getY() + 1; y < center.getY() + 12; y += 0.5) {
-            particleService.spawn(center.clone().add(0, y - center.getY(), 0), Particle.END_ROD, 2, 0.2);
+            particleService.spawn(center.clone().add(0, y - center.getY(), 0), Particle.END_ROD, 4, 0.3);
+            particleService.spawn(center.clone().add(0, y - center.getY(), 0), Particle.FLAME, 6, 0.2);
         }
-        particleService.spawnCircle(center, radius, Particle.SOUL_FIRE_FLAME, 30, 0.6);
+        for (double y = 0; y < 3; y += 0.5) {
+            particleService.spawn(center.clone().add(0, y, 0), Particle.EXPLOSION_EMITTER, 2, 0);
+        }
+        particleService.spawnCircle(center, radius, Particle.SOUL_FIRE_FLAME, 120, 1.2);
+        particleService.spawnCircle(center, radius * 0.6, Particle.FLAME, 90, 1.0);
+        particleService.spawnCircle(center, radius * 1.2, Particle.LAVA, 70, 1.4);
+        particleService.spawnSphere(center, radius * 0.8, Particle.SOUL_FIRE_FLAME, 120);
+        particleService.spawnSphere(center, radius * 0.4, Particle.FLAME, 80);
         center.getWorld().playSound(center, Sound.ENTITY_GENERIC_EXPLODE, 2.0f, 0.8f);
+        center.getWorld().playSound(center, Sound.ENTITY_LIGHTNING_BOLT_IMPACT, 1.0f, 1.0f);
     }
 
     public void applyPassiveEffects(Player player, Season currentSeason) {

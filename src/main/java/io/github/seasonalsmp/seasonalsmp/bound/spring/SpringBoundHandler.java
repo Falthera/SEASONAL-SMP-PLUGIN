@@ -14,6 +14,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
 
 import java.util.Set;
 
@@ -56,9 +57,17 @@ public class SpringBoundHandler {
                 }
             }
         }
-        particleService.spawnCircle(center, radius, Particle.HEART, 30, 0.5);
-        particleService.spawnSphere(center, radius * 0.5, Particle.HAPPY_VILLAGER, 20);
-        player.getWorld().playSound(center, Sound.BLOCK_BEEHIVE_ENTER, 2.0f, 1.5f);
+        for (double y = 0; y < 3; y += 0.5) {
+            particleService.spawn(center.clone().add(0, y, 0), Particle.HEART, 15, 0.3);
+            particleService.spawn(center.clone().add(0, y, 0), Particle.HAPPY_VILLAGER, 10, 0.2);
+        }
+        particleService.spawnCircle(center, radius, Particle.HEART, 80, 0.8);
+        particleService.spawnCircle(center, radius * 0.6, Particle.HAPPY_VILLAGER, 50, 0.6);
+        particleService.spawnCircle(center, radius * 1.2, Particle.HEART, 40, 1.2);
+        particleService.spawnSphere(center, radius * 0.8, Particle.HEART, 100);
+        particleService.spawnSphere(center, radius * 0.4, Particle.HAPPY_VILLAGER, 60);
+        center.getWorld().playSound(center, Sound.BLOCK_BEEHIVE_ENTER, 2.0f, 1.5f);
+        center.getWorld().playSound(center, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.2f);
     }
 
     public void activateSwordAbility(Player player) {
@@ -70,9 +79,17 @@ public class SpringBoundHandler {
                 living.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 80, 1));
             }
         }
-        particleService.spawnCircle(center, radius, Particle.HEART, 40, 0.3);
-        particleService.spawnSphere(center, radius * 0.6, Particle.HAPPY_VILLAGER, 30);
+        for (double y = 0; y < 4; y += 0.4) {
+            particleService.spawn(center.clone().add(0, y, 0), Particle.HEART, 20, 0.4);
+            particleService.spawn(center.clone().add(0, y, 0), Particle.HAPPY_VILLAGER, 15, 0.3);
+        }
+        particleService.spawnCircle(center, radius, Particle.HEART, 120, 1.0);
+        particleService.spawnCircle(center, radius * 0.7, Particle.HAPPY_VILLAGER, 80, 0.8);
+        particleService.spawnCircle(center, radius * 1.4, Particle.HEART, 60, 1.4);
+        particleService.spawnSphere(center, radius * 0.9, Particle.HEART, 120);
+        particleService.spawnSphere(center, radius * 0.5, Particle.HAPPY_VILLAGER, 80);
         center.getWorld().playSound(center, Sound.BLOCK_GRASS_BREAK, 2.0f, 0.8f);
+        center.getWorld().playSound(center, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.5f);
     }
 
     public void applyPassiveEffects(Player player, Season currentSeason) {

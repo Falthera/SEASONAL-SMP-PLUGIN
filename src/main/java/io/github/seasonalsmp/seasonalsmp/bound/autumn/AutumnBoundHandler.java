@@ -42,9 +42,18 @@ public class AutumnBoundHandler {
                 }
             }
         }
-        particleService.spawn(center, Particle.CRIT, 40, 0.8);
-        particleService.spawnCircle(center, cropRadius, Particle.CRIT, 30, 0.5);
+        for (double y = 0; y < 3; y += 0.5) {
+            particleService.spawn(center.clone().add(0, y, 0), Particle.CRIT, 25, 0.6);
+            particleService.spawn(center.clone().add(0, y, 0), Particle.SOUL, 15, 0.4);
+            particleService.spawn(center.clone().add(0, y, 0), Particle.TOTEM_OF_UNDYING, 10, 0.3);
+        }
+        particleService.spawnCircle(center, cropRadius, Particle.CRIT, 100, 1.0);
+        particleService.spawnCircle(center, cropRadius * 0.7, Particle.SOUL, 70, 0.8);
+        particleService.spawnCircle(center, cropRadius * 1.3, Particle.TOTEM_OF_UNDYING, 50, 1.2);
+        particleService.spawnSphere(center, cropRadius * 0.8, Particle.CRIT, 120);
+        particleService.spawnSphere(center, cropRadius * 0.5, Particle.SOUL, 80);
         center.getWorld().playSound(center, Sound.BLOCK_CROP_BREAK, 2.0f, 0.8f);
+        center.getWorld().playSound(center, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.2f);
     }
 
     public void activateSwordAbility(Player player) {
@@ -54,13 +63,23 @@ public class AutumnBoundHandler {
             if (entity instanceof LivingEntity living) {
                 if (living.getHealth() < living.getMaxHealth() * 0.3) {
                     living.setHealth(0);
-                    particleService.spawn(living.getLocation(), Particle.CRIT, 20, 0.5);
+                    particleService.spawn(living.getLocation(), Particle.TOTEM_OF_UNDYING, 40, 1.0);
+                    particleService.spawn(living.getLocation(), Particle.SOUL, 30, 0.8);
                 }
             }
         }
-        particleService.spawnCircle(center, radius, Particle.SOUL, 50, 0.4);
-        particleService.spawnSphere(center, radius * 0.5, Particle.TOTEM_OF_UNDYING, 25);
+        for (double y = 0; y < 4; y += 0.5) {
+            particleService.spawn(center.clone().add(0, y, 0), Particle.CRIT, 20, 0.5);
+            particleService.spawn(center.clone().add(0, y, 0), Particle.SOUL, 15, 0.4);
+            particleService.spawn(center.clone().add(0, y, 0), Particle.TOTEM_OF_UNDYING, 10, 0.3);
+        }
+        particleService.spawnCircle(center, radius, Particle.SOUL, 120, 1.0);
+        particleService.spawnCircle(center, radius * 0.7, Particle.CRIT, 90, 0.8);
+        particleService.spawnCircle(center, radius * 1.2, Particle.TOTEM_OF_UNDYING, 70, 1.2);
+        particleService.spawnSphere(center, radius * 0.8, Particle.SOUL, 120);
+        particleService.spawnSphere(center, radius * 0.4, Particle.TOTEM_OF_UNDYING, 80);
         center.getWorld().playSound(center, Sound.ENTITY_WITHER_DEATH, 2.0f, 1.0f);
+        center.getWorld().playSound(center, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.5f);
     }
 
     public void applyPassiveEffects(Player player, Season currentSeason) {

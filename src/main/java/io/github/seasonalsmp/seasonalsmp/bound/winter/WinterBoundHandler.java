@@ -43,9 +43,18 @@ public class WinterBoundHandler {
                 living.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, slowSeconds * 20, slowAmplifier));
             }
         }
-        particleService.spawnCircle(center, 3.0, Particle.SNOWFLAKE, 60, 0.4);
-        particleService.spawnSphere(center, 2.5, Particle.SNOWFLAKE, 40);
+        for (double y = 0; y < 4; y += 0.5) {
+            particleService.spawn(center.clone().add(0, y, 0), Particle.SNOWFLAKE, 30, 0.6);
+            particleService.spawn(center.clone().add(0, y, 0), Particle.CLOUD, 20, 0.4);
+            particleService.spawn(center.clone().add(0, y, 0), Particle.END_ROD, 10, 0.2);
+        }
+        particleService.spawnCircle(center, 3.0, Particle.SNOWFLAKE, 120, 1.0);
+        particleService.spawnCircle(center, 2.0, Particle.CLOUD, 80, 0.8);
+        particleService.spawnCircle(center, 4.0, Particle.END_ROD, 60, 1.2);
+        particleService.spawnSphere(center, 2.5, Particle.SNOWFLAKE, 100);
+        particleService.spawnSphere(center, 1.5, Particle.CLOUD, 70);
         center.getWorld().playSound(center, Sound.BLOCK_GLASS_BREAK, 2.0f, 0.6f);
+        center.getWorld().playSound(center, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.5f);
     }
 
     public void activateSwordAbility(Player player) {
@@ -59,9 +68,18 @@ public class WinterBoundHandler {
                 living.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, freezeDuration * 20, 1));
             }
         }
-        particleService.spawnCircle(center, radius, Particle.SNOWFLAKE, 80, 0.3);
-        particleService.spawnSphere(center, radius * 0.7, Particle.CLOUD, 50);
+        for (double y = 0; y < 5; y += 0.5) {
+            particleService.spawn(center.clone().add(0, y, 0), Particle.SNOWFLAKE, 25, 0.5);
+            particleService.spawn(center.clone().add(0, y, 0), Particle.CLOUD, 20, 0.4);
+            particleService.spawn(center.clone().add(0, y, 0), Particle.END_ROD, 10, 0.2);
+        }
+        particleService.spawnCircle(center, radius, Particle.SNOWFLAKE, 140, 1.2);
+        particleService.spawnCircle(center, radius * 0.7, Particle.CLOUD, 100, 1.0);
+        particleService.spawnCircle(center, radius * 1.3, Particle.END_ROD, 70, 1.4);
+        particleService.spawnSphere(center, radius * 0.8, Particle.SNOWFLAKE, 120);
+        particleService.spawnSphere(center, radius * 0.5, Particle.CLOUD, 90);
         center.getWorld().playSound(center, Sound.BLOCK_GLASS_BREAK, 2.0f, 0.5f);
+        center.getWorld().playSound(center, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.5f);
     }
 
     public void applyPassiveEffects(Player player, Season currentSeason) {

@@ -168,13 +168,23 @@ public class SeasonalBladeManager {
                 living.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 100, 2));
             }
         }
-        player.getWorld().playSound(center, Sound.BLOCK_ROOTS_BREAK, 2.0f, 0.8f);
-        for (int i = 0; i < 30; i++) {
-            double angle = (i / 30.0) * Math.PI * 2;
+        for (int i = 0; i < 60; i++) {
+            double angle = (i / 60.0) * Math.PI * 2;
             double x = Math.cos(angle) * radius;
             double z = Math.sin(angle) * radius;
-            particleService.spawn(center.clone().add(x, 0, z), Particle.HEART, 3, 0.0);
+            particleService.spawn(center.clone().add(x, 0, z), Particle.HEART, 8, 0.1);
+            particleService.spawn(center.clone().add(x, 0.5, z), Particle.HAPPY_VILLAGER, 5, 0.1);
         }
+        for (double y = 0; y < 3; y += 0.4) {
+            particleService.spawn(center.clone().add(0, y, 0), Particle.HEART, 20, 0.4);
+            particleService.spawn(center.clone().add(0, y, 0), Particle.HAPPY_VILLAGER, 15, 0.3);
+        }
+        particleService.spawnCircle(center, radius, Particle.HEART, 120, 1.0);
+        particleService.spawnCircle(center, radius * 0.7, Particle.HAPPY_VILLAGER, 80, 0.8);
+        particleService.spawnSphere(center, radius * 0.8, Particle.HEART, 100);
+        particleService.spawnSphere(center, radius * 0.4, Particle.HAPPY_VILLAGER, 70);
+        player.getWorld().playSound(center, Sound.BLOCK_ROOTS_BREAK, 2.0f, 0.8f);
+        player.getWorld().playSound(center, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.5f);
     }
 
     private void activateSummerAbility(Player player) {
@@ -187,8 +197,17 @@ public class SeasonalBladeManager {
             target = player.getLocation().add(player.getLocation().getDirection().multiply(10));
         }
         for (int y = 0; y < 20; y++) {
-            particleService.spawn(target.clone().add(0, y, 0), Particle.FLAME, 2, 0.0);
+            particleService.spawn(target.clone().add(0, y, 0), Particle.FLAME, 6, 0.1);
+            particleService.spawn(target.clone().add(0, y, 0), Particle.SOUL_FIRE_FLAME, 4, 0.1);
+            particleService.spawn(target.clone().add(0, y, 0), Particle.END_ROD, 3, 0.1);
         }
+        for (double r = 0.5; r < 4; r += 0.5) {
+            particleService.spawnCircle(target.clone().add(0, 0.5, 0), r, Particle.FLAME, 40, 0.6);
+            particleService.spawnCircle(target.clone().add(0, 0.5, 0), r, Particle.SOUL_FIRE_FLAME, 30, 0.5);
+        }
+        particleService.spawnSphere(target, 2.5, Particle.FLAME, 80);
+        particleService.spawnSphere(target, 1.5, Particle.SOUL_FIRE_FLAME, 60);
+        particleService.spawn(target, Particle.EXPLOSION_EMITTER, 3, 0);
         for (Entity entity : target.getWorld().getNearbyEntities(target, 3, 3, 3)) {
             if (entity instanceof LivingEntity living) {
                 living.setFireTicks(100);
@@ -205,11 +224,21 @@ public class SeasonalBladeManager {
         player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 60, 0));
         Location loc = player.getLocation();
         player.getWorld().playSound(loc, Sound.ENTITY_WIND_CHARGE_WIND_BURST, 2.0f, 0.8f);
-        for (int i = 0; i < 40; i++) {
-            double x = (Math.random() - 0.5) * 6;
-            double z = (Math.random() - 0.5) * 6;
-            particleService.spawn(loc.clone().add(x, 0, z), Particle.CLOUD, 1, 0.0);
+        for (int i = 0; i < 80; i++) {
+            double x = (Math.random() - 0.5) * 8;
+            double z = (Math.random() - 0.5) * 8;
+            particleService.spawn(loc.clone().add(x, 0, z), Particle.CLOUD, 3, 0.1);
+            particleService.spawn(loc.clone().add(x, 0.5, z), Particle.SOUL, 2, 0.1);
         }
+        for (double angle = 0; angle < Math.PI * 2; angle += Math.PI / 12) {
+            for (double r = 1; r < 5; r += 0.5) {
+                double x = Math.cos(angle) * r;
+                double z = Math.sin(angle) * r;
+                particleService.spawn(loc.clone().add(x, 0.5, z), Particle.CLOUD, 2, 0.05);
+            }
+        }
+        particleService.spawnSphere(loc, 3.0, Particle.CLOUD, 60);
+        particleService.spawnSphere(loc, 2.0, Particle.SOUL, 40);
         for (Entity entity : player.getNearbyEntities(3, 3, 3)) {
             if (entity instanceof LivingEntity living && !(entity instanceof Player)) {
                 Vector knockback = entity.getLocation().toVector().subtract(loc.toVector()).normalize().multiply(1.2);
@@ -232,11 +261,20 @@ public class SeasonalBladeManager {
                 for (int z = -2; z <= 2; z++) {
                     Block block = target.clone().add(x, y, z).getBlock();
                     if (block.getType() == Material.AIR) {
-                        particleService.spawn(block.getLocation().add(0.5, 0.5, 0.5), Particle.SNOWFLAKE, 5, 0.0);
+                        particleService.spawn(block.getLocation().add(0.5, 0.5, 0.5), Particle.SNOWFLAKE, 12, 0.1);
+                        particleService.spawn(block.getLocation().add(0.5, 0.5, 0.5), Particle.CLOUD, 8, 0.1);
+                        particleService.spawn(block.getLocation().add(0.5, 0.5, 0.5), Particle.END_ROD, 5, 0.1);
                     }
                 }
             }
         }
+        for (double r = 0.5; r < 6; r += 0.5) {
+            particleService.spawnCircle(target.clone().add(0, 0.5, 0), r, Particle.SNOWFLAKE, 40, 0.6);
+            particleService.spawnCircle(target.clone().add(0, 0.5, 0), r, Particle.CLOUD, 30, 0.5);
+        }
+        particleService.spawnSphere(target, 3.0, Particle.SNOWFLAKE, 80);
+        particleService.spawnSphere(target, 2.0, Particle.CLOUD, 60);
+        particleService.spawn(target, Particle.EXPLOSION_EMITTER, 2, 0);
         for (Entity entity : target.getWorld().getNearbyEntities(target, 5, 5, 5)) {
             if (entity instanceof LivingEntity living) {
                 living.damage(10.0, player);
@@ -245,6 +283,7 @@ public class SeasonalBladeManager {
             }
         }
         target.getWorld().playSound(target, Sound.BLOCK_GLASS_BREAK, 3.0f, 0.6f);
+        target.getWorld().playSound(target, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.5f);
     }
 
     public void startPassiveEffects(Player player) {
@@ -293,25 +332,32 @@ public class SeasonalBladeManager {
     private void applySpringPassive(Player player) {
         if (new java.util.Random().nextDouble() < 0.15) {
             player.setHealth(Math.min(player.getHealth() + 4.0, player.getMaxHealth()));
-            particleService.spawn(player.getLocation().add(0, 1, 0), Particle.HEART, 3, 0.0);
+            particleService.spawn(player.getLocation().add(0, 1, 0), Particle.HEART, 8, 0.1);
+            particleService.spawn(player.getLocation().add(0, 1, 0), Particle.HAPPY_VILLAGER, 5, 0.1);
         }
     }
 
     private void applySummerPassive(Player player) {
         if (new java.util.Random().nextDouble() < 0.25) {
             player.setFireTicks(60);
+            particleService.spawn(player.getLocation().add(0, 1, 0), Particle.FLAME, 8, 0.1);
+            particleService.spawn(player.getLocation().add(0, 0.5, 0), Particle.SOUL_FIRE_FLAME, 5, 0.1);
         }
     }
 
     private void applyAutumnPassive(Player player) {
         if (new java.util.Random().nextDouble() < 0.3) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, 0));
+            particleService.spawn(player.getLocation().add(0, 1, 0), Particle.CRIT, 6, 0.1);
+            particleService.spawn(player.getLocation().add(0, 0.5, 0), Particle.SOUL, 4, 0.1);
         }
     }
 
     private void applyWinterPassive(Player player) {
         if (new java.util.Random().nextDouble() < 0.2) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 40, 0));
+            particleService.spawn(player.getLocation().add(0, 1, 0), Particle.SNOWFLAKE, 6, 0.1);
+            particleService.spawn(player.getLocation().add(0, 0.5, 0), Particle.CLOUD, 4, 0.1);
         }
     }
 
@@ -329,14 +375,17 @@ public class SeasonalBladeManager {
         Random random = new Random();
         if (random.nextDouble() < 0.2) {
             victim.setFireTicks(60);
-            particleService.spawn(victim.getLocation().add(0, 1, 0), Particle.FLAME, 5, 0.0);
+            particleService.spawn(victim.getLocation().add(0, 1, 0), Particle.FLAME, 15, 0.2);
+            particleService.spawn(victim.getLocation().add(0, 1, 0), Particle.SOUL_FIRE_FLAME, 10, 0.2);
         }
         if (random.nextDouble() < 0.15) {
             victim.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 40, 0));
-            particleService.spawn(victim.getLocation().add(0, 1, 0), Particle.SNOWFLAKE, 5, 0.0);
+            particleService.spawn(victim.getLocation().add(0, 1, 0), Particle.SNOWFLAKE, 15, 0.2);
+            particleService.spawn(victim.getLocation().add(0, 1, 0), Particle.CLOUD, 10, 0.2);
         }
         if (random.nextDouble() < 0.1) {
             victim.addPotionEffect(new PotionEffect(PotionEffectType.MINING_FATIGUE, 60, 0));
+            particleService.spawn(victim.getLocation().add(0, 1, 0), Particle.END_ROD, 10, 0.2);
         }
     }
 
@@ -347,7 +396,8 @@ public class SeasonalBladeManager {
             return;
         }
         if (new java.util.Random().nextDouble() < 0.3) {
-            particleService.spawn(player.getLocation().add(0, 0.5, 0), Particle.CLOUD, 1, 0.0);
+            particleService.spawn(player.getLocation().add(0, 0.5, 0), Particle.CLOUD, 3, 0.0);
+            particleService.spawn(player.getLocation().add(0, 0.5, 0), Particle.SOUL, 2, 0.0);
         }
     }
 }
