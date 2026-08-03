@@ -68,7 +68,7 @@ public class AutumnBoundHandler {
             return;
         }
         if (currentSeason == Season.AUTUMN) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.HASTE, 120, 0));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.HERO_OF_THE_VILLAGE, 120, 0));
         } else {
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 120, 0));
         }
