@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import io.github.seasonalsmp.seasonalsmp.SeasonalSMP;
 import io.github.seasonalsmp.seasonalsmp.bound.BoundType;
+import io.github.seasonalsmp.seasonalsmp.event.relic.RelicType;
 import io.github.seasonalsmp.seasonalsmp.season.Season;
 import org.bukkit.entity.Player;
 
@@ -22,13 +23,18 @@ public final class DataStorage {
     private final File dataDir;
     private final File boundDataFile;
     private final File seasonDataFile;
+    private final File relicDataFile;
     private final Map<UUID, BoundType> boundCache;
     private final Set<UUID> changedBounds;
+    private final Map<UUID, Set<RelicType>> relicCache;
+    private final Set<UUID> bloodbornCache;
+    private final Set<UUID> changedRelics;
     private Season savedSeason;
     private int savedDay;
 
     private static final String BOUND_DATA_FILENAME = "bounds.json";
     private static final String SEASON_DATA_FILENAME = "season.json";
+    private static final String RELIC_DATA_FILENAME = "relics.json";
 
     public DataStorage(SeasonalSMP plugin) {
         this.plugin = plugin;
@@ -36,8 +42,12 @@ public final class DataStorage {
         this.dataDir = new File(plugin.getDataFolder(), "data");
         this.boundDataFile = new File(dataDir, BOUND_DATA_FILENAME);
         this.seasonDataFile = new File(dataDir, SEASON_DATA_FILENAME);
+        this.relicDataFile = new File(dataDir, RELIC_DATA_FILENAME);
         this.boundCache = new HashMap<>();
         this.changedBounds = new HashSet<>();
+        this.relicCache = new HashMap<>();
+        this.bloodbornCache = new HashSet<>();
+        this.changedRelics = new HashSet<>();
         this.savedSeason = null;
         this.savedDay = 1;
     }
@@ -62,6 +72,15 @@ public final class DataStorage {
                     gson.toJson(seedData, writer);
                 }
             }
+            if (!relicDataFile.exists()) {
+                relicDataFile.createNewFile();
+                try (Writer writer = new FileWriter(relicDataFile)) {
+                    Map<String, Object> seedData = new LinkedHashMap<>();
+                    seedData.put("relics", Collections.emptyMap());
+                    seedData.put("bloodborn", Collections.emptyList());
+                    gson.toJson(seedData, writer);
+                }
+            }
             loadAllFromDisk();
         } catch (IOException e) {
             plugin.getLogger().log(Level.SEVERE, "Failed to initialize data storage", e);
@@ -75,6 +94,7 @@ public final class DataStorage {
     public void loadAllFromDisk() {
         loadBoundsFromDisk();
         loadSeasonFromDisk();
+        loadRelicsFromDisk();
     }
 
     public void loadBoundsFromDisk() {
@@ -124,6 +144,85 @@ public final class DataStorage {
         }
     }
 
+    public void loadRelicsFromDisk() {
+        synchronized (relicCache) {
+            relicCache.clear();
+            bloodbornCache.clear();
+            if (!relicDataFile.exists()) {
+                return;
+            }
+            try (Reader reader = new FileReader(relicDataFile)) {
+                Type type = new TypeToken<Map<String, Object>>() {
+                }.getType();
+                Map<String, Object> data = gson.fromJson(reader, type);
+                if (data != null) {
+                    Object relicsObj = data.get("relics");
+                    if (relicsObj instanceof Map<?, ?> rawRelics) {
+                        for (Map.Entry<?, ?> entry : rawRelics.entrySet()) {
+                            try {
+                                UUID uuid = UUID.fromString(entry.getKey().toString());
+                                Object value = entry.getValue();
+                                if (value instanceof List<?> relicList) {
+                                    Set<RelicType> relics = new HashSet<>();
+                                    for (Object o : relicList) {
+                                        if (o instanceof String s) {
+                                            try {
+                                                relics.add(RelicType.valueOf(s));
+                                            } catch (IllegalArgumentException ignored) {
+                                            }
+                                        }
+                                    }
+                                    relicCache.put(uuid, relics);
+                                }
+                            } catch (IllegalArgumentException e) {
+                                plugin.getLogger().warning("Skipping invalid relic UUID: " + entry.getKey());
+                            }
+                        }
+                    }
+                    Object bloodbornObj = data.get("bloodborn");
+                    if (bloodbornObj instanceof List<?> bloodbornList) {
+                        for (Object o : bloodbornList) {
+                            if (o instanceof String s) {
+                                try {
+                                    bloodbornCache.add(UUID.fromString(s));
+                                } catch (IllegalArgumentException ignored) {
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                plugin.getLogger().log(Level.SEVERE, "Failed to load relic data", e);
+            }
+        }
+    }
+
+    public void persistRelics() {
+        synchronized (relicCache) {
+            Map<String, List<String>> serializable = new LinkedHashMap<>();
+            for (Map.Entry<UUID, Set<RelicType>> entry : relicCache.entrySet()) {
+                List<String> relicNames = new ArrayList<>();
+                for (RelicType relic : entry.getValue()) {
+                    relicNames.add(relic.name());
+                }
+                serializable.put(entry.getKey().toString(), relicNames);
+            }
+            List<String> bloodbornList = new ArrayList<>();
+            for (UUID uuid : bloodbornCache) {
+                bloodbornList.add(uuid.toString());
+            }
+            Map<String, Object> data = new LinkedHashMap<>();
+            data.put("relics", serializable);
+            data.put("bloodborn", bloodbornList);
+            try (Writer writer = new FileWriter(relicDataFile)) {
+                gson.toJson(data, writer);
+            } catch (IOException e) {
+                plugin.getLogger().log(Level.SEVERE, "Failed to persist relic data", e);
+            }
+            changedRelics.clear();
+        }
+    }
+
     public void persistBounds() {
         synchronized (boundCache) {
             Map<String, BoundType> serializable = new LinkedHashMap<>();
@@ -153,6 +252,7 @@ public final class DataStorage {
     public void flushChanges() {
         persistBounds();
         persistSeason();
+        persistRelics();
     }
 
     public BoundType getBound(UUID playerId) {
@@ -232,6 +332,84 @@ public final class DataStorage {
     public Map<UUID, BoundType> getAllBounds() {
         synchronized (boundCache) {
             return Collections.unmodifiableMap(new HashMap<>(boundCache));
+        }
+    }
+
+    public Set<RelicType> getPlayerRelics(UUID uuid) {
+        if (uuid == null) {
+            return Collections.emptySet();
+        }
+        synchronized (relicCache) {
+            Set<RelicType> relics = relicCache.get(uuid);
+            return relics != null ? Collections.unmodifiableSet(new HashSet<>(relics)) : Collections.emptySet();
+        }
+    }
+
+    public boolean hasRelic(UUID uuid, RelicType relic) {
+        if (uuid == null || relic == null) {
+            return false;
+        }
+        synchronized (relicCache) {
+            Set<RelicType> relics = relicCache.get(uuid);
+            return relics != null && relics.contains(relic);
+        }
+    }
+
+    public boolean hasAllRelics(UUID uuid) {
+        if (uuid == null) {
+            return false;
+        }
+        synchronized (relicCache) {
+            Set<RelicType> relics = relicCache.get(uuid);
+            if (relics == null) {
+                return false;
+            }
+            return relics.containsAll(Arrays.asList(
+                RelicType.SPRING_RELIC,
+                RelicType.SUMMER_RELIC,
+                RelicType.AUTUMN_RELIC,
+                RelicType.WINTER_RELIC
+            ));
+        }
+    }
+
+    public void addRelic(UUID uuid, RelicType relic) {
+        if (uuid == null || relic == null) {
+            return;
+        }
+        synchronized (relicCache) {
+            relicCache.computeIfAbsent(uuid, k -> new HashSet<>()).add(relic);
+            changedRelics.add(uuid);
+        }
+    }
+
+    public void grantBloodborn(UUID uuid) {
+        if (uuid == null) {
+            return;
+        }
+        synchronized (relicCache) {
+            bloodbornCache.add(uuid);
+            changedRelics.add(uuid);
+        }
+    }
+
+    public boolean hasBloodborn(UUID uuid) {
+        if (uuid == null) {
+            return false;
+        }
+        synchronized (relicCache) {
+            return bloodbornCache.contains(uuid);
+        }
+    }
+
+    public void clearPlayerRelics(UUID uuid) {
+        if (uuid == null) {
+            return;
+        }
+        synchronized (relicCache) {
+            relicCache.remove(uuid);
+            bloodbornCache.remove(uuid);
+            changedRelics.add(uuid);
         }
     }
 }

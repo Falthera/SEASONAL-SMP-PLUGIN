@@ -3,6 +3,7 @@ package io.github.seasonalsmp.seasonalsmp.event.relic;
 import io.github.seasonalsmp.seasonalsmp.SeasonalSMP;
 import io.github.seasonalsmp.seasonalsmp.bound.BoundType;
 import io.github.seasonalsmp.seasonalsmp.config.ConfigManager;
+import io.github.seasonalsmp.seasonalsmp.data.DataStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -37,42 +38,50 @@ public class RelicPurgeManager {
                 ticksLeft -= 20;
             }
         }.runTaskTimer(plugin, 0L, 20L);
+        DataStorage storage = plugin.getDataStorage();
         List<Player> online = new ArrayList<>(Bukkit.getOnlinePlayers());
-        Map<BoundType, List<Player>> byBound = new HashMap<>();
-        for (Player p : online) {
-            BoundType bound = plugin.getBoundManager().getBound(p);
-            if (bound != null) {
-                byBound.computeIfAbsent(bound, k -> new ArrayList<>()).add(p);
+        for (Player player : online) {
+            UUID uuid = player.getUniqueId();
+            storage.addRelic(uuid, RelicType.SPRING_RELIC);
+            storage.addRelic(uuid, RelicType.SUMMER_RELIC);
+            storage.addRelic(uuid, RelicType.AUTUMN_RELIC);
+            storage.addRelic(uuid, RelicType.WINTER_RELIC);
+            if (storage.hasAllRelics(uuid)) {
+                storage.grantBloodborn(uuid);
             }
-        }
-        Random random = new Random();
-        Map<BoundType, Player> chosen = new HashMap<>();
-        for (Map.Entry<BoundType, List<Player>> entry : byBound.entrySet()) {
-            List<Player> list = entry.getValue();
-            if (list.isEmpty()) {
-                continue;
-            }
-            Player target = list.get(random.nextInt(list.size()));
-            chosen.put(entry.getKey(), target);
-            RelicType relic = RelicType.fromBound(entry.getKey());
-            if (relic != null) {
-                data.addRelic(target, relic);
+            for (RelicType relic : RelicType.values()) {
+                if (relic == RelicType.BLOODBORN_RELIC) {
+                    continue;
+                }
                 ItemStack relicItem = relic.createItem();
-                HashMap<Integer, ItemStack> leftover = target.getInventory().addItem(relicItem);
+                HashMap<Integer, ItemStack> leftover = player.getInventory().addItem(relicItem);
                 if (!leftover.isEmpty()) {
-                    target.sendMessage("§c§lYour inventory is full! Drop something to make room for the relic!");
+                    player.sendMessage("§c§lYour inventory is full! Drop something to make room for the relic!");
                     for (ItemStack drop : leftover.values()) {
-                        Item entity = target.getWorld().dropItemNaturally(target.getLocation(), drop);
+                        Item entity = player.getWorld().dropItemNaturally(player.getLocation(), drop);
                         entity.setPickupDelay(0);
                         entity.setTicksLived(1);
                     }
-                } else {
-                    target.sendMessage("§6§lTHE RELIC OF " + entry.getKey().getDisplayName().toUpperCase() + " §r§6has claimed you!");
                 }
+            }
+            if (storage.hasBloodborn(uuid)) {
+                player.sendMessage("§4§lTHE BLOODBORN RELIC HAS CLAIMED YOU!");
+                ItemStack bloodborn = RelicType.BLOODBORN_RELIC.createItem();
+                HashMap<Integer, ItemStack> leftover = player.getInventory().addItem(bloodborn);
+                if (!leftover.isEmpty()) {
+                    player.sendMessage("§c§lYour inventory is full! Drop something to make room for the Bloodborn Relic!");
+                    for (ItemStack drop : leftover.values()) {
+                        Item entity = player.getWorld().dropItemNaturally(player.getLocation(), drop);
+                        entity.setPickupDelay(0);
+                        entity.setTicksLived(1);
+                    }
+                }
+            } else {
+                player.sendMessage("§6§lALL RELICS HAVE BEEN CLAIMED!");
             }
         }
         Bukkit.broadcastMessage("§c§lRELIC PURGE HAS BEGUN!");
-        Bukkit.broadcastMessage("§7The relics have chosen their bearers...");
+        Bukkit.broadcastMessage("§7All relics have been granted to every player...");
     }
 
     public static void endRelicPurge(SeasonalSMP plugin) {

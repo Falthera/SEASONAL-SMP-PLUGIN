@@ -2,6 +2,7 @@ package io.github.seasonalsmp.seasonalsmp.event;
 
 import io.github.seasonalsmp.seasonalsmp.SeasonalSMP;
 import io.github.seasonalsmp.seasonalsmp.config.ConfigManager;
+import io.github.seasonalsmp.seasonalsmp.data.DataStorage;
 import io.github.seasonalsmp.seasonalsmp.effect.particle.ParticleService;
 import io.github.seasonalsmp.seasonalsmp.event.relic.RelicData;
 import io.github.seasonalsmp.seasonalsmp.event.relic.RelicPurgeManager;
@@ -17,6 +18,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -29,6 +31,7 @@ public class RelicPurgeListener implements Listener {
     private final SeasonalSMP plugin;
     private final ConfigManager configManager;
     private final ParticleService particleService;
+    private final DataStorage dataStorage;
     private BukkitTask passiveTask;
     private BukkitTask passiveEffectsTask;
 
@@ -36,6 +39,7 @@ public class RelicPurgeListener implements Listener {
         this.plugin = plugin;
         this.configManager = plugin.getConfigManager();
         this.particleService = plugin.getEffectManager().getParticleService();
+        this.dataStorage = plugin.getDataStorage();
     }
 
     public void initialize() {
@@ -48,23 +52,20 @@ public class RelicPurgeListener implements Listener {
         passiveTask = new BukkitRunnable() {
             @Override
             public void run() {
-                if (!plugin.isEnabled() || !RelicPurgeManager.isRunning()) {
-                    return;
-                }
-                RelicData data = RelicPurgeManager.getData();
-                if (data == null) {
+                if (!plugin.isEnabled()) {
                     return;
                 }
                 for (Player player : plugin.getServer().getOnlinePlayers()) {
-                    if (data.hasRelic(player, RelicType.BLOODBORN_RELIC)) {
+                    UUID uuid = player.getUniqueId();
+                    if (dataStorage.hasBloodborn(uuid)) {
                         particleService.spawn(player.getLocation(), Particle.TOTEM_OF_UNDYING, 10, 0.5);
-                    } else if (data.hasRelic(player, RelicType.SPRING_RELIC)) {
+                    } else if (dataStorage.hasRelic(uuid, RelicType.SPRING_RELIC)) {
                         particleService.spawn(player.getLocation(), Particle.HEART, 3, 0.5);
-                    } else if (data.hasRelic(player, RelicType.SUMMER_RELIC)) {
+                    } else if (dataStorage.hasRelic(uuid, RelicType.SUMMER_RELIC)) {
                         particleService.spawn(player.getLocation(), Particle.FLAME, 3, 0.5);
-                    } else if (data.hasRelic(player, RelicType.AUTUMN_RELIC)) {
+                    } else if (dataStorage.hasRelic(uuid, RelicType.AUTUMN_RELIC)) {
                         particleService.spawn(player.getLocation(), Particle.CRIT, 3, 0.5);
-                    } else if (data.hasRelic(player, RelicType.WINTER_RELIC)) {
+                    } else if (dataStorage.hasRelic(uuid, RelicType.WINTER_RELIC)) {
                         particleService.spawn(player.getLocation(), Particle.SNOWFLAKE, 3, 0.5);
                     }
                 }
@@ -76,27 +77,21 @@ public class RelicPurgeListener implements Listener {
         passiveEffectsTask = new BukkitRunnable() {
             @Override
             public void run() {
-                if (!plugin.isEnabled() || !RelicPurgeManager.isRunning()) {
-                    return;
-                }
-                RelicData data = RelicPurgeManager.getData();
-                if (data == null) {
+                if (!plugin.isEnabled()) {
                     return;
                 }
                 for (Player player : plugin.getServer().getOnlinePlayers()) {
-                    if (!RelicPurgeManager.isRunning()) {
-                        continue;
-                    }
-                    if (data.hasRelic(player, RelicType.SPRING_RELIC)) {
+                    UUID uuid = player.getUniqueId();
+                    if (dataStorage.hasRelic(uuid, RelicType.SPRING_RELIC)) {
                         player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 60, 0));
                     }
-                    if (data.hasRelic(player, RelicType.SUMMER_RELIC)) {
+                    if (dataStorage.hasRelic(uuid, RelicType.SUMMER_RELIC)) {
                         player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 60, 0));
                     }
-                    if (data.hasRelic(player, RelicType.AUTUMN_RELIC)) {
+                    if (dataStorage.hasRelic(uuid, RelicType.AUTUMN_RELIC)) {
                         player.addPotionEffect(new PotionEffect(PotionEffectType.LUCK, 60, 0));
                     }
-                    if (data.hasRelic(player, RelicType.WINTER_RELIC)) {
+                    if (dataStorage.hasRelic(uuid, RelicType.WINTER_RELIC)) {
                         player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 60, 0));
                     }
                 }
@@ -106,9 +101,6 @@ public class RelicPurgeListener implements Listener {
 
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
-        if (!RelicPurgeManager.isRunning()) {
-            return;
-        }
         RelicData data = RelicPurgeManager.getData();
         if (data == null) {
             return;
@@ -121,45 +113,20 @@ public class RelicPurgeListener implements Listener {
         if (killer.getUniqueId().equals(entity.getUniqueId())) {
             return;
         }
-        if (data.hasRelic(killer, RelicType.BLOODBORN_RELIC)) {
+        if (dataStorage.hasBloodborn(killer.getUniqueId())) {
             event.setDroppedExp(event.getDroppedExp() * 4);
         }
     }
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
-        if (!RelicPurgeManager.isRunning()) {
-            return;
-        }
-        RelicData data = RelicPurgeManager.getData();
-        if (data == null) {
-            return;
-        }
-        Player victim = event.getEntity();
-        Player killer = victim.getKiller();
-        if (killer != null && !killer.getUniqueId().equals(victim.getUniqueId())) {
-            if (data.hasRelic(victim, RelicType.SPRING_RELIC)) {
-                data.addRelic(killer, RelicType.SPRING_RELIC);
-            } else if (data.hasRelic(victim, RelicType.SUMMER_RELIC)) {
-                data.addRelic(killer, RelicType.SUMMER_RELIC);
-            } else if (data.hasRelic(victim, RelicType.AUTUMN_RELIC)) {
-                data.addRelic(killer, RelicType.AUTUMN_RELIC);
-            } else if (data.hasRelic(victim, RelicType.WINTER_RELIC)) {
-                data.addRelic(killer, RelicType.WINTER_RELIC);
-            }
-            if (data.hasAllRelics(killer)) {
-                data.grantBloodbornRelic(killer);
-                Bukkit.broadcastMessage("§4§l" + killer.getName() + " §r§4has collected all 4 relics and become BLOODBORN!");
-            }
-        }
         if (configManager.getBoolean("relic-purge.drop-on-death", true)) {
-            dropRelicsOnDeath(victim, data);
+            dropRelicsOnDeath(event.getEntity());
         }
-        data.clearPlayer(victim);
     }
 
-    private void dropRelicsOnDeath(Player victim, RelicData data) {
-        Set<RelicType> relics = data.getPlayerRelics(victim.getUniqueId());
+    private void dropRelicsOnDeath(Player victim) {
+        Set<RelicType> relics = dataStorage.getPlayerRelics(victim.getUniqueId());
         if (relics == null || relics.isEmpty()) {
             return;
         }
@@ -198,12 +165,14 @@ public class RelicPurgeListener implements Listener {
         }
         event.setCancelled(true);
         Player player = (Player) event.getView().getPlayer();
+        UUID uuid = player.getUniqueId();
         for (ItemStack item : matrix) {
             if (item != null && !item.getType().isAir()) {
                 item.setAmount(item.getAmount() - 1);
             }
         }
-        data.grantBloodbornRelic(player);
+        dataStorage.addRelic(uuid, RelicType.BLOODBORN_RELIC);
+        dataStorage.grantBloodborn(uuid);
         ItemStack bloodborn = RelicType.BLOODBORN_RELIC.createItem();
         HashMap<Integer, ItemStack> leftover = player.getInventory().addItem(bloodborn);
         if (!leftover.isEmpty()) {
@@ -219,9 +188,6 @@ public class RelicPurgeListener implements Listener {
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-        if (!RelicPurgeManager.isRunning()) {
-            return;
-        }
         RelicData data = RelicPurgeManager.getData();
         if (data == null) {
             return;
@@ -240,13 +206,13 @@ public class RelicPurgeListener implements Listener {
         if (damager == null || damager.getUniqueId().equals(victim.getUniqueId())) {
             return;
         }
-        if (data.hasRelic(damager, RelicType.SUMMER_RELIC)) {
+        if (dataStorage.hasRelic(damager.getUniqueId(), RelicType.SUMMER_RELIC)) {
             event.setDamage(event.getDamage() * 1.5);
         }
-        if (data.hasRelic(damager, RelicType.AUTUMN_RELIC)) {
+        if (dataStorage.hasRelic(damager.getUniqueId(), RelicType.AUTUMN_RELIC)) {
             event.setDamage(event.getDamage() * 1.25);
         }
-        if (data.hasRelic(damager, RelicType.BLOODBORN_RELIC)) {
+        if (dataStorage.hasRelic(damager.getUniqueId(), RelicType.BLOODBORN_RELIC)) {
             event.setDamage(event.getDamage() * 4.0);
         }
     }

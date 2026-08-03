@@ -85,7 +85,7 @@ public final class SeasonalSMP extends JavaPlugin {
             configManager = new ConfigManager(this);
             uiManager = new UIManager(this);
             dataStorage = new io.github.seasonalsmp.seasonalsmp.data.DataStorage(this);
-            seasonManager = new SeasonManager(this);
+            seasonManager = new SeasonManager(this, dataStorage);
             effectManager = new EffectManager(this);
             swordManager = new SwordManager(this);
             seasonalBladeManager = new SeasonalBladeManager(this);
@@ -468,5 +468,9 @@ public final class SeasonalSMP extends JavaPlugin {
 
     public TrustManager getTrustManager() {
         return trustManager;
+    }
+
+    public DataStorage getDataStorage() {
+        return dataStorage;
     }
 }

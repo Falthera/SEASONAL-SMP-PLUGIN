@@ -14,10 +14,10 @@ public class SeasonManager {
     private Season currentSeason;
     private long seasonStartTime;
 
-    public SeasonManager(SeasonalSMP plugin) {
+    public SeasonManager(SeasonalSMP plugin, io.github.seasonalsmp.seasonalsmp.data.DataStorage dataStorage) {
         this.plugin = Objects.requireNonNull(plugin, "plugin");
         this.configManager = plugin.getConfigManager();
-        this.dataService = new SeasonDataService(plugin, new io.github.seasonalsmp.seasonalsmp.data.DataStorage(plugin));
+        this.dataService = new SeasonDataService(plugin, dataStorage);
         this.currentSeason = Season.fromString(configManager.getString("season.start-season", "SPRING"));
         if (currentSeason == null) {
             currentSeason = Season.SPRING;
