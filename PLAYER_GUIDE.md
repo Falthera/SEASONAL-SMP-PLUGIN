@@ -5,7 +5,7 @@ On first join, you are automatically assigned a **Bound** — your elemental aff
 
 | Bound | Element | Passive Effect | Season Bonus | Season Penalty |
 |-------|---------|----------------|--------------|----------------|
-| **Spring** | Bloom | Regeneration I + Speed I | Spring: Speed I (8 min) | Other seasons: Hunger |
+| **Spring** | Bloom | Regeneration I + Speed I | Spring: Speed I (permanent) | Other seasons: Hunger |
 | **Summer** | Solar | Fire Resistance I | Summer: Fire Res + Strength | Other seasons: Slowness |
 | **Autumn** | Harvest | Hero of the Village | Autumn: Haste | Other seasons: Slowness |
 | **Winter** | Frost | Resistance I | Winter: Resistance | Other seasons: Hunger |
@@ -80,6 +80,7 @@ The world cycles through **4 seasons** every **2 hours**. Each season changes we
 - A boss bar at the top of your screen always shows the current season
 - Season transitions are announced server-wide with a sound and particle effect
 - Your bound's passive effects change based on the current season (see Bounds table above)
+- **Spring players get permanent Speed I** while in Spring season. Any Speed II is automatically downgraded to Speed I (8 min).
 - In Summer, Summer players melt nearby ice and snow just by being near it
 
 ---

@@ -81,7 +81,13 @@ public class SpringBoundHandler {
         }
         if (currentSeason == Season.SPRING) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 120, 0));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 9600, 0));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 144000, 0));
+            for (PotionEffect effect : player.getActivePotionEffects()) {
+                if (effect.getType() == PotionEffectType.SPEED && effect.getAmplifier() > 0) {
+                    player.removePotionEffect(PotionEffectType.SPEED);
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 9600, 0));
+                }
+            }
         } else {
             player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 120, 0));
         }
