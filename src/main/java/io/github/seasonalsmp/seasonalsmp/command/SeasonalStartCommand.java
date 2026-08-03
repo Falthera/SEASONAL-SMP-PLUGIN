@@ -9,6 +9,7 @@ import io.github.seasonalsmp.seasonalsmp.season.Season;
 import io.github.seasonalsmp.seasonalsmp.gui.UIManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
+import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -146,7 +147,7 @@ public class SeasonalStartCommand implements CommandExecutor {
                                 Location fireworkLoc = center.clone().add(x, 4 + i * 0.5, z);
                                 Firework firework = center.getWorld().spawn(fireworkLoc, Firework.class);
                                 FireworkMeta meta = firework.getFireworkMeta();
-                                Firework.FireworkEffect effect = Firework.FireworkEffect.builder()
+                                FireworkEffect effect = FireworkEffect.builder()
                                         .withColor(color)
                                         .withFade(Color.WHITE)
                                         .with(FireworkEffect.Type.BURST)
