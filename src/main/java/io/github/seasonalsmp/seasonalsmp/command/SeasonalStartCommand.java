@@ -146,7 +146,7 @@ public class SeasonalStartCommand implements CommandExecutor {
                                 Location fireworkLoc = center.clone().add(x, 4 + i * 0.5, z);
                                 Firework firework = center.getWorld().spawn(fireworkLoc, Firework.class);
                                 FireworkMeta meta = firework.getFireworkMeta();
-                                FireworkEffect effect = FireworkEffect.builder()
+                                Firework.FireworkEffect effect = Firework.FireworkEffect.builder()
                                         .withColor(color)
                                         .withFade(Color.WHITE)
                                         .with(FireworkEffect.Type.BURST)
