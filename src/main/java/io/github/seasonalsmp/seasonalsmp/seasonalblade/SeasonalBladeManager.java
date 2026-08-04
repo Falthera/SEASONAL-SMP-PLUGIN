@@ -75,12 +75,15 @@ public class SeasonalBladeManager {
             PersistentDataType.STRING,
             "seasonal_blade"
         );
-        meta.addEnchant(Enchantment.SHARPNESS, 6, true);
+        meta.addEnchant(Enchantment.SHARPNESS, 5, true);
         meta.addEnchant(Enchantment.LOOTING, 3, true);
         meta.addEnchant(Enchantment.UNBREAKING, 3, true);
         meta.addEnchant(Enchantment.FIRE_ASPECT, 2, true);
         meta.addEnchant(Enchantment.MENDING, 1, true);
         meta.addEnchant(Enchantment.SWEEPING_EDGE, 3, true);
+        meta.addEnchant(Enchantment.DENSITY, 2, true);
+        meta.addEnchant(Enchantment.WIND_BURST, 1, true);
+        meta.addEnchant(Enchantment.BREACH, 2, true);
         item.setItemMeta(meta);
         return item;
     }

@@ -2,6 +2,7 @@ package io.github.seasonalsmp.seasonalsmp.combat;
 
 import io.github.seasonalsmp.seasonalsmp.SeasonalSMP;
 import io.github.seasonalsmp.seasonalsmp.config.ConfigManager;
+import io.github.seasonalsmp.seasonalsmp.seasonalblade.SeasonalBladeType;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -23,12 +24,16 @@ public class CombatManager {
 
     private static final long COMBAT_DURATION_TICKS = 300L;
     private final long combatDurationMs;
+    private final int maxSharpnessLevel;
+    private final int maxMaceDensity;
 
     public CombatManager(SeasonalSMP plugin) {
         this.plugin = plugin;
         this.configManager = plugin.getConfigManager();
         this.combatTracker = new ConcurrentHashMap<>();
         this.combatDurationMs = configManager.getLong("combat.combat-duration-seconds", 15) * 1000L;
+        this.maxSharpnessLevel = configManager.getInt("combat.max-sharpness-level", 5);
+        this.maxMaceDensity = configManager.getInt("combat.max-mace-density", 1);
         startCleanupTask();
     }
 
@@ -129,7 +134,12 @@ public class CombatManager {
         }
 
         if (type == Material.MACE) {
-            return item.getEnchantmentLevel(Enchantment.DENSITY) > 4;
+            if (SeasonalBladeType.isSeasonalBlade(item)) {
+                return item.getEnchantmentLevel(Enchantment.DENSITY) > 2
+                    || item.getEnchantmentLevel(Enchantment.WIND_BURST) > 1
+                    || item.getEnchantmentLevel(Enchantment.BREACH) > 2;
+            }
+            return item.getEnchantmentLevel(Enchantment.DENSITY) > maxMaceDensity;
         }
 
         if (type == Material.TRIDENT) {
@@ -163,7 +173,7 @@ public class CombatManager {
         if (mainHand == null || mainHand.getType().isAir()) {
             return false;
         }
-        return mainHand.getEnchantmentLevel(Enchantment.SHARPNESS) > 4;
+        return mainHand.getEnchantmentLevel(Enchantment.SHARPNESS) > maxSharpnessLevel;
     }
 
     public boolean hasIllegalPickaxe(Player player) {

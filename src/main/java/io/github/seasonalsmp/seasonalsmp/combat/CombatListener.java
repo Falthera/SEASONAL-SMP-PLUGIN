@@ -1,6 +1,8 @@
 package io.github.seasonalsmp.seasonalsmp.combat;
 
 import io.github.seasonalsmp.seasonalsmp.SeasonalSMP;
+import io.github.seasonalsmp.seasonalsmp.config.ConfigManager;
+import io.github.seasonalsmp.seasonalsmp.seasonalblade.SeasonalBladeType;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -177,7 +179,13 @@ public class CombatListener implements Listener {
         }
 
         if (type == Material.MACE) {
-            return item.getEnchantmentLevel(Enchantment.DENSITY) > 4;
+            int maxMaceDensity = plugin.getConfigManager().getInt("combat.max-mace-density", 1);
+            if (SeasonalBladeType.isSeasonalBlade(item)) {
+                return item.getEnchantmentLevel(Enchantment.DENSITY) > 2
+                    || item.getEnchantmentLevel(Enchantment.WIND_BURST) > 1
+                    || item.getEnchantmentLevel(Enchantment.BREACH) > 2;
+            }
+            return item.getEnchantmentLevel(Enchantment.DENSITY) > maxMaceDensity;
         }
 
         if (type == Material.TRIDENT) {
