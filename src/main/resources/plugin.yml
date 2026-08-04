@@ -76,6 +76,11 @@ commands:
     usage: /<command>
     aliases: [boundability]
     permission: seasonalsmp.command.bound
+  swordability:
+    description: Activate your sword ability
+    usage: /<command>
+    aliases: [swordability]
+    permission: seasonalsmp.command.bound
   changebound:
     description: Change a player's bound
     usage: /<command> <player> <season>

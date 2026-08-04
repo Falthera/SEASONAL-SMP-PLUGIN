@@ -10,7 +10,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.CraftingInventory;
@@ -199,22 +198,6 @@ public class SeasonalBladeListener implements Listener {
         } else {
             item.setAmount(item.getAmount() - 1);
         }
-    }
-
-    @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
-        if (player == null) {
-            return;
-        }
-        if (!bladeManager.isSeasonalBlade(player.getInventory().getItemInMainHand())) {
-            return;
-        }
-        if (event.getAction() != org.bukkit.event.block.Action.RIGHT_CLICK_AIR && event.getAction() != org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK) {
-            return;
-        }
-        event.setCancelled(true);
-        bladeManager.activateAbility(player);
     }
 
     @EventHandler

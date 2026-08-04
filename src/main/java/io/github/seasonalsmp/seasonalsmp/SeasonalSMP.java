@@ -17,6 +17,7 @@ import io.github.seasonalsmp.seasonalsmp.combat.CombatListener;
 import io.github.seasonalsmp.seasonalsmp.command.SeasonalStartCommand;
 import io.github.seasonalsmp.seasonalsmp.command.TrustCommand;
 import io.github.seasonalsmp.seasonalsmp.command.DiscordBotDebugCommand;
+import io.github.seasonalsmp.seasonalsmp.command.SwordAbilityCommand;
 import io.github.seasonalsmp.seasonalsmp.config.ConfigManager;
 import io.github.seasonalsmp.seasonalsmp.core.PluginManager;
 import io.github.seasonalsmp.seasonalsmp.data.DataStorage;
@@ -219,6 +220,10 @@ public final class SeasonalSMP extends JavaPlugin {
         org.bukkit.command.PluginCommand ability = getCommand("ability");
         if (ability != null) {
             ability.setExecutor(new AbilityCommand(this));
+        }
+        org.bukkit.command.PluginCommand swordAbility = getCommand("swordability");
+        if (swordAbility != null) {
+            swordAbility.setExecutor(new SwordAbilityCommand(this));
         }
         org.bukkit.command.PluginCommand changebound = getCommand("changebound");
         if (changebound != null) {
