@@ -28,7 +28,7 @@ bound:
   save-bound-data: true
 
 swords:
-  give-on-bound-assign: true
+  give-on-bound-assign: false
   unbreakable: true
   cooldown-seconds:
     bloom: 60

@@ -11,7 +11,6 @@ import io.github.seasonalsmp.seasonalsmp.effect.sound.SoundService;
 import io.github.seasonalsmp.seasonalsmp.gui.MessageService;
 import io.github.seasonalsmp.seasonalsmp.gui.UIManager;
 import io.github.seasonalsmp.seasonalsmp.season.Season;
-import io.github.seasonalsmp.seasonalsmp.sword.SwordManager;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -24,7 +23,6 @@ public class BoundManager {
     private final BoundDataService boundDataService;
     private final MessageService messageService;
     private final UIManager uiManager;
-    private final SwordManager swordManager;
     private final SoundService soundService;
     private final SpringBoundHandler springHandler;
     private final SummerBoundHandler summerHandler;
@@ -40,7 +38,6 @@ public class BoundManager {
         this.boundDataService.initialize();
         this.messageService = new MessageService(plugin);
         this.uiManager = plugin.getUIManager();
-        this.swordManager = plugin.getSwordManager();
         this.soundService = new SoundService(plugin);
         this.springHandler = new SpringBoundHandler(plugin);
         this.summerHandler = new SummerBoundHandler(plugin);
@@ -118,9 +115,6 @@ public class BoundManager {
             messageService.send(player, "bound.assign.first-join",
                 Map.of("bound", bound.getColorCode(), "bound_name", bound.getDisplayName()));
             soundService.play(player, "transition");
-            if (configManager.getBoolean("swords.give-on-bound-assign")) {
-                swordManager.giveSword(player, bound);
-            }
             uiManager.updateBossBar(player, plugin.getSeasonManager().getCurrentSeason());
         });
         return true;
@@ -138,9 +132,6 @@ public class BoundManager {
             messageService.send(player, "bound.assign.first-join",
                 Map.of("bound", bound.getColorCode(), "bound_name", bound.getDisplayName()));
             soundService.play(player, "transition");
-            if (configManager.getBoolean("swords.give-on-bound-assign")) {
-                swordManager.giveSword(player, bound);
-            }
             uiManager.updateBossBar(player, plugin.getSeasonManager().getCurrentSeason());
         });
     }
