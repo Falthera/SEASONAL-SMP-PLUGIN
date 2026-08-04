@@ -97,7 +97,7 @@ public class AutumnBoundHandler {
             particleService.spawnCircle(center, radius * 0.7, Particle.SOUL, 70, 0.8);
             particleService.spawnSphere(center, radius * 0.8, Particle.CRIT, 60);
             center.getWorld().playSound(center, Sound.ENTITY_WITHER_DEATH, 2.0f, 0.8f);
-            center.getWorld().playSound(center, Sound.BLOCK_LEAVES_BREAK, 2.0f, 1.2f);
+            center.getWorld().playSound(center, Sound.BLOCK_GRASS_BREAK, 2.0f, 1.2f);
         }
         player.sendMessage("§6§lAutumn's End §7consumed §e" + marked.size() + " §7marked targets!");
     }

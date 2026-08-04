@@ -43,7 +43,7 @@ public class AutumnHitListener implements Listener {
         int newStacks = autumnHandler.getStacks(victim);
         if (newStacks > oldStacks && newStacks > 0) {
             String stackText = "§6§lFalling Leaves §7[§e" + newStacks + "§7/§e5§7]";
-            attacker.spigot().sendMessage(Component.text(stackText));
+            attacker.sendMessage(Component.text(stackText));
         }
     }
 }
