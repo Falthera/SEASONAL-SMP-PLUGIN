@@ -2,6 +2,8 @@ package io.github.seasonalsmp.seasonalsmp;
 
 import io.github.seasonalsmp.seasonalsmp.bound.BoundManager;
 import io.github.seasonalsmp.seasonalsmp.bound.BoundType;
+import io.github.seasonalsmp.seasonalsmp.bound.autumn.AutumnHitListener;
+import io.github.seasonalsmp.seasonalsmp.bound.BoundType;
 import io.github.seasonalsmp.seasonalsmp.command.AbilityCommand;
 import io.github.seasonalsmp.seasonalsmp.command.BoundCommand;
 import io.github.seasonalsmp.seasonalsmp.command.BoundCommandTabCompleter;
@@ -188,6 +190,7 @@ public final class SeasonalSMP extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new LegendaryItemProtectionListener(this, swordManager), this);
         Bukkit.getPluginManager().registerEvents(new SpearBlockerListener(this), this);
         Bukkit.getPluginManager().registerEvents(new PrivateMessagePrivacyListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new AutumnHitListener(this, getBoundManager().getAutumnHandler()), this);
         io.github.seasonalsmp.seasonalsmp.event.RelicPurgeListener relicListener = new io.github.seasonalsmp.seasonalsmp.event.RelicPurgeListener(this);
         relicListener.initialize();
         Bukkit.getPluginManager().registerEvents(new io.github.seasonalsmp.seasonalsmp.event.InvisibleKillerListener(this), this);

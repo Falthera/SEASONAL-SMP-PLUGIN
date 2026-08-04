@@ -33,7 +33,7 @@ swords:
   cooldown-seconds:
     bloom: 60
     solar-burst: 45
-    harvest: 50
+    harvest: 75
     frozen-heart: 40
   global-cooldown-ticks: 10
   ability-radius: 8.0

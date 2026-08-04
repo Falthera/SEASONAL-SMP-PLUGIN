@@ -71,6 +71,10 @@ public class BoundManager {
         saveAll();
     }
 
+    public AutumnBoundHandler getAutumnHandler() {
+        return autumnHandler;
+    }
+
     public void applyActiveEffects(Player player) {
         if (player == null || !player.isOnline()) {
             return;
