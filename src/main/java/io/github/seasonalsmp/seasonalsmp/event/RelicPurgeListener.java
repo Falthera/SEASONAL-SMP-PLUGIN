@@ -200,7 +200,8 @@ public class RelicPurgeListener implements Listener {
         UUID uuid = player.getUniqueId();
         for (ItemStack item : matrix) {
             if (item != null && !item.getType().isAir()) {
-                item.setAmount(item.getAmount() - 1);
+                ItemStack toRemove = new ItemStack(item.getType(), 1);
+                player.getInventory().removeItem(toRemove);
             }
         }
         dataStorage.addRelic(uuid, RelicType.BLOODBORN_RELIC);

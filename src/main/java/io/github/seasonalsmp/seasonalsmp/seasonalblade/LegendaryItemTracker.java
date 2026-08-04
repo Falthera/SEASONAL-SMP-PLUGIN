@@ -10,6 +10,7 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class LegendaryItemTracker {
 
@@ -36,7 +37,7 @@ public class LegendaryItemTracker {
             dataDir.mkdirs();
         }
         this.dataFile = new File(dataDir, DATA_FILENAME);
-        this.craftedItems = new HashMap<>();
+        this.craftedItems = new ConcurrentHashMap<>();
         load();
     }
 
@@ -91,7 +92,8 @@ public class LegendaryItemTracker {
 
     private void save() {
         try (Writer writer = new FileWriter(dataFile)) {
-            gson.toJson(craftedItems, writer);
+            Map<String, Boolean> snapshot = new LinkedHashMap<>(craftedItems);
+            gson.toJson(snapshot, writer);
         } catch (Exception e) {
             plugin.getLogger().warning("Failed to save legendary item tracker: " + e.getMessage());
         }

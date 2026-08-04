@@ -99,6 +99,7 @@ public final class SeasonalSMP extends JavaPlugin {
             boundManager = new BoundManager(this, dataStorage);
             configManager.loadAll();
             dataStorage.initialize();
+            gracePeriodManager.load();
             seasonManager.initialize();
             boundManager.loadAll();
             swordManager.initialize();

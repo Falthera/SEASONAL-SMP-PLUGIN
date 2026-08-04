@@ -51,7 +51,6 @@ public class SwordAbilityCommand implements CommandExecutor {
                 return true;
             }
             seasonalBladeManager.activateAbility(player);
-            swordManager.setCooldown(player, configManager.getInt("swords.cooldown-seconds.bloom", 60));
             return true;
         }
 

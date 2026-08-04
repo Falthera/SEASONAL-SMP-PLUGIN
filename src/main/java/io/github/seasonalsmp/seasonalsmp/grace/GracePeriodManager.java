@@ -19,6 +19,9 @@ public class GracePeriodManager {
         this.plugin = plugin;
         this.active = false;
         this.endTime = 0L;
+    }
+
+    public void load() {
         long savedEndTime = plugin.getDataStorage().getGraceEndTime();
         if (savedEndTime > System.currentTimeMillis()) {
             this.endTime = savedEndTime;

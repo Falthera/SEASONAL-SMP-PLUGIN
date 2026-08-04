@@ -326,12 +326,14 @@ public final class DataStorage {
     }
 
     public void persistGrace() {
-        try (Writer writer = new OutputStreamWriter(new FileOutputStream(graceDataFile), StandardCharsets.UTF_8)) {
-            Map<String, Object> data = new LinkedHashMap<>();
-            data.put("graceEndTime", graceEndTime);
-            gson.toJson(data, writer);
-        } catch (IOException e) {
-            plugin.getLogger().log(Level.SEVERE, "Failed to persist grace data", e);
+        synchronized (this) {
+            try (Writer writer = new OutputStreamWriter(new FileOutputStream(graceDataFile), StandardCharsets.UTF_8)) {
+                Map<String, Object> data = new LinkedHashMap<>();
+                data.put("graceEndTime", graceEndTime);
+                gson.toJson(data, writer);
+            } catch (IOException e) {
+                plugin.getLogger().log(Level.SEVERE, "Failed to persist grace data", e);
+            }
         }
     }
 
@@ -442,13 +444,15 @@ public final class DataStorage {
     }
 
     public void persistSeason() {
-        try (Writer writer = new OutputStreamWriter(new FileOutputStream(seasonDataFile), StandardCharsets.UTF_8)) {
-            Map<String, Object> data = new LinkedHashMap<>();
-            data.put("season", savedSeason != null ? savedSeason.name() : null);
-            data.put("day", savedDay);
-            gson.toJson(data, writer);
-        } catch (IOException e) {
-            plugin.getLogger().log(Level.SEVERE, "Failed to persist season data", e);
+        synchronized (this) {
+            try (Writer writer = new OutputStreamWriter(new FileOutputStream(seasonDataFile), StandardCharsets.UTF_8)) {
+                Map<String, Object> data = new LinkedHashMap<>();
+                data.put("season", savedSeason != null ? savedSeason.name() : null);
+                data.put("day", savedDay);
+                gson.toJson(data, writer);
+            } catch (IOException e) {
+                plugin.getLogger().log(Level.SEVERE, "Failed to persist season data", e);
+            }
         }
     }
 

@@ -155,11 +155,7 @@ public class SeasonalBladeListener implements Listener {
                 player.spawnParticle(org.bukkit.Particle.FIREWORK, player.getLocation().add(x, y, z), 10, 0.2, 0.2, 0.2, 0.1);
             }
             Bukkit.broadcastMessage(formatOminousMessage(player.getName(), "§6§lSeasonal Blade"));
-            consumeItem(matrix, 1);
-            consumeItem(matrix, 3);
-            consumeItem(matrix, 4);
-            consumeItem(matrix, 5);
-            consumeItem(matrix, 7);
+            consumeItemsFromInventory(player, matrix);
         } else if (recipe instanceof org.bukkit.inventory.ShapedRecipe shaped && shaped.getKey().getKey().equals("minecraft:mace")) {
             if (!bladeManager.canCraftMace()) {
                 event.setCancelled(true);
@@ -169,6 +165,19 @@ public class SeasonalBladeListener implements Listener {
             }
             bladeManager.markMaceCrafted();
             Bukkit.broadcastMessage(formatOminousMessage(player.getName(), "§b§lMace"));
+        }
+    }
+
+    private void consumeItemsFromInventory(Player player, ItemStack[] matrix) {
+        for (ItemStack item : matrix) {
+            if (item == null || item.getType().isAir()) {
+                continue;
+            }
+            int amountToRemove = item.getAmount();
+            if (amountToRemove <= 0) {
+                continue;
+            }
+            player.getInventory().removeItem(item);
         }
     }
 
