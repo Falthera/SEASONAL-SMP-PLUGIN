@@ -113,4 +113,18 @@ public class BoundDataService {
         }
         return storage.getAllBounds();
     }
+
+    public boolean hasBoundChangeCooldown(UUID uuid) {
+        if (!initialized || uuid == null) {
+            return false;
+        }
+        return storage.hasBoundChangeCooldown(uuid);
+    }
+
+    public void setBoundChangeCooldown(UUID uuid, long expiryMillis) {
+        if (!initialized || uuid == null) {
+            return;
+        }
+        storage.setBoundChangeCooldown(uuid, expiryMillis);
+    }
 }

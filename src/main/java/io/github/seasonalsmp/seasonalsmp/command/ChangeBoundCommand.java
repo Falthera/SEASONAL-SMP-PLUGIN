@@ -58,7 +58,25 @@ public class ChangeBoundCommand implements CommandExecutor {
             return true;
         }
 
-        plugin.getBoundManager().assignBound(target, bound);
+        BoundType currentBound = plugin.getBoundManager().getBound(target);
+        if (currentBound == bound) {
+            sender.sendMessage("§c" + target.getName() + " is already bound to " + bound.getColorCode() + "§l" + bound.getDisplayName() + "§c!");
+            return true;
+        }
+
+        if (!isAdmin && !plugin.getBoundManager().canChangeBound(target.getUniqueId())) {
+            sender.sendMessage("§cYou must wait before changing your bound again!");
+            return true;
+        }
+
+        plugin.getBoundManager().forceAssignBound(target, bound);
+
+        if (!isAdmin) {
+            long cooldownDays = configManager.getLong("bound.change-command-cooldown-days", 7);
+            long cooldownMillis = cooldownDays * 24L * 60L * 60L * 1000L;
+            plugin.getBoundManager().setBoundChangeCooldown(target.getUniqueId(), System.currentTimeMillis() + cooldownMillis);
+        }
+
         if (sender == target) {
             sender.sendMessage("§aYour bound has been changed to " + bound.getColorCode() + "§l" + bound.getDisplayName() + "§a!");
         } else {

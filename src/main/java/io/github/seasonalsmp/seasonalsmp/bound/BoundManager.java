@@ -170,6 +170,20 @@ public class BoundManager {
         boundDataService.loadAll();
     }
 
+    public boolean canChangeBound(UUID uuid) {
+        if (uuid == null) {
+            return false;
+        }
+        return !boundDataService.hasBoundChangeCooldown(uuid);
+    }
+
+    public void setBoundChangeCooldown(UUID uuid, long expiryMillis) {
+        if (uuid == null) {
+            return;
+        }
+        boundDataService.setBoundChangeCooldown(uuid, expiryMillis);
+    }
+
     public void activateAbility(Player player, BoundType bound, boolean swordAbility) {
         if (player == null || bound == null) {
             return;

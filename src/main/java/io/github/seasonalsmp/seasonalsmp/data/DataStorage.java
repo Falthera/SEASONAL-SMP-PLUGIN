@@ -31,6 +31,7 @@ public final class DataStorage {
     private final Map<UUID, Set<RelicType>> relicCache;
     private final Set<UUID> bloodbornCache;
     private final Set<UUID> changedRelics;
+    private final Map<UUID, Long> boundChangeCooldowns;
     private volatile long graceEndTime;
     private Season savedSeason;
     private int savedDay;
@@ -39,6 +40,7 @@ public final class DataStorage {
     private static final String SEASON_DATA_FILENAME = "season.json";
     private static final String RELIC_DATA_FILENAME = "relics.json";
     private static final String GRACE_DATA_FILENAME = "grace.json";
+    private static final String BOUND_CHANGE_COOLDOWN_FILENAME = "bound_change_cooldowns.json";
 
     public DataStorage(SeasonalSMP plugin) {
         this.plugin = plugin;
@@ -53,6 +55,7 @@ public final class DataStorage {
         this.relicCache = new HashMap<>();
         this.bloodbornCache = new HashSet<>();
         this.changedRelics = new HashSet<>();
+        this.boundChangeCooldowns = new HashMap<>();
         this.graceEndTime = 0L;
         this.savedSeason = null;
         this.savedDay = 1;
@@ -95,6 +98,13 @@ public final class DataStorage {
                     gson.toJson(seedData, writer);
                 }
             }
+            File boundChangeCooldownFile = new File(dataDir, BOUND_CHANGE_COOLDOWN_FILENAME);
+            if (!boundChangeCooldownFile.exists()) {
+                boundChangeCooldownFile.createNewFile();
+                try (Writer writer = new OutputStreamWriter(new FileOutputStream(boundChangeCooldownFile), StandardCharsets.UTF_8)) {
+                    gson.toJson(Collections.emptyMap(), writer);
+                }
+            }
             loadAllFromDisk();
         } catch (IOException e) {
             plugin.getLogger().log(Level.SEVERE, "Failed to initialize data storage", e);
@@ -110,6 +120,7 @@ public final class DataStorage {
         loadSeasonFromDisk();
         loadRelicsFromDisk();
         loadGraceFromDisk();
+        loadBoundChangeCooldownsFromDisk();
         validateAndMigrate();
     }
 
@@ -322,6 +333,71 @@ public final class DataStorage {
         } catch (IOException e) {
             plugin.getLogger().log(Level.SEVERE, "Failed to persist grace data", e);
         }
+    }
+
+    public void loadBoundChangeCooldownsFromDisk() {
+        File cooldownFile = new File(dataDir, BOUND_CHANGE_COOLDOWN_FILENAME);
+        if (!cooldownFile.exists()) {
+            return;
+        }
+        try (Reader reader = new FileReader(cooldownFile)) {
+            Type type = new TypeToken<Map<String, Long>>() {
+            }.getType();
+            Map<String, Long> raw = gson.fromJson(reader, type);
+            if (raw != null) {
+                synchronized (boundChangeCooldowns) {
+                    boundChangeCooldowns.clear();
+                    long now = System.currentTimeMillis();
+                    for (Map.Entry<String, Long> entry : raw.entrySet()) {
+                        try {
+                            UUID uuid = UUID.fromString(entry.getKey());
+                            long expiry = entry.getValue();
+                            if (expiry > now) {
+                                boundChangeCooldowns.put(uuid, expiry);
+                            }
+                        } catch (IllegalArgumentException ignored) {
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            plugin.getLogger().log(Level.SEVERE, "Failed to load bound change cooldowns", e);
+        }
+    }
+
+    public void persistBoundChangeCooldowns() {
+        synchronized (boundChangeCooldowns) {
+            Map<String, Long> serializable = new LinkedHashMap<>();
+            for (Map.Entry<UUID, Long> entry : boundChangeCooldowns.entrySet()) {
+                serializable.put(entry.getKey().toString(), entry.getValue());
+            }
+            File cooldownFile = new File(dataDir, BOUND_CHANGE_COOLDOWN_FILENAME);
+            try (Writer writer = new OutputStreamWriter(new FileOutputStream(cooldownFile), StandardCharsets.UTF_8)) {
+                gson.toJson(serializable, writer);
+            } catch (IOException e) {
+                plugin.getLogger().log(Level.SEVERE, "Failed to persist bound change cooldowns", e);
+            }
+        }
+    }
+
+    public boolean hasBoundChangeCooldown(UUID uuid) {
+        if (uuid == null) {
+            return false;
+        }
+        synchronized (boundChangeCooldowns) {
+            Long expiry = boundChangeCooldowns.get(uuid);
+            return expiry != null && System.currentTimeMillis() < expiry;
+        }
+    }
+
+    public void setBoundChangeCooldown(UUID uuid, long expiryMillis) {
+        if (uuid == null) {
+            return;
+        }
+        synchronized (boundChangeCooldowns) {
+            boundChangeCooldowns.put(uuid, expiryMillis);
+        }
+        persistBoundChangeCooldowns();
     }
 
     public void persistRelics() {

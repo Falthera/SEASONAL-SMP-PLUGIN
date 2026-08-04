@@ -84,7 +84,7 @@ commands:
   changebound:
     description: Change a player's bound
     usage: /<command> <player> <season>
-    permission: seasonalsmp.command.bound.admin
+    permission: seasonalsmp.command.bound
   event:
     description: Start server events
     usage: /<command> start <event-name>
