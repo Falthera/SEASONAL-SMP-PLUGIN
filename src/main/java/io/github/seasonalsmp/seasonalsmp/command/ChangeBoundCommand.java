@@ -24,26 +24,46 @@ public class ChangeBoundCommand implements CommandExecutor {
             sender.sendMessage("§cThe changebound command is currently disabled.");
             return true;
         }
-        if (!sender.hasPermission("seasonalsmp.command.bound.admin")) {
-            sender.sendMessage("§cOnly admins can change bounds.");
+
+        boolean isAdmin = sender.hasPermission("seasonalsmp.command.bound.admin");
+
+        if (!isAdmin && !sender.hasPermission("seasonalsmp.command.bound")) {
+            sender.sendMessage("§cYou do not have permission to change bounds.");
             return true;
         }
-        if (args.length < 2) {
-            sender.sendMessage("§cUsage: /changebound <player> <spring|summer|autumn|winter>");
+
+        if (args.length < 1) {
+            sender.sendMessage("§cUsage: /changebound <spring|summer|autumn|winter>");
+            sender.sendMessage("§7Use /changebound <player> <bound> as an admin to change another player's bound.");
             return true;
         }
-        Player target = plugin.getServer().getPlayerExact(args[0]);
-        if (target == null) {
-            sender.sendMessage("§cPlayer not found.");
-            return true;
-        }
-        BoundType bound = BoundType.fromString(args[1]);
+
+        Player target;
+        BoundType bound = BoundType.fromString(args[0]);
         if (bound == null) {
             sender.sendMessage("§cInvalid bound. Available: spring, summer, autumn, winter");
             return true;
         }
+
+        if (args.length >= 2 && isAdmin) {
+            target = plugin.getServer().getPlayerExact(args[1]);
+            if (target == null) {
+                sender.sendMessage("§cPlayer not found.");
+                return true;
+            }
+        } else if (sender instanceof Player player) {
+            target = player;
+        } else {
+            sender.sendMessage("§cSpecify a player.");
+            return true;
+        }
+
         plugin.getBoundManager().assignBound(target, bound);
-        sender.sendMessage("§aChanged " + target.getName() + "'s bound to " + bound.getDisplayName() + "§a.");
+        if (sender == target) {
+            sender.sendMessage("§aYour bound has been changed to " + bound.getColorCode() + "§l" + bound.getDisplayName() + "§a!");
+        } else {
+            sender.sendMessage("§aChanged " + target.getName() + "'s bound to " + bound.getColorCode() + "§l" + bound.getDisplayName() + "§a!");
+        }
         return true;
     }
 }
