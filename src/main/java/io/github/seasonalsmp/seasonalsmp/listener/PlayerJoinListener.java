@@ -31,14 +31,15 @@ public class PlayerJoinListener implements Listener {
             if (plugin.getSeasonalBladeManager().isSeasonalBlade(player.getInventory().getItemInMainHand())) {
                 plugin.getSeasonalBladeManager().startPassiveEffects(player);
             }
-            plugin.getCombatManager().normalizePlayerInventory(player);
         }, 40L);
     }
 
     @EventHandler
     public void onPlayerRespawn(org.bukkit.event.player.PlayerRespawnEvent event) {
         plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-            plugin.getCombatManager().normalizePlayerInventory(event.getPlayer());
+            if (plugin.getSeasonalBladeManager().isSeasonalBlade(event.getPlayer().getInventory().getItemInMainHand())) {
+                plugin.getSeasonalBladeManager().startPassiveEffects(event.getPlayer());
+            }
         }, 40L);
     }
 }

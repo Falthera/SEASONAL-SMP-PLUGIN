@@ -118,9 +118,6 @@ public final class SeasonalSMP extends JavaPlugin {
             registerSeasonalBladeRecipe();
             startSeasonCycle();
             startAmbientEffects();
-            for (Player online : Bukkit.getOnlinePlayers()) {
-                combatManager.normalizePlayerInventory(online);
-            }
         } catch (Exception e) {
             getLogger().log(java.util.logging.Level.SEVERE, "Failed to enable SeasonalSMP", e);
             getServer().getPluginManager().disablePlugin(this);

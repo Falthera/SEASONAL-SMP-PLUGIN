@@ -8,7 +8,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
-import org.bukkit.inventory.ItemMeta;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -247,99 +246,7 @@ public class CombatManager {
         };
     }
 
-    public void normalizePlayerInventory(Player player) {
-        if (player == null || !player.isOnline()) {
-            return;
-        }
-        ItemStack[] contents = player.getInventory().getContents();
-        normalizeContents(contents);
-        player.getInventory().setContents(contents);
-        
-        ItemStack[] armor = player.getInventory().getArmorContents();
-        normalizeContents(armor);
-        player.getInventory().setArmorContents(armor);
-        
-        player.updateInventory();
-    }
-
-    private void normalizeContents(ItemStack[] items) {
-        for (int i = 0; i < items.length; i++) {
-            ItemStack item = items[i];
-            if (item == null || item.getType().isAir()) {
-                continue;
-            }
-            ItemStack normalized = normalizeItem(item);
-            if (normalized == null) {
-                items[i] = null;
-            } else if (normalized != item) {
-                items[i] = normalized;
-            }
-        }
-    }
-
-    private ItemStack normalizeItem(ItemStack item) {
-        Material type = item.getType();
-        if (type == Material.TNT || type == Material.TNT_MINECART ||
-            type == Material.END_CRYSTAL || type == Material.RESPAWN_ANCHOR ||
-            type == Material.TRIDENT || type == Material.CROSSBOW) {
-            return null;
-        }
-
-        ItemMeta meta = item.getItemMeta();
-        if (meta == null) {
-            return item;
-        }
-
-        boolean changed = false;
-
-        if (type == Material.MACE) {
-            if (SeasonalBladeType.isSeasonalBlade(item)) {
-                int density = meta.getEnchantLevel(Enchantment.DENSITY);
-                int windBurst = meta.getEnchantLevel(Enchantment.WIND_BURST);
-                int breach = meta.getEnchantLevel(Enchantment.BREACH);
-                if (density > 2) { meta.removeEnchant(Enchantment.DENSITY); meta.addEnchant(Enchantment.DENSITY, 2, true); changed = true; }
-                if (windBurst > 1) { meta.removeEnchant(Enchantment.WIND_BURST); meta.addEnchant(Enchantment.WIND_BURST, 1, true); changed = true; }
-                if (breach > 2) { meta.removeEnchant(Enchantment.BREACH); meta.addEnchant(Enchantment.BREACH, 2, true); changed = true; }
-            } else {
-                int density = meta.getEnchantLevel(Enchantment.DENSITY);
-                if (density > maxMaceDensity) {
-                    meta.removeEnchant(Enchantment.DENSITY);
-                    meta.addEnchant(Enchantment.DENSITY, maxMaceDensity, true);
-                    changed = true;
-                }
-            }
-        }
-
-        if (type == Material.BOW && meta.getEnchantLevel(Enchantment.PUNCH) > 0) {
-            meta.removeEnchant(Enchantment.PUNCH);
-            changed = true;
-        }
-
-        int sharpness = meta.getEnchantLevel(Enchantment.SHARPNESS);
-        if (sharpness > maxSharpnessLevel) {
-            meta.removeEnchant(Enchantment.SHARPNESS);
-            meta.addEnchant(Enchantment.SHARPNESS, maxSharpnessLevel, true);
-            changed = true;
-        }
-
-        if (type.toString().contains("HELMET") || type.toString().contains("CHESTPLATE") ||
-            type.toString().contains("LEGGINGS") || type.toString().contains("BOOTS")) {
-            int prot = meta.getEnchantLevel(Enchantment.PROTECTION);
-            if (prot > 3) {
-                meta.removeEnchant(Enchantment.PROTECTION);
-                meta.addEnchant(Enchantment.PROTECTION, 3, true);
-                changed = true;
-            }
-        }
-
-        if (changed) {
-            item.setItemMeta(meta);
-            return item;
-        }
-        return item;
-    }
-
-    private int countMaterial(Player player, Material material) {
+    public boolean exceedsRestockLimit(Player player, Material material) {
         int count = 0;
         for (ItemStack item : player.getInventory().getContents()) {
             if (item != null && item.getType() == material) {
