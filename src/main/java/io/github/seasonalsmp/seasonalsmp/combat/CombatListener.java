@@ -110,10 +110,6 @@ public class CombatListener implements Listener {
         if (!combatManager.isInCombat(player)) {
             return;
         }
-        if (combatManager.isWaterRunning(player)) {
-            event.setCancelled(true);
-            player.sendMessage("§cExtended water running is not allowed during combat!");
-        }
     }
 
     @EventHandler
@@ -124,13 +120,9 @@ public class CombatListener implements Listener {
         if (!combatManager.isInCombat(player)) {
             return;
         }
-        ItemStack current = event.getCurrentItem();
-        if (current == null || current.getType().isAir()) {
-            return;
-        }
-        if (combatManager.hasForbiddenWeapon(player) || combatManager.exceedsArmorEnchant(player) || combatManager.exceedsWeaponEnchant(player)) {
+        if (combatManager.hasForbiddenItemInInventory(player)) {
             event.setCancelled(true);
-            player.sendMessage("§cYour loadout violates combat rules!");
+            player.sendMessage("§cYou cannot change items while carrying prohibited weapons in combat!");
         }
     }
 
@@ -142,9 +134,9 @@ public class CombatListener implements Listener {
         if (!combatManager.isInCombat(player)) {
             return;
         }
-        if (combatManager.hasForbiddenWeapon(player) || combatManager.exceedsArmorEnchant(player) || combatManager.exceedsWeaponEnchant(player)) {
+        if (combatManager.hasForbiddenItemInInventory(player)) {
             event.setCancelled(true);
-            player.sendMessage("§cYour loadout violates combat rules!");
+            player.sendMessage("§cYou cannot change items while carrying prohibited weapons in combat!");
         }
     }
 

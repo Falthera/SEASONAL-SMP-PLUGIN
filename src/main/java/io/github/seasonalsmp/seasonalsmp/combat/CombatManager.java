@@ -115,6 +115,31 @@ public class CombatManager {
         return isForbiddenWeapon(mainHand) || isForbiddenWeapon(offHand);
     }
 
+    public boolean hasForbiddenItemInInventory(Player player) {
+        if (player == null) return false;
+        for (ItemStack item : player.getInventory().getContents()) {
+            if (item == null || item.getType().isAir()) {
+                continue;
+            }
+            if (isForbiddenWeapon(item)) {
+                return true;
+            }
+        }
+        for (ItemStack armor : player.getInventory().getArmorContents()) {
+            if (armor == null || armor.getType().isAir()) {
+                continue;
+            }
+            if (armor.getEnchantmentLevel(Enchantment.PROTECTION) > 3) {
+                return true;
+            }
+        }
+        ItemStack mainHand = player.getInventory().getItemInMainHand();
+        if (mainHand != null && !mainHand.getType().isAir() && mainHand.getEnchantmentLevel(Enchantment.SHARPNESS) > maxSharpnessLevel) {
+            return true;
+        }
+        return false;
+    }
+
     private boolean isForbiddenWeapon(ItemStack item) {
         if (item == null || item.getType().isAir()) {
             return false;
@@ -173,6 +198,15 @@ public class CombatManager {
         if (mainHand == null || mainHand.getType().isAir()) {
             return false;
         }
+        Material type = mainHand.getType();
+        if (type == Material.MACE) {
+            if (SeasonalBladeType.isSeasonalBlade(mainHand)) {
+                return mainHand.getEnchantmentLevel(Enchantment.DENSITY) > 2
+                    || mainHand.getEnchantmentLevel(Enchantment.WIND_BURST) > 1
+                    || mainHand.getEnchantmentLevel(Enchantment.BREACH) > 2;
+            }
+            return mainHand.getEnchantmentLevel(Enchantment.DENSITY) > maxMaceDensity;
+        }
         return mainHand.getEnchantmentLevel(Enchantment.SHARPNESS) > maxSharpnessLevel;
     }
 
@@ -220,19 +254,6 @@ public class CombatManager {
         }
         return player.getInventory().getItemInMainHand().getType() == Material.ENDER_PEARL ||
                player.getInventory().getItemInOffHand().getType() == Material.ENDER_PEARL;
-    }
-
-    public boolean isWaterRunning(Player player) {
-        if (player == null || !isInCombat(player)) {
-            return false;
-        }
-        if (player.isInWater()) {
-            Location loc = player.getLocation();
-            if (loc.getBlock().getType() == Material.WATER) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public boolean exceedsRestockLimit(Player player, Material material) {
