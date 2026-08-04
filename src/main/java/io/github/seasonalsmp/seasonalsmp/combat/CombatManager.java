@@ -115,31 +115,6 @@ public class CombatManager {
         return isForbiddenWeapon(mainHand) || isForbiddenWeapon(offHand);
     }
 
-    public boolean hasForbiddenItemInInventory(Player player) {
-        if (player == null) return false;
-        for (ItemStack item : player.getInventory().getContents()) {
-            if (item == null || item.getType().isAir()) {
-                continue;
-            }
-            if (isForbiddenWeapon(item)) {
-                return true;
-            }
-        }
-        for (ItemStack armor : player.getInventory().getArmorContents()) {
-            if (armor == null || armor.getType().isAir()) {
-                continue;
-            }
-            if (armor.getEnchantmentLevel(Enchantment.PROTECTION) > 3) {
-                return true;
-            }
-        }
-        ItemStack mainHand = player.getInventory().getItemInMainHand();
-        if (mainHand != null && !mainHand.getType().isAir() && mainHand.getEnchantmentLevel(Enchantment.SHARPNESS) > maxSharpnessLevel) {
-            return true;
-        }
-        return false;
-    }
-
     private boolean isForbiddenWeapon(ItemStack item) {
         if (item == null || item.getType().isAir()) {
             return false;

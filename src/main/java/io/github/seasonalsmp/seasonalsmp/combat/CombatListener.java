@@ -120,9 +120,9 @@ public class CombatListener implements Listener {
         if (!combatManager.isInCombat(player)) {
             return;
         }
-        if (combatManager.hasForbiddenItemInInventory(player)) {
+        if (combatManager.hasForbiddenWeapon(player) || combatManager.exceedsArmorEnchant(player) || combatManager.exceedsWeaponEnchant(player)) {
             event.setCancelled(true);
-            player.sendMessage("§cYou cannot change items while carrying prohibited weapons in combat!");
+            player.sendMessage("§cYour loadout violates combat rules!");
         }
     }
 
@@ -134,9 +134,9 @@ public class CombatListener implements Listener {
         if (!combatManager.isInCombat(player)) {
             return;
         }
-        if (combatManager.hasForbiddenItemInInventory(player)) {
+        if (combatManager.hasForbiddenWeapon(player) || combatManager.exceedsArmorEnchant(player) || combatManager.exceedsWeaponEnchant(player)) {
             event.setCancelled(true);
-            player.sendMessage("§cYou cannot change items while carrying prohibited weapons in combat!");
+            player.sendMessage("§cYour loadout violates combat rules!");
         }
     }
 
