@@ -57,11 +57,6 @@ public class SwordAbilityCommand implements CommandExecutor {
                 player.sendMessage("§cThis sword is not bound to any element.");
                 return true;
             }
-            BoundType playerBound = boundManager.getBound(player);
-            if (playerBound != bound) {
-                player.sendMessage("§cYou must be bound to " + bound.getColorCode() + "§l" + bound.getDisplayName() + " §cto use this sword's ability!");
-                return true;
-            }
             if (swordManager.isOnCooldown(player)) {
                 player.sendMessage("§cSword ability is on cooldown!");
                 return true;

@@ -159,10 +159,10 @@ public class SeasonalStartCommand implements CommandExecutor {
                             }
 
                             player.spawnParticle(Particle.FIREWORK, center, 120, 4, 5, 4, 0.15);
-                            player.spawnParticle(Particle.FLASH, center, 30, 3, 3, 3, 0.0);
+                            player.spawnParticle(Particle.TOTEM_OF_UNDYING, center, 40, 3, 4, 3, 0.0);
                             player.spawnParticle(Particle.HEART, center, 40, 3, 4, 3, 0.0);
                             player.spawnParticle(Particle.CRIT, center, 60, 4, 3, 4, 0.3);
-                            player.spawnParticle(Particle.TOTEM_OF_UNDYING, center, 20, 2, 2, 2, 0.1);
+                            player.spawnParticle(Particle.ENCHANT, center, 20, 2, 2, 2, 0.1);
 
                             boundManager.forceAssignBound(player, bound);
                             plugin.getLogger().info("Bound assigned: " + player.getName() + " -> " + bound.name());
@@ -193,9 +193,9 @@ public class SeasonalStartCommand implements CommandExecutor {
                         player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 2.0f, 1.0f);
                         player.playSound(player.getLocation(), Sound.MUSIC_DISC_PIGSTEP, 1.0f, 1.0f);
 
-                        player.spawnParticle(Particle.FLASH, player.getLocation(), 20, 3, 3, 3, 0.0);
+                        player.spawnParticle(Particle.TOTEM_OF_UNDYING, player.getLocation(), 50, 3, 3, 3, 0.0);
                         player.spawnParticle(Particle.END_ROD, player.getLocation(), 100, 5, 5, 5, 0.5);
-                        player.spawnParticle(Particle.TOTEM_OF_UNDYING, player.getLocation(), 30, 2, 2, 2, 0.1);
+                        player.spawnParticle(Particle.ENCHANT, player.getLocation(), 30, 2, 2, 2, 0.1);
                     }
 
                     for (int i = 0; i < 10; i++) {
