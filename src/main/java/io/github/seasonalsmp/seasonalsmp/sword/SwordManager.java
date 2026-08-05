@@ -212,7 +212,7 @@ public class SwordManager implements Listener {
             return;
         }
         org.bukkit.inventory.Recipe recipe = event.getRecipe();
-        if (recipe instanceof ShapedRecipe shaped && shaped.getKey().getNamespace().equals("SeasonalSMP")) {
+        if (recipe instanceof ShapedRecipe shaped) {
             String key = shaped.getKey().getKey();
             BoundType requiredBound = switch (key) {
                 case "spring_sword" -> BoundType.SPRING;

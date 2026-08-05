@@ -51,7 +51,7 @@ public class SeasonalBladeListener implements Listener {
     @EventHandler
     public void onPrepareMaceCraft(PrepareItemCraftEvent event) {
         org.bukkit.inventory.Recipe recipe = event.getRecipe();
-        if (recipe instanceof org.bukkit.inventory.ShapedRecipe shaped && shaped.getKey().getKey().equals("minecraft:mace")) {
+        if (recipe instanceof org.bukkit.inventory.ShapedRecipe shaped && shaped.getKey().toString().equals("minecraft:mace")) {
             if (!bladeManager.canCraftMace()) {
                 event.getInventory().setResult(new ItemStack(Material.AIR));
             }
@@ -167,7 +167,7 @@ public class SeasonalBladeListener implements Listener {
             }
             Bukkit.broadcastMessage(formatOminousMessage(player.getName(), "§6§lSeasonal Blade"));
             consumeItemsFromInventory(player, matrix);
-        } else if (recipe instanceof org.bukkit.inventory.ShapedRecipe shaped && shaped.getKey().getKey().equals("minecraft:mace")) {
+        } else if (recipe instanceof org.bukkit.inventory.ShapedRecipe shaped && shaped.getKey().toString().equals("minecraft:mace")) {
             if (!bladeManager.canCraftMace()) {
                 event.setCancelled(true);
                 event.getInventory().setResult(new org.bukkit.inventory.ItemStack(org.bukkit.Material.AIR));
