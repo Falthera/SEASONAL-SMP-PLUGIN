@@ -11,7 +11,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 public class EnchantmentLimiterListener implements Listener {
 
@@ -56,24 +55,18 @@ public class EnchantmentLimiterListener implements Listener {
             return;
         }
 
-        ItemMeta meta = result.getItemMeta();
-        if (meta == null) {
-            return;
-        }
-
         boolean modified = false;
-        for (Enchantment enchantment : meta.getEnchants().keySet()) {
-            int level = meta.getEnchantmentLevel(enchantment);
+        for (Enchantment enchantment : result.getEnchants().keySet()) {
+            int level = result.getEnchantmentLevel(enchantment);
             int limit = getEnchantmentLimit(enchantment, maxSharpness, maxProtection, maxMaceDensity);
             if (limit >= 0 && level > limit) {
-                meta.removeEnchant(enchantment);
-                meta.addEnchant(enchantment, limit, true);
+                result.removeEnchantment(enchantment);
+                result.addEnchantment(enchantment, limit);
                 modified = true;
             }
         }
 
         if (modified) {
-            result.setItemMeta(meta);
             event.setResult(result);
             Player player = (Player) event.getView().getPlayer();
             player.sendMessage("§cEnchantment levels have been capped by server rules!");
@@ -95,24 +88,18 @@ public class EnchantmentLimiterListener implements Listener {
         int maxProtection = plugin.getConfigManager().getInt("combat.max-protection-level", 3);
         int maxMaceDensity = plugin.getConfigManager().getInt("combat.max-mace-density", 1);
 
-        ItemMeta meta = result.getItemMeta();
-        if (meta == null) {
-            return;
-        }
-
         boolean modified = false;
-        for (Enchantment enchantment : meta.getEnchants().keySet()) {
-            int level = meta.getEnchantmentLevel(enchantment);
+        for (Enchantment enchantment : result.getEnchants().keySet()) {
+            int level = result.getEnchantmentLevel(enchantment);
             int limit = getEnchantmentLimit(enchantment, maxSharpness, maxProtection, maxMaceDensity);
             if (limit >= 0 && level > limit) {
-                meta.removeEnchant(enchantment);
-                meta.addEnchant(enchantment, limit, true);
+                result.removeEnchantment(enchantment);
+                result.addEnchantment(enchantment, limit);
                 modified = true;
             }
         }
 
         if (modified) {
-            result.setItemMeta(meta);
             Player player = (Player) event.getWhoClicked();
             player.sendMessage("§cEnchantment levels have been capped by server rules!");
         }
