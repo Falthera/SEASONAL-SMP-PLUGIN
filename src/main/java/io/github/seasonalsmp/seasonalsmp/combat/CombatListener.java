@@ -35,19 +35,10 @@ public class CombatListener implements Listener {
                 event.setCancelled(true);
                 return;
             }
-            if (hasExcessiveSharpness(attacker)) {
-                event.setCancelled(true);
-                attacker.sendMessage("§cYour weapon's Sharpness exceeds the server limit!");
-                return;
-            }
+            downgradeExcessiveSharpness(attacker);
         }
         if (event.getEntity() instanceof Player victim && event.getDamager() instanceof Player attacker) {
-            if (hasExcessiveProtection(victim)) {
-                event.setCancelled(true);
-                attacker.sendMessage("§cYour opponent's armor exceeds the Protection limit!");
-                victim.sendMessage("§cYour armor exceeds the Protection limit!");
-                return;
-            }
+            downgradeExcessiveProtection(victim);
             combatManager.markInCombat(victim);
             combatManager.markInCombat(attacker);
             if (plugin.getTrustManager().isTrusted(attacker, victim) || plugin.getTrustManager().isTrusted(victim, attacker)) {
@@ -98,6 +89,18 @@ public class CombatListener implements Listener {
         if (isBombingMaterial(item)) {
             event.setCancelled(true);
             player.sendMessage("§cThis item is on cooldown until you leave combat!");
+        }
+    }
+
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event) {
+        if (!(event.getWhoClicked() instanceof Player player)) {
+            return;
+        }
+        ItemStack current = event.getCurrentItem();
+        if (current != null && !current.getType().isAir() && current.hasItemMeta()) {
+            downgradeExcessiveSharpness(player);
+            downgradeExcessiveProtection(player);
         }
     }
 
@@ -182,30 +185,62 @@ public class CombatListener implements Listener {
         return type == Material.RESPAWN_ANCHOR || type == Material.END_CRYSTAL;
     }
 
-    private boolean hasExcessiveSharpness(Player player) {
+    private void downgradeExcessiveSharpness(Player player) {
         ItemStack weapon = player.getInventory().getItemInMainHand();
         if (weapon == null || weapon.getType().isAir() || !weapon.hasItemMeta()) {
-            return false;
+            return;
         }
-        int maxSharpness = plugin.getConfigManager().getInt("combat.max-sharpness-level", 5);
-        return weapon.getEnchantmentLevel(Enchantment.SHARPNESS) > maxSharpness;
+        int maxSharpness = plugin.getConfigManager().getInt("combat.max-sharpness-level", 4);
+        int level = weapon.getEnchantmentLevel(Enchantment.SHARPNESS);
+        if (level > maxSharpness) {
+            ItemMeta meta = weapon.getItemMeta();
+            if (meta != null) {
+                meta.removeEnchant(Enchantment.SHARPNESS);
+                meta.addEnchant(Enchantment.SHARPNESS, maxSharpness, true);
+                weapon.setItemMeta(meta);
+                player.sendMessage("§cYour weapon's Sharpness has been capped to " + maxSharpness + "!");
+            }
+        }
     }
 
-    private boolean hasExcessiveProtection(Player player) {
+    private void downgradeExcessiveProtection(Player player) {
         int maxProtection = plugin.getConfigManager().getInt("combat.max-protection-level", 3);
+        boolean downgraded = false;
         for (ItemStack item : player.getInventory().getArmorContents()) {
             if (item == null || item.getType().isAir() || !item.hasItemMeta()) {
                 continue;
             }
-            int protLevel = item.getEnchantmentLevel(Enchantment.PROTECTION);
-            int fireProtLevel = item.getEnchantmentLevel(Enchantment.FIRE_PROTECTION);
-            int blastProtLevel = item.getEnchantmentLevel(Enchantment.BLAST_PROTECTION);
-            int projectileProtLevel = item.getEnchantmentLevel(Enchantment.PROJECTILE_PROTECTION);
-            if (protLevel > maxProtection || fireProtLevel > maxProtection
-                    || blastProtLevel > maxProtection || projectileProtLevel > maxProtection) {
-                return true;
+            ItemMeta meta = item.getItemMeta();
+            if (meta == null) {
+                continue;
+            }
+            boolean modified = false;
+            int[] protectionEnchants = {
+                Enchantment.PROTECTION.getKey().getKey().equals("protection") ? 0 : -1,
+                Enchantment.FIRE_PROTECTION.getKey().getKey().equals("fire_protection") ? 0 : -1,
+                Enchantment.BLAST_PROTECTION.getKey().getKey().equals("blast_protection") ? 0 : -1,
+                Enchantment.PROJECTILE_PROTECTION.getKey().getKey().equals("projectile_protection") ? 0 : -1,
+            };
+            for (Enchantment enchantment : meta.getEnchants().keySet()) {
+                if (enchantment == Enchantment.PROTECTION
+                        || enchantment == Enchantment.FIRE_PROTECTION
+                        || enchantment == Enchantment.BLAST_PROTECTION
+                        || enchantment == Enchantment.PROJECTILE_PROTECTION) {
+                    int currentLevel = meta.getEnchantmentLevel(enchantment);
+                    if (currentLevel > maxProtection) {
+                        meta.removeEnchant(enchantment);
+                        meta.addEnchant(enchantment, maxProtection, true);
+                        modified = true;
+                    }
+                }
+            }
+            if (modified) {
+                item.setItemMeta(meta);
+                downgraded = true;
             }
         }
-        return false;
+        if (downgraded) {
+            player.sendMessage("§cYour armor's Protection has been capped to " + maxProtection + "!");
+        }
     }
 }
