@@ -119,3 +119,11 @@ permissions:
     description: Kick a player
     usage: /<command> <player> [reason]
     permission: seasonalsmp.command.kick
+  admin:
+    description: Add a player to the admin list
+    usage: /<command> <player>
+    permission: op
+  deadmin:
+    description: Remove a player from the admin list
+    usage: /<command> <player>
+    permission: op

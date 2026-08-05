@@ -26,7 +26,7 @@ public class WarnCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!sender.hasPermission("seasonalsmp.command.warn")) {
+        if (!sender.hasPermission("seasonalsmp.command.warn") && !sender.isOp()) {
             sender.sendMessage("§cYou do not have permission.");
             return true;
         }

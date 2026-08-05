@@ -18,7 +18,7 @@ public class GracePeriodCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!sender.hasPermission("seasonalsmp.command.grace")) {
+        if (!sender.hasPermission("seasonalsmp.command.grace") && !sender.isOp()) {
             sender.sendMessage("§cYou do not have permission.");
             return true;
         }

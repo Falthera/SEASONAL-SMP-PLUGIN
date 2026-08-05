@@ -4,21 +4,23 @@ import io.github.seasonalsmp.seasonalsmp.bound.BoundManager;
 import io.github.seasonalsmp.seasonalsmp.bound.BoundType;
 import io.github.seasonalsmp.seasonalsmp.bound.autumn.AutumnHitListener;
 import io.github.seasonalsmp.seasonalsmp.command.AbilityCommand;
+import io.github.seasonalsmp.seasonalsmp.command.AdminCommand;
 import io.github.seasonalsmp.seasonalsmp.command.BoundCommand;
 import io.github.seasonalsmp.seasonalsmp.command.BoundCommandTabCompleter;
 import io.github.seasonalsmp.seasonalsmp.command.ChangeBoundCommand;
 import io.github.seasonalsmp.seasonalsmp.command.DebugCommand;
+import io.github.seasonalsmp.seasonalsmp.command.DeadminCommand;
 import io.github.seasonalsmp.seasonalsmp.command.EventCommand;
 import io.github.seasonalsmp.seasonalsmp.command.GiveSwordCommand;
+import io.github.seasonalsmp.seasonalsmp.command.KickCommand;
 import io.github.seasonalsmp.seasonalsmp.command.ReloadCommand;
 import io.github.seasonalsmp.seasonalsmp.command.SeasonCommand;
 import io.github.seasonalsmp.seasonalsmp.command.SeasonCommandTabCompleter;
-import io.github.seasonalsmp.seasonalsmp.combat.CombatManager;
-import io.github.seasonalsmp.seasonalsmp.combat.CombatListener;
 import io.github.seasonalsmp.seasonalsmp.command.SeasonalStartCommand;
 import io.github.seasonalsmp.seasonalsmp.command.TrustCommand;
 import io.github.seasonalsmp.seasonalsmp.command.DiscordBotDebugCommand;
 import io.github.seasonalsmp.seasonalsmp.command.SwordAbilityCommand;
+import io.github.seasonalsmp.seasonalsmp.command.WarnCommand;
 import io.github.seasonalsmp.seasonalsmp.config.ConfigManager;
 import io.github.seasonalsmp.seasonalsmp.core.PluginManager;
 import io.github.seasonalsmp.seasonalsmp.data.DataStorage;
@@ -29,6 +31,7 @@ import io.github.seasonalsmp.seasonalsmp.listener.SeasonWorldListener;
 import io.github.seasonalsmp.seasonalsmp.listener.PrivateMessagePrivacyListener;
 import io.github.seasonalsmp.seasonalsmp.listener.AutumnHitListener;
 import io.github.seasonalsmp.seasonalsmp.listener.StaffModeListener;
+import io.github.seasonalsmp.seasonalsmp.moderation.AdminManager;
 import io.github.seasonalsmp.seasonalsmp.moderation.PunishmentManager;
 import io.github.seasonalsmp.seasonalsmp.moderation.WarnManager;
 import io.github.seasonalsmp.seasonalsmp.season.Season;
@@ -82,6 +85,7 @@ public final class SeasonalSMP extends JavaPlugin {
     private WhitelistAPIServer whitelistAPIServer;
     private WarnManager warnManager;
     private PunishmentManager punishmentManager;
+    private AdminManager adminManager;
     private BukkitTask seasonCycleTask;
     private BukkitTask ambientEffectTask;
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
@@ -119,6 +123,7 @@ public final class SeasonalSMP extends JavaPlugin {
             whitelistAPIServer.start();
             warnManager = new WarnManager(this);
             punishmentManager = new PunishmentManager(this);
+            adminManager = new AdminManager(this);
             registerListeners();
             registerCommands();
             registerSwordRecipes();
@@ -268,6 +273,14 @@ public final class SeasonalSMP extends JavaPlugin {
         org.bukkit.command.PluginCommand kick = getCommand("kick");
         if (kick != null) {
             kick.setExecutor(new KickCommand(this));
+        }
+        org.bukkit.command.PluginCommand admin = getCommand("admin");
+        if (admin != null) {
+            admin.setExecutor(new AdminCommand(this));
+        }
+        org.bukkit.command.PluginCommand deadmin = getCommand("deadmin");
+        if (deadmin != null) {
+            deadmin.setExecutor(new DeadminCommand(this));
         }
     }
 
@@ -534,5 +547,9 @@ public final class SeasonalSMP extends JavaPlugin {
 
     public PunishmentManager getPunishmentManager() {
         return punishmentManager;
+    }
+
+    public AdminManager getAdminManager() {
+        return adminManager;
     }
 }
