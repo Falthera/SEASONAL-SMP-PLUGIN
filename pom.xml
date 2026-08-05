@@ -6,7 +6,7 @@
 
     <groupId>io.github.seasonalsmp</groupId>
     <artifactId>SeasonalSMP</artifactId>
-    <version>1.0.46</version>
+    <version>1.0.47</version>
     <packaging>jar</packaging>
 
     <name>SeasonalSMP</name>
