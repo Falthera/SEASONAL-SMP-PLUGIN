@@ -67,8 +67,7 @@ public class RelicPurgeListener implements Listener {
                     return;
                 }
                 for (Player player : plugin.getServer().getOnlinePlayers()) {
-                    UUID uuid = player.getUniqueId();
-                    if (dataStorage.hasBloodborn(uuid)) {
+                    if (hasBloodbornItem(player)) {
                         player.getWorld().spawnParticle(Particle.TOTEM_OF_UNDYING, player.getLocation().clone().add(0, 1, 0), 25, 1.5, 1.5, 1.5, 0.15);
                         player.getWorld().spawnParticle(Particle.SOUL_FIRE_FLAME, player.getLocation().clone().add(0, 1, 0), 15, 2, 1, 2, 0.05);
                         player.getWorld().spawnParticle(Particle.DUST, player.getLocation().clone().add(0, 1.5, 0), 12, 1.5, 1, 1.5, 0,
@@ -76,16 +75,16 @@ public class RelicPurgeListener implements Listener {
                         if (player.isOnGround()) {
                             player.getWorld().spawnParticle(Particle.LAVA, player.getLocation().clone().add(0, 0.1, 0), 8, 1.5, 0.1, 1.5, 0);
                         }
-                    } else if (dataStorage.hasRelic(uuid, RelicType.SPRING_RELIC)) {
+                    } else if (hasRelicItem(player, RelicType.SPRING_RELIC)) {
                         player.getWorld().spawnParticle(Particle.HEART, player.getLocation().clone().add(0, 1.2, 0), 5, 0.8, 0.6, 0.8, 0.02);
                         player.getWorld().spawnParticle(Particle.HAPPY_VILLAGER, player.getLocation().clone().add(0, 0.5, 0), 3, 0.6, 0.4, 0.6, 0.01);
-                    } else if (dataStorage.hasRelic(uuid, RelicType.SUMMER_RELIC)) {
+                    } else if (hasRelicItem(player, RelicType.SUMMER_RELIC)) {
                         player.getWorld().spawnParticle(Particle.FLAME, player.getLocation().clone().add(0, 1, 0), 8, 0.8, 0.8, 0.8, 0.04);
                         player.getWorld().spawnParticle(Particle.LAVA, player.getLocation().clone().add(0, 0.2, 0), 4, 0.6, 0.1, 0.6, 0);
-                    } else if (dataStorage.hasRelic(uuid, RelicType.AUTUMN_RELIC)) {
+                    } else if (hasRelicItem(player, RelicType.AUTUMN_RELIC)) {
                         player.getWorld().spawnParticle(Particle.CRIT, player.getLocation().clone().add(0, 1, 0), 6, 0.8, 0.6, 0.8, 0.03);
                         player.getWorld().spawnParticle(Particle.SOUL, player.getLocation().clone().add(0, 0.5, 0), 3, 0.6, 0.4, 0.6, 0.01);
-                    } else if (dataStorage.hasRelic(uuid, RelicType.WINTER_RELIC)) {
+                    } else if (hasRelicItem(player, RelicType.WINTER_RELIC)) {
                         player.getWorld().spawnParticle(Particle.SNOWFLAKE, player.getLocation().clone().add(0, 1.2, 0), 8, 0.8, 0.6, 0.8, 0.02);
                         player.getWorld().spawnParticle(Particle.CLOUD, player.getLocation().clone().add(0, 0.3, 0), 3, 0.6, 0.2, 0.6, 0.01);
                     }
@@ -102,25 +101,46 @@ public class RelicPurgeListener implements Listener {
                     return;
                 }
                 for (Player player : plugin.getServer().getOnlinePlayers()) {
-                    UUID uuid = player.getUniqueId();
-                    if (dataStorage.hasRelic(uuid, RelicType.SPRING_RELIC)) {
+                    if (hasRelicItem(player, RelicType.SPRING_RELIC)) {
                         player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 60, 0));
                     }
-                    if (dataStorage.hasRelic(uuid, RelicType.SUMMER_RELIC)) {
+                    if (hasRelicItem(player, RelicType.SUMMER_RELIC)) {
                         player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 60, 0));
                     }
-                    if (dataStorage.hasRelic(uuid, RelicType.AUTUMN_RELIC)) {
+                    if (hasRelicItem(player, RelicType.AUTUMN_RELIC)) {
                         player.addPotionEffect(new PotionEffect(PotionEffectType.HERO_OF_THE_VILLAGE, 60, 0));
                     }
-                    if (dataStorage.hasRelic(uuid, RelicType.WINTER_RELIC)) {
+                    if (hasRelicItem(player, RelicType.WINTER_RELIC)) {
                         player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 60, 0));
                     }
-                    if (dataStorage.hasBloodborn(uuid)) {
+                    if (hasBloodbornItem(player)) {
                         player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 60, 1));
                     }
                 }
             }
         }.runTaskTimer(plugin, 0L, 20L);
+    }
+
+    private boolean hasRelicItem(Player player, RelicType relicType) {
+        if (player == null || relicType == null) {
+            return false;
+        }
+        for (ItemStack item : player.getInventory().getContents()) {
+            if (item == null || item.getType().isAir() || !item.hasItemMeta()) {
+                continue;
+            }
+            if (relicType == RelicType.fromItem(item)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasBloodbornItem(Player player) {
+        if (player == null) {
+            return false;
+        }
+        return hasRelicItem(player, RelicType.BLOODBORN_RELIC);
     }
 
     @EventHandler
@@ -146,10 +166,10 @@ public class RelicPurgeListener implements Listener {
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
-        if (configManager.getBoolean("relic-purge.drop-on-death", true)) {
-            dropRelicsOnDeath(event.getEntity());
-        }
         Player victim = event.getEntity();
+        if (configManager.getBoolean("relic-purge.drop-on-death", true)) {
+            dropRelicsOnDeath(victim);
+        }
         if (dataStorage.hasBloodborn(victim.getUniqueId())) {
             victim.getWorld().spawnParticle(Particle.TOTEM_OF_UNDYING, victim.getLocation().clone().add(0, 1, 0), 60, 2, 2, 2, 0.2);
             victim.getWorld().spawnParticle(Particle.LARGE_SMOKE, victim.getLocation().clone().add(0, 1, 0), 30, 2, 1, 2, 0.03);
@@ -168,6 +188,7 @@ public class RelicPurgeListener implements Listener {
             entity.setPickupDelay(0);
             entity.setTicksLived(1);
         }
+        dataStorage.clearPlayerRelics(victim.getUniqueId());
     }
 
     @EventHandler
@@ -206,6 +227,8 @@ public class RelicPurgeListener implements Listener {
         }
         dataStorage.addRelic(uuid, RelicType.BLOODBORN_RELIC);
         dataStorage.grantBloodborn(uuid);
+        dataStorage.clearPlayerRelics(uuid);
+        dataStorage.addRelic(uuid, RelicType.BLOODBORN_RELIC);
         player.sendTitle("§4§lBLOODBORN", "§7You have ascended...", 10, 100, 20);
         player.playSound(player.getLocation(), Sound.ENTITY_WITHER_SPAWN, 2.0f, 0.5f);
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 2.0f, 1.5f);
