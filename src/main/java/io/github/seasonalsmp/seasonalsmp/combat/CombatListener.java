@@ -63,6 +63,18 @@ public class CombatListener implements Listener {
     }
 
     @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        downgradeExcessiveProtection(event.getPlayer());
+        downgradeExcessiveSharpness(event.getPlayer());
+    }
+
+    @EventHandler
+    public void onPlayerRespawn(PlayerRespawnEvent event) {
+        downgradeExcessiveProtection(event.getPlayer());
+        downgradeExcessiveSharpness(event.getPlayer());
+    }
+
+    @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         if (!combatManager.isInCombat(player)) {
@@ -215,12 +227,6 @@ public class CombatListener implements Listener {
                 continue;
             }
             boolean modified = false;
-            int[] protectionEnchants = {
-                Enchantment.PROTECTION.getKey().getKey().equals("protection") ? 0 : -1,
-                Enchantment.FIRE_PROTECTION.getKey().getKey().equals("fire_protection") ? 0 : -1,
-                Enchantment.BLAST_PROTECTION.getKey().getKey().equals("blast_protection") ? 0 : -1,
-                Enchantment.PROJECTILE_PROTECTION.getKey().getKey().equals("projectile_protection") ? 0 : -1,
-            };
             for (Enchantment enchantment : meta.getEnchants().keySet()) {
                 if (enchantment == Enchantment.PROTECTION
                         || enchantment == Enchantment.FIRE_PROTECTION
