@@ -75,7 +75,7 @@ public class SeasonalBladeManager {
             PersistentDataType.STRING,
             "seasonal_blade"
         );
-        meta.addEnchant(Enchantment.SHARPNESS, 5, true);
+        meta.addEnchant(Enchantment.SHARPNESS, 4, true);
         meta.addEnchant(Enchantment.LOOTING, 3, true);
         meta.addEnchant(Enchantment.UNBREAKING, 3, true);
         meta.addEnchant(Enchantment.FIRE_ASPECT, 2, true);

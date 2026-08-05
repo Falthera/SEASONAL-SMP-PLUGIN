@@ -18,6 +18,7 @@ import io.github.seasonalsmp.seasonalsmp.command.SeasonCommand;
 import io.github.seasonalsmp.seasonalsmp.command.SeasonCommandTabCompleter;
 import io.github.seasonalsmp.seasonalsmp.combat.CombatManager;
 import io.github.seasonalsmp.seasonalsmp.combat.CombatListener;
+import io.github.seasonalsmp.seasonalsmp.combat.EnchantmentLimiterListener;
 import io.github.seasonalsmp.seasonalsmp.command.SeasonalStartCommand;
 import io.github.seasonalsmp.seasonalsmp.command.TrustCommand;
 import io.github.seasonalsmp.seasonalsmp.command.DiscordBotDebugCommand;
@@ -201,6 +202,7 @@ public final class SeasonalSMP extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new SeasonWorldListener(this), this);
         Bukkit.getPluginManager().registerEvents(new SwordCombatListener(this), this);
         Bukkit.getPluginManager().registerEvents(new CombatListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new EnchantmentLimiterListener(this), this);
         Bukkit.getPluginManager().registerEvents(new SeasonalBladeListener(this, seasonalBladeManager), this);
         Bukkit.getPluginManager().registerEvents(new LegendaryItemProtectionListener(this, swordManager), this);
         Bukkit.getPluginManager().registerEvents(new SpearBlockerListener(this), this);

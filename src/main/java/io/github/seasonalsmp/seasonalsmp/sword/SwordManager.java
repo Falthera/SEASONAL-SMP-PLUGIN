@@ -176,7 +176,7 @@ public class SwordManager implements Listener {
         meta.getPersistentDataContainer().set(boundKey, PersistentDataType.STRING, bound.name());
         NamespacedKey abilityReadyKey = new NamespacedKey(plugin, "ability_ready");
         meta.getPersistentDataContainer().set(abilityReadyKey, PersistentDataType.BYTE, (byte) 1);
-        meta.addEnchant(Enchantment.SHARPNESS, 5, true);
+        meta.addEnchant(Enchantment.SHARPNESS, 4, true);
         item.setItemMeta(meta);
         return item;
     }

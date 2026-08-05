@@ -219,7 +219,7 @@ combat:
   enforce-item-restrictions: true
   max-totems: 1
   max-wolves: 1
-  max-sharpness-level: 5
+  max-sharpness-level: 4
   max-protection-level: 3
   max-mace-density: 1
   max-xp-bottles: 128
