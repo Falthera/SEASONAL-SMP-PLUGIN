@@ -16,7 +16,6 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
@@ -215,19 +214,15 @@ public class CombatListener implements Listener {
 
     private void downgradeExcessiveSharpness(Player player) {
         ItemStack weapon = player.getInventory().getItemInMainHand();
-        if (weapon == null || weapon.getType().isAir() || !weapon.hasItemMeta()) {
+        if (weapon == null || weapon.getType().isAir()) {
             return;
         }
         int maxSharpness = plugin.getConfigManager().getInt("combat.max-sharpness-level", 4);
         int level = weapon.getEnchantmentLevel(Enchantment.SHARPNESS);
         if (level > maxSharpness) {
-            ItemMeta meta = weapon.getItemMeta();
-            if (meta != null) {
-                meta.removeEnchant(Enchantment.SHARPNESS);
-                meta.addEnchant(Enchantment.SHARPNESS, maxSharpness, true);
-                weapon.setItemMeta(meta);
-                player.sendMessage("§cYour weapon's Sharpness has been capped to " + maxSharpness + "!");
-            }
+            weapon.removeEnchantment(Enchantment.SHARPNESS);
+            weapon.addEnchantment(Enchantment.SHARPNESS, maxSharpness);
+            player.sendMessage("§cYour weapon's Sharpness has been capped to " + maxSharpness + "!");
         }
     }
 
@@ -235,29 +230,25 @@ public class CombatListener implements Listener {
         int maxProtection = plugin.getConfigManager().getInt("combat.max-protection-level", 3);
         boolean downgraded = false;
         for (ItemStack item : player.getInventory().getArmorContents()) {
-            if (item == null || item.getType().isAir() || !item.hasItemMeta()) {
-                continue;
-            }
-            ItemMeta meta = item.getItemMeta();
-            if (meta == null) {
+            if (item == null || item.getType().isAir()) {
                 continue;
             }
             boolean modified = false;
-            for (Enchantment enchantment : meta.getEnchants().keySet()) {
-                if (enchantment == Enchantment.PROTECTION
-                        || enchantment == Enchantment.FIRE_PROTECTION
-                        || enchantment == Enchantment.BLAST_PROTECTION
-                        || enchantment == Enchantment.PROJECTILE_PROTECTION) {
-                    int currentLevel = meta.getEnchantmentLevel(enchantment);
-                    if (currentLevel > maxProtection) {
-                        meta.removeEnchant(enchantment);
-                        meta.addEnchant(enchantment, maxProtection, true);
-                        modified = true;
-                    }
+            Enchantment[] protectionEnchants = {
+                Enchantment.PROTECTION,
+                Enchantment.FIRE_PROTECTION,
+                Enchantment.BLAST_PROTECTION,
+                Enchantment.PROJECTILE_PROTECTION
+            };
+            for (Enchantment enchantment : protectionEnchants) {
+                int currentLevel = item.getEnchantmentLevel(enchantment);
+                if (currentLevel > maxProtection) {
+                    item.removeEnchantment(enchantment);
+                    item.addEnchantment(enchantment, maxProtection);
+                    modified = true;
                 }
             }
             if (modified) {
-                item.setItemMeta(meta);
                 downgraded = true;
             }
         }

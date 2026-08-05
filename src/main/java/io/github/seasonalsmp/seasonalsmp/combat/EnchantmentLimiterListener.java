@@ -51,20 +51,19 @@ public class EnchantmentLimiterListener implements Listener {
         int maxMaceDensity = plugin.getConfigManager().getInt("combat.max-mace-density", 1);
 
         ItemStack result = event.getResult();
-        if (result == null || result.getType().isAir() || !result.hasItemMeta()) {
+        if (result == null || result.getType().isAir()) {
             return;
         }
 
         boolean modified = false;
-        for (Enchantment enchantment : result.getEnchants().keySet()) {
-            int level = result.getEnchantmentLevel(enchantment);
-            int limit = getEnchantmentLimit(enchantment, maxSharpness, maxProtection, maxMaceDensity);
-            if (limit >= 0 && level > limit) {
-                result.removeEnchantment(enchantment);
-                result.addEnchantment(enchantment, limit);
-                modified = true;
-            }
-        }
+        modified |= limitEnchantment(result, Enchantment.SHARPNESS, maxSharpness);
+        modified |= limitEnchantment(result, Enchantment.SMITE, maxSharpness);
+        modified |= limitEnchantment(result, Enchantment.BANE_OF_ARTHROPODS, maxSharpness);
+        modified |= limitEnchantment(result, Enchantment.PROTECTION, maxProtection);
+        modified |= limitEnchantment(result, Enchantment.FIRE_PROTECTION, maxProtection);
+        modified |= limitEnchantment(result, Enchantment.BLAST_PROTECTION, maxProtection);
+        modified |= limitEnchantment(result, Enchantment.PROJECTILE_PROTECTION, maxProtection);
+        modified |= limitEnchantment(result, Enchantment.DENSITY, maxMaceDensity);
 
         if (modified) {
             event.setResult(result);
@@ -80,7 +79,7 @@ public class EnchantmentLimiterListener implements Listener {
         }
 
         ItemStack result = event.getCurrentItem();
-        if (result == null || result.getType().isAir() || !result.hasItemMeta()) {
+        if (result == null || result.getType().isAir()) {
             return;
         }
 
@@ -89,15 +88,14 @@ public class EnchantmentLimiterListener implements Listener {
         int maxMaceDensity = plugin.getConfigManager().getInt("combat.max-mace-density", 1);
 
         boolean modified = false;
-        for (Enchantment enchantment : result.getEnchants().keySet()) {
-            int level = result.getEnchantmentLevel(enchantment);
-            int limit = getEnchantmentLimit(enchantment, maxSharpness, maxProtection, maxMaceDensity);
-            if (limit >= 0 && level > limit) {
-                result.removeEnchantment(enchantment);
-                result.addEnchantment(enchantment, limit);
-                modified = true;
-            }
-        }
+        modified |= limitEnchantment(result, Enchantment.SHARPNESS, maxSharpness);
+        modified |= limitEnchantment(result, Enchantment.SMITE, maxSharpness);
+        modified |= limitEnchantment(result, Enchantment.BANE_OF_ARTHROPODS, maxSharpness);
+        modified |= limitEnchantment(result, Enchantment.PROTECTION, maxProtection);
+        modified |= limitEnchantment(result, Enchantment.FIRE_PROTECTION, maxProtection);
+        modified |= limitEnchantment(result, Enchantment.BLAST_PROTECTION, maxProtection);
+        modified |= limitEnchantment(result, Enchantment.PROJECTILE_PROTECTION, maxProtection);
+        modified |= limitEnchantment(result, Enchantment.DENSITY, maxMaceDensity);
 
         if (modified) {
             Player player = (Player) event.getWhoClicked();
@@ -105,19 +103,13 @@ public class EnchantmentLimiterListener implements Listener {
         }
     }
 
-    private int getEnchantmentLimit(Enchantment enchantment, int maxSharpness, int maxProtection, int maxMaceDensity) {
-        if (enchantment == Enchantment.SHARPNESS || enchantment == Enchantment.SMITE || enchantment == Enchantment.BANE_OF_ARTHROPODS) {
-            return maxSharpness;
+    private boolean limitEnchantment(ItemStack item, Enchantment enchantment, int limit) {
+        int level = item.getEnchantmentLevel(enchantment);
+        if (level > limit) {
+            item.removeEnchantment(enchantment);
+            item.addEnchantment(enchantment, limit);
+            return true;
         }
-        if (enchantment == Enchantment.PROTECTION
-                || enchantment == Enchantment.FIRE_PROTECTION
-                || enchantment == Enchantment.BLAST_PROTECTION
-                || enchantment == Enchantment.PROJECTILE_PROTECTION) {
-            return maxProtection;
-        }
-        if (enchantment == Enchantment.DENSITY) {
-            return maxMaceDensity;
-        }
-        return -1;
+        return false;
     }
 }
