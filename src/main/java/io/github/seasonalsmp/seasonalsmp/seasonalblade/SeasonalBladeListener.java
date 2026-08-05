@@ -30,6 +30,10 @@ public class SeasonalBladeListener implements Listener {
 
     @EventHandler
     public void onPrepareItemCraft(PrepareItemCraftEvent event) {
+        org.bukkit.inventory.Recipe recipe = event.getRecipe();
+        if (!(recipe instanceof org.bukkit.inventory.ShapedRecipe shaped) || !"seasonal_blade".equals(shaped.getKey().getKey())) {
+            return;
+        }
         CraftingInventory inventory = event.getInventory();
         ItemStack[] matrix = inventory.getMatrix();
         if (!isValidSeasonalBladeRecipe(matrix)) {
