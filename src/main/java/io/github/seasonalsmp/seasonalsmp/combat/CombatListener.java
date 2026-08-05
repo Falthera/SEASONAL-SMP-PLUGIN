@@ -13,8 +13,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 
@@ -74,19 +72,19 @@ public class CombatListener implements Listener {
 
         if (item.getType() == Material.ENDER_PEARL) {
             event.setCancelled(true);
-            player.sendMessage("§cYou cannot use Ender Pearls while in combat!");
+            player.sendMessage("§cEnder Pearls are on cooldown until you leave combat!");
             return;
         }
 
         if (isForbiddenWeapon(item)) {
             event.setCancelled(true);
-            player.sendMessage("§cThis weapon is not allowed in combat!");
+            player.sendMessage("§cThis weapon is on cooldown until you leave combat!");
             return;
         }
 
         if (isBombingMaterial(item)) {
             event.setCancelled(true);
-            player.sendMessage("§cThis item is not allowed in PvP combat!");
+            player.sendMessage("§cThis item is on cooldown until you leave combat!");
         }
     }
 
@@ -109,34 +107,6 @@ public class CombatListener implements Listener {
         Player player = event.getPlayer();
         if (!combatManager.isInCombat(player)) {
             return;
-        }
-    }
-
-    @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) {
-        if (!(event.getWhoClicked() instanceof Player player)) {
-            return;
-        }
-        if (!combatManager.isInCombat(player)) {
-            return;
-        }
-        if (combatManager.hasForbiddenWeapon(player) || combatManager.exceedsArmorEnchant(player) || combatManager.exceedsWeaponEnchant(player)) {
-            event.setCancelled(true);
-            player.sendMessage("§cYour loadout violates combat rules!");
-        }
-    }
-
-    @EventHandler
-    public void onInventoryDrag(InventoryDragEvent event) {
-        if (!(event.getWhoClicked() instanceof Player player)) {
-            return;
-        }
-        if (!combatManager.isInCombat(player)) {
-            return;
-        }
-        if (combatManager.hasForbiddenWeapon(player) || combatManager.exceedsArmorEnchant(player) || combatManager.exceedsWeaponEnchant(player)) {
-            event.setCancelled(true);
-            player.sendMessage("§cYour loadout violates combat rules!");
         }
     }
 
