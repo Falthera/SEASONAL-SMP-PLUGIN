@@ -197,7 +197,12 @@ public class CombatListener implements Listener {
             if (item == null || item.getType().isAir() || !item.hasItemMeta()) {
                 continue;
             }
-            if (item.getEnchantmentLevel(Enchantment.PROTECTION) > maxProtection) {
+            int protLevel = item.getEnchantmentLevel(Enchantment.PROTECTION);
+            int fireProtLevel = item.getEnchantmentLevel(Enchantment.FIRE_PROTECTION);
+            int blastProtLevel = item.getEnchantmentLevel(Enchantment.BLAST_PROTECTION);
+            int projectileProtLevel = item.getEnchantmentLevel(Enchantment.PROJECTILE_PROTECTION);
+            if (protLevel > maxProtection || fireProtLevel > maxProtection
+                    || blastProtLevel > maxProtection || projectileProtLevel > maxProtection) {
                 return true;
             }
         }

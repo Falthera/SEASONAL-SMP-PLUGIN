@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -26,12 +27,36 @@ public class EnchantmentLimiterListener implements Listener {
         int maxProtection = plugin.getConfigManager().getInt("combat.max-protection-level", 3);
         int maxMaceDensity = plugin.getConfigManager().getInt("combat.max-mace-density", 1);
 
-        ItemStack item = event.getItem();
-        if (item == null || item.getType().isAir() || !item.hasItemMeta()) {
+        java.util.Map<Enchantment, Integer> enchantsToAdd = event.getEnchantsToAdd();
+        boolean modified = false;
+        for (java.util.Map.Entry<Enchantment, Integer> entry : enchantsToAdd.entrySet()) {
+            Enchantment enchantment = entry.getKey();
+            int level = entry.getValue();
+            int limit = getEnchantmentLimit(enchantment, maxSharpness, maxProtection, maxMaceDensity);
+            if (limit >= 0 && level > limit) {
+                enchantsToAdd.put(enchantment, limit);
+                modified = true;
+            }
+        }
+
+        if (modified) {
+            Player player = (Player) event.getEnchanter();
+            player.sendMessage("§cEnchantment levels have been capped by server rules!");
+        }
+    }
+
+    @EventHandler
+    public void onPrepareAnvil(PrepareAnvilEvent event) {
+        int maxSharpness = plugin.getConfigManager().getInt("combat.max-sharpness-level", 4);
+        int maxProtection = plugin.getConfigManager().getInt("combat.max-protection-level", 3);
+        int maxMaceDensity = plugin.getConfigManager().getInt("combat.max-mace-density", 1);
+
+        ItemStack result = event.getResult();
+        if (result == null || result.getType().isAir() || !result.hasItemMeta()) {
             return;
         }
 
-        ItemMeta meta = item.getItemMeta();
+        ItemMeta meta = result.getItemMeta();
         if (meta == null) {
             return;
         }
@@ -48,14 +73,16 @@ public class EnchantmentLimiterListener implements Listener {
         }
 
         if (modified) {
-            item.setItemMeta(meta);
+            result.setItemMeta(meta);
+            event.setResult(result);
+            Player player = (Player) event.getView().getPlayer();
+            player.sendMessage("§cEnchantment levels have been capped by server rules!");
         }
     }
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        if (event.getInventory().getType() != InventoryType.ANVIL
-                && event.getInventory().getType() != InventoryType.GRINDSTONE) {
+        if (event.getInventory().getType() != InventoryType.GRINDSTONE) {
             return;
         }
 
@@ -86,9 +113,6 @@ public class EnchantmentLimiterListener implements Listener {
 
         if (modified) {
             result.setItemMeta(meta);
-            if (event.getInventory().getType() == InventoryType.ANVIL) {
-                event.getInventory().setItem(2, result);
-            }
             Player player = (Player) event.getWhoClicked();
             player.sendMessage("§cEnchantment levels have been capped by server rules!");
         }
