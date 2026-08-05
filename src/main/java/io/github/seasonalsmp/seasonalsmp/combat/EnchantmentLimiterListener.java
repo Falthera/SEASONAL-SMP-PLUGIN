@@ -28,20 +28,28 @@ public class EnchantmentLimiterListener implements Listener {
 
         java.util.Map<Enchantment, Integer> enchantsToAdd = event.getEnchantsToAdd();
         boolean modified = false;
-        for (java.util.Map.Entry<Enchantment, Integer> entry : enchantsToAdd.entrySet()) {
-            Enchantment enchantment = entry.getKey();
-            int level = entry.getValue();
-            int limit = getEnchantmentLimit(enchantment, maxSharpness, maxProtection, maxMaceDensity);
-            if (limit >= 0 && level > limit) {
-                enchantsToAdd.put(enchantment, limit);
-                modified = true;
-            }
-        }
+        modified |= capEnchantment(enchantsToAdd, Enchantment.SHARPNESS, maxSharpness);
+        modified |= capEnchantment(enchantsToAdd, Enchantment.SMITE, maxSharpness);
+        modified |= capEnchantment(enchantsToAdd, Enchantment.BANE_OF_ARTHROPODS, maxSharpness);
+        modified |= capEnchantment(enchantsToAdd, Enchantment.PROTECTION, maxProtection);
+        modified |= capEnchantment(enchantsToAdd, Enchantment.FIRE_PROTECTION, maxProtection);
+        modified |= capEnchantment(enchantsToAdd, Enchantment.BLAST_PROTECTION, maxProtection);
+        modified |= capEnchantment(enchantsToAdd, Enchantment.PROJECTILE_PROTECTION, maxProtection);
+        modified |= capEnchantment(enchantsToAdd, Enchantment.DENSITY, maxMaceDensity);
 
         if (modified) {
             Player player = (Player) event.getEnchanter();
             player.sendMessage("§cEnchantment levels have been capped by server rules!");
         }
+    }
+
+    private boolean capEnchantment(java.util.Map<Enchantment, Integer> map, Enchantment enchantment, int limit) {
+        Integer level = map.get(enchantment);
+        if (level != null && level > limit) {
+            map.put(enchantment, limit);
+            return true;
+        }
+        return false;
     }
 
     @EventHandler
