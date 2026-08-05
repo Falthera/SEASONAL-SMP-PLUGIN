@@ -28,6 +28,9 @@ import io.github.seasonalsmp.seasonalsmp.gui.UIManager;
 import io.github.seasonalsmp.seasonalsmp.listener.PlayerJoinListener;
 import io.github.seasonalsmp.seasonalsmp.listener.SeasonWorldListener;
 import io.github.seasonalsmp.seasonalsmp.listener.PrivateMessagePrivacyListener;
+import io.github.seasonalsmp.seasonalsmp.listener.AutumnHitListener;
+import io.github.seasonalsmp.seasonalsmp.listener.StaffModeListener;
+import io.github.seasonalsmp.seasonalsmp.moderation.WarnManager;
 import io.github.seasonalsmp.seasonalsmp.season.Season;
 import io.github.seasonalsmp.seasonalsmp.season.SeasonManager;
 import io.github.seasonalsmp.seasonalsmp.seasonalblade.SeasonalBladeListener;
@@ -77,6 +80,7 @@ public final class SeasonalSMP extends JavaPlugin {
     private TrustManager trustManager;
     private WhitelistManager whitelistManager;
     private WhitelistAPIServer whitelistAPIServer;
+    private WarnManager warnManager;
     private BukkitTask seasonCycleTask;
     private BukkitTask ambientEffectTask;
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
@@ -112,6 +116,7 @@ public final class SeasonalSMP extends JavaPlugin {
             whitelistManager = new WhitelistManager(this);
             whitelistAPIServer = new WhitelistAPIServer(this, whitelistManager);
             whitelistAPIServer.start();
+            warnManager = new WarnManager(this);
             registerListeners();
             registerCommands();
             registerSwordRecipes();
@@ -192,6 +197,7 @@ public final class SeasonalSMP extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new SpearBlockerListener(this), this);
         Bukkit.getPluginManager().registerEvents(new PrivateMessagePrivacyListener(this), this);
         Bukkit.getPluginManager().registerEvents(new AutumnHitListener(this, getBoundManager().getAutumnHandler()), this);
+        Bukkit.getPluginManager().registerEvents(new StaffModeListener(this), this);
         io.github.seasonalsmp.seasonalsmp.event.RelicPurgeListener relicListener = new io.github.seasonalsmp.seasonalsmp.event.RelicPurgeListener(this);
         relicListener.initialize();
         Bukkit.getPluginManager().registerEvents(new io.github.seasonalsmp.seasonalsmp.event.InvisibleKillerListener(this), this);
@@ -252,6 +258,14 @@ public final class SeasonalSMP extends JavaPlugin {
         org.bukkit.command.PluginCommand gp = getCommand("gp");
         if (gp != null) {
             gp.setExecutor(new io.github.seasonalsmp.seasonalsmp.grace.GracePeriodCommand(this, gracePeriodManager));
+        }
+        org.bukkit.command.PluginCommand warn = getCommand("warn");
+        if (warn != null) {
+            warn.setExecutor(new WarnCommand(this));
+        }
+        org.bukkit.command.PluginCommand kick = getCommand("kick");
+        if (kick != null) {
+            kick.setExecutor(new KickCommand(this));
         }
     }
 
@@ -510,5 +524,9 @@ public final class SeasonalSMP extends JavaPlugin {
 
     public DataStorage getDataStorage() {
         return dataStorage;
+    }
+
+    public WarnManager getWarnManager() {
+        return warnManager;
     }
 }

@@ -45,7 +45,13 @@ permissions:
   seasonalsmp.command.grace:
     description: Manage grace period
     default: op
-commands:
+  seasonalsmp.command.warn:
+    description: Warn a player
+    default: op
+  seasonalsmp.command.kick:
+    description: Kick a player
+    default: op
+  commands:
   season:
     description: View or modify the current season
     usage: /<command> [info|set <season>|next|time]
@@ -105,3 +111,11 @@ commands:
     description: Manage grace period
     usage: /<command> <start|end|status>
     permission: seasonalsmp.command.grace
+  warn:
+    description: Warn a player
+    usage: /<command> <player> [reason]
+    permission: seasonalsmp.command.warn
+  kick:
+    description: Kick a player
+    usage: /<command> <player> [reason]
+    permission: seasonalsmp.command.kick

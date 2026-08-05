@@ -4,6 +4,9 @@ general:
   first-join-bound-random: true
   default-bound: "NONE"
 
+moderation:
+  max-warnings: 3
+
 season:
   duration-seconds: 7200
   start-season: "SPRING"
