@@ -154,7 +154,7 @@ public class RelicPurgeManager {
         }
     }
 
-    private static void grantRandomRelics(SeasonalSMP plugin, Player player) {
+    public static void grantRandomRelics(SeasonalSMP plugin, Player player) {
         DataStorage storage = plugin.getDataStorage();
         UUID uuid = player.getUniqueId();
         List<RelicType> baseRelics = new ArrayList<>(List.of(

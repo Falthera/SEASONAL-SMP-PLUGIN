@@ -221,7 +221,7 @@ public class SeasonalStartCommand implements CommandExecutor {
                     Bukkit.broadcastMessage("§cAll players have received the power of the relics...");
 
                     for (Player player : Bukkit.getOnlinePlayers()) {
-                        io.github.seasonalsmp.seasonalsmp.event.relic.RelicPurgeManager.grantRelicsToPlayer(plugin, player);
+                        io.github.seasonalsmp.seasonalsmp.event.relic.RelicPurgeManager.grantRandomRelics(plugin, player);
                     }
                 }
 
