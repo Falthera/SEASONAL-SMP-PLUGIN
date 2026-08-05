@@ -12,3 +12,4 @@ out/
 Thumbs.db
 .env
 discord-bot/.env
+discord-bot/*.rar

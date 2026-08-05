@@ -1,4 +1,4 @@
-import { Client, GatewayIntent, Message, User, Partials } from 'discord.js';
+import { Client, GatewayIntentBits, Message, Partials } from 'discord.js';
 import dotenv from 'dotenv';
 import { WhitelistAPIClient } from './api';
 import { ApiResponse } from './types';
@@ -6,6 +6,7 @@ import { ApiResponse } from './types';
 dotenv.config();
 
 interface Env {
+  [key: string]: string;
   DISCORD_TOKEN: string;
   GUILD_ID: string;
   WHITELIST_CHANNEL_ID: string;
@@ -49,9 +50,9 @@ class DiscordWhitelistBot {
 
     this.client = new Client({
       intents: [
-        GatewayIntent.Guilds,
-        GatewayIntent.GuildMessages,
-        GatewayIntent.MessageContent,
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
       ],
       partials: [Partials.Channel],
     });
@@ -83,7 +84,7 @@ class DiscordWhitelistBot {
     await this.handleWhitelistRequest(message);
   }
 
-  private async handleMessageUpdate(oldMessage: Message | undefined, newMessage: Message): Promise<void> {
+  private async handleMessageUpdate(oldMessage: any, newMessage: any): Promise<void> {
     if (newMessage.channelId !== this.whitelistChannelId) return;
     try {
       await newMessage.react('❌');
@@ -120,7 +121,7 @@ class DiscordWhitelistBot {
       return;
     }
 
-    const apiResponse = await this.apiClient.addPlayer(message.author.id, mojangResponse.username);
+    const apiResponse = await this.apiClient.addPlayer(message.author.id, mojangResponse.name);
     if (apiResponse.isSuccess()) {
       await message.reactions.removeAll();
       await message.react('✅');
@@ -138,7 +139,7 @@ class DiscordWhitelistBot {
         }
       }
 
-      const dmMessage = `🎉 ${mojangResponse.username} has been whitelisted!\n\nYou're officially ready for Seasonal SMP.\n\nKeep an eye on the Discord for launch announcements. The server IP and launch time will be posted there.\n\nSee you in the first season!`;
+      const dmMessage = `🎉 ${mojangResponse.name} has been whitelisted!\n\nYou're officially ready for Seasonal SMP.\n\nKeep an eye on the Discord for launch announcements. The server IP and launch time will be posted there.\n\nSee you in the first season!`;
       await message.author.send(dmMessage).catch((error) => {
         this.log(`Failed to send DM to ${message.author.username}: ${error.message}`);
       });
