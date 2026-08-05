@@ -51,7 +51,6 @@ permissions:
   seasonalsmp.command.kick:
     description: Kick a player
     default: op
-  commands:
   season:
     description: View or modify the current season
     usage: /<command> [info|set <season>|next|time]
