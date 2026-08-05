@@ -30,9 +30,22 @@ public class CombatListener implements Listener {
 
     @EventHandler
     public void onEntityDamage(EntityDamageByEntityEvent event) {
-        if (event.getEntity() instanceof Player victim && event.getDamager() instanceof Player attacker) {
+        if (event.getDamager() instanceof Player attacker) {
             if (plugin.getGracePeriodManager().isActive()) {
                 event.setCancelled(true);
+                return;
+            }
+            if (hasExcessiveSharpness(attacker)) {
+                event.setCancelled(true);
+                attacker.sendMessage("§cYour weapon's Sharpness exceeds the server limit!");
+                return;
+            }
+        }
+        if (event.getEntity() instanceof Player victim && event.getDamager() instanceof Player attacker) {
+            if (hasExcessiveProtection(victim)) {
+                event.setCancelled(true);
+                attacker.sendMessage("§cYour opponent's armor exceeds the Protection limit!");
+                victim.sendMessage("§cYour armor exceeds the Protection limit!");
                 return;
             }
             combatManager.markInCombat(victim);
@@ -167,5 +180,27 @@ public class CombatListener implements Listener {
         }
         Material type = item.getType();
         return type == Material.RESPAWN_ANCHOR || type == Material.END_CRYSTAL;
+    }
+
+    private boolean hasExcessiveSharpness(Player player) {
+        ItemStack weapon = player.getInventory().getItemInMainHand();
+        if (weapon == null || weapon.getType().isAir() || !weapon.hasItemMeta()) {
+            return false;
+        }
+        int maxSharpness = plugin.getConfigManager().getInt("combat.max-sharpness-level", 5);
+        return weapon.getEnchantmentLevel(Enchantment.SHARPNESS) > maxSharpness;
+    }
+
+    private boolean hasExcessiveProtection(Player player) {
+        int maxProtection = plugin.getConfigManager().getInt("combat.max-protection-level", 3);
+        for (ItemStack item : player.getInventory().getArmorContents()) {
+            if (item == null || item.getType().isAir() || !item.hasItemMeta()) {
+                continue;
+            }
+            if (item.getEnchantmentLevel(Enchantment.PROTECTION) > maxProtection) {
+                return true;
+            }
+        }
+        return false;
     }
 }
