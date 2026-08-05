@@ -15,6 +15,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
 
@@ -26,6 +27,19 @@ public class CombatListener implements Listener {
     public CombatListener(SeasonalSMP plugin) {
         this.plugin = plugin;
         this.combatManager = plugin.getCombatManager();
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (!plugin.isEnabled()) {
+                    cancel();
+                    return;
+                }
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    downgradeExcessiveSharpness(player);
+                    downgradeExcessiveProtection(player);
+                }
+            }
+        }.runTaskTimer(plugin, 200L, 200L);
     }
 
     @EventHandler
