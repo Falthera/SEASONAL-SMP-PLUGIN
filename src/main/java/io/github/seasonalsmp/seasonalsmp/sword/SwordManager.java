@@ -183,10 +183,6 @@ public class SwordManager implements Listener {
 
     @EventHandler
     public void onPrepareItemCraft(PrepareItemCraftEvent event) {
-        if (gracePeriodManager.isActive()) {
-            event.getInventory().setResult(new org.bukkit.inventory.ItemStack(org.bukkit.Material.AIR));
-            return;
-        }
         org.bukkit.inventory.Recipe recipe = event.getRecipe();
         if (recipe instanceof org.bukkit.inventory.ShapedRecipe shaped) {
             String key = shaped.getKey().getKey();
@@ -197,6 +193,10 @@ public class SwordManager implements Listener {
                 case "winter_sword" -> BoundType.WINTER;
                 default -> null;
             };
+            if (bound != null && gracePeriodManager.isActive()) {
+                event.getInventory().setResult(new org.bukkit.inventory.ItemStack(org.bukkit.Material.AIR));
+                return;
+            }
             if (bound != null && !canCraftSword(bound)) {
                 event.getInventory().setResult(new org.bukkit.inventory.ItemStack(org.bukkit.Material.AIR));
             }

@@ -18,7 +18,10 @@ public class StaffModeListener implements Listener {
     @EventHandler
     public void onGameModeChange(PlayerGameModeChangeEvent event) {
         Player player = event.getPlayer();
-        if (!player.hasPermission("seasonalsmp.command.warn") && !player.isOp()) {
+        if (player.isOp()) {
+            return;
+        }
+        if (!player.hasPermission("seasonalsmp.command.warn")) {
             return;
         }
         if (event.getNewGameMode() == GameMode.SPECTATOR || event.getNewGameMode() == GameMode.CREATIVE) {

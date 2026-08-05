@@ -81,7 +81,7 @@ public class SeasonalBladeListener implements Listener {
         if (!isItemOfType(matrix, 3, SeasonalBladeType.HARVEST_BLADE)) {
             return false;
         }
-        if (!isItemOfType(matrix, 4, null)) {
+        if (!isMace(matrix[4])) {
             return false;
         }
         if (!isItemOfType(matrix, 5, SeasonalBladeType.SOLSTICE_BLADE)) {
@@ -106,6 +106,13 @@ public class SeasonalBladeListener implements Listener {
         }
         SeasonalBladeType type = SeasonalBladeType.fromItem(item);
         return type == expectedType;
+    }
+
+    private boolean isMace(ItemStack item) {
+        if (item == null || item.getType().isAir()) {
+            return false;
+        }
+        return item.getType() == Material.MACE;
     }
 
     @EventHandler
