@@ -151,6 +151,11 @@ public class CombatListener implements Listener {
         if (!combatManager.isInCombat(player)) {
             return;
         }
+        if (plugin.getConfigManager().getBoolean("combat.prevent-water-running", false)) {
+            if (event.getTo() != null && event.getTo().getBlock().getType() == Material.WATER) {
+                event.setCancelled(true);
+            }
+        }
     }
 
     @EventHandler

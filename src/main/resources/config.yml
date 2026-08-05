@@ -228,7 +228,7 @@ combat:
   max-golden-apples: 128
   max-cobwebs: 128
   prevent-ender-pearl-escape: true
-  prevent-water-running: true
+  prevent-water-running: false
   prevent-punch-bows: true
   prevent-tnt-minecarts: true
   prevent-end-crystals: true
