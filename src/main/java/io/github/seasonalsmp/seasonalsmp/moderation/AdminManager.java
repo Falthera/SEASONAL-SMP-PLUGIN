@@ -63,7 +63,7 @@ public class AdminManager {
         }
         try (Reader reader = new FileReader(dataFile)) {
             Type type = new TypeToken<List<String>>(){}.getType();
-            List<String> loaded = plugin.getGson().fromJson(reader, type);
+            List<String> loaded = gson.fromJson(reader, type);
             if (loaded != null) {
                 admins.clear();
                 for (String uuidString : loaded) {
