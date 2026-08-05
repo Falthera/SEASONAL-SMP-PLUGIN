@@ -6,6 +6,11 @@ general:
 
 moderation:
   max-warnings: 3
+  punishments:
+    - "kick"
+    - "ban 7d"
+    - "mute 1h"
+    - "jail"
 
 season:
   duration-seconds: 7200

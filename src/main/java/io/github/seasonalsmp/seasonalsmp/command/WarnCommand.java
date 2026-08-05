@@ -1,6 +1,7 @@
 package io.github.seasonalsmp.seasonalsmp.command;
 
 import io.github.seasonalsmp.seasonalsmp.SeasonalSMP;
+import io.github.seasonalsmp.seasonalsmp.moderation.PunishmentManager;
 import io.github.seasonalsmp.seasonalsmp.moderation.WarnManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -15,10 +16,12 @@ public class WarnCommand implements CommandExecutor {
 
     private final SeasonalSMP plugin;
     private final WarnManager warnManager;
+    private final PunishmentManager punishmentManager;
 
     public WarnCommand(SeasonalSMP plugin) {
         this.plugin = plugin;
         this.warnManager = plugin.getWarnManager();
+        this.punishmentManager = plugin.getPunishmentManager();
     }
 
     @Override
@@ -45,8 +48,7 @@ public class WarnCommand implements CommandExecutor {
         sender.sendMessage("§aWarned §f" + target.getName() + " §afor: §f" + reason);
         sender.sendMessage("§7Total warnings: §f" + count);
         if (count >= warnManager.getMaxWarnings()) {
-            target.kickPlayer("§cYou have been kicked for reaching " + warnManager.getMaxWarnings() + " warnings.\n§7Reason: " + reason);
-            plugin.getServer().broadcastMessage("§c" + target.getName() + " was kicked for reaching " + warnManager.getMaxWarnings() + " warnings.");
+            punishmentManager.execute(target, reason);
         }
         return true;
     }

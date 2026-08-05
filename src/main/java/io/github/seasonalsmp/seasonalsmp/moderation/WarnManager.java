@@ -18,10 +18,12 @@ public class WarnManager {
     private final File dataFile;
     private final Map<UUID, List<Warning>> warnings;
     private final int maxWarnings;
+    private final PunishmentManager punishmentManager;
 
     public WarnManager(SeasonalSMP plugin) {
         this.plugin = plugin;
         this.gson = new GsonBuilder().setPrettyPrinting().create();
+        this.punishmentManager = new PunishmentManager(plugin);
         this.maxWarnings = plugin.getConfigManager().getInt("moderation.max-warnings", 3);
         File dataDir = new File(plugin.getDataFolder(), "data");
         if (!dataDir.exists()) {

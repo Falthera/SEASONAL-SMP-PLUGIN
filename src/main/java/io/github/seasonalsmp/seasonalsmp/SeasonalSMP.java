@@ -3,7 +3,6 @@ package io.github.seasonalsmp.seasonalsmp;
 import io.github.seasonalsmp.seasonalsmp.bound.BoundManager;
 import io.github.seasonalsmp.seasonalsmp.bound.BoundType;
 import io.github.seasonalsmp.seasonalsmp.bound.autumn.AutumnHitListener;
-import io.github.seasonalsmp.seasonalsmp.bound.BoundType;
 import io.github.seasonalsmp.seasonalsmp.command.AbilityCommand;
 import io.github.seasonalsmp.seasonalsmp.command.BoundCommand;
 import io.github.seasonalsmp.seasonalsmp.command.BoundCommandTabCompleter;
@@ -30,6 +29,7 @@ import io.github.seasonalsmp.seasonalsmp.listener.SeasonWorldListener;
 import io.github.seasonalsmp.seasonalsmp.listener.PrivateMessagePrivacyListener;
 import io.github.seasonalsmp.seasonalsmp.listener.AutumnHitListener;
 import io.github.seasonalsmp.seasonalsmp.listener.StaffModeListener;
+import io.github.seasonalsmp.seasonalsmp.moderation.PunishmentManager;
 import io.github.seasonalsmp.seasonalsmp.moderation.WarnManager;
 import io.github.seasonalsmp.seasonalsmp.season.Season;
 import io.github.seasonalsmp.seasonalsmp.season.SeasonManager;
@@ -81,6 +81,7 @@ public final class SeasonalSMP extends JavaPlugin {
     private WhitelistManager whitelistManager;
     private WhitelistAPIServer whitelistAPIServer;
     private WarnManager warnManager;
+    private PunishmentManager punishmentManager;
     private BukkitTask seasonCycleTask;
     private BukkitTask ambientEffectTask;
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
@@ -117,6 +118,7 @@ public final class SeasonalSMP extends JavaPlugin {
             whitelistAPIServer = new WhitelistAPIServer(this, whitelistManager);
             whitelistAPIServer.start();
             warnManager = new WarnManager(this);
+            punishmentManager = new PunishmentManager(this);
             registerListeners();
             registerCommands();
             registerSwordRecipes();
@@ -528,5 +530,9 @@ public final class SeasonalSMP extends JavaPlugin {
 
     public WarnManager getWarnManager() {
         return warnManager;
+    }
+
+    public PunishmentManager getPunishmentManager() {
+        return punishmentManager;
     }
 }
