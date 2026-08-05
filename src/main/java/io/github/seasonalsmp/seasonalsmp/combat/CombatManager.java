@@ -246,7 +246,7 @@ public class CombatManager {
         };
     }
 
-    public boolean exceedsRestockLimit(Player player, Material material) {
+    private int countMaterial(Player player, Material material) {
         int count = 0;
         for (ItemStack item : player.getInventory().getContents()) {
             if (item != null && item.getType() == material) {

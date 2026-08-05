@@ -1,5 +1,8 @@
 package io.github.seasonalsmp.seasonalsmp.moderation;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import io.github.seasonalsmp.seasonalsmp.SeasonalSMP;
 import org.bukkit.entity.Player;
 
@@ -11,11 +14,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public class AdminManager {
 
     private final SeasonalSMP plugin;
+    private final Gson gson;
     private final File dataFile;
     private final Set<UUID> admins;
 
     public AdminManager(SeasonalSMP plugin) {
         this.plugin = plugin;
+        this.gson = new GsonBuilder().setPrettyPrinting().create();
         File dataDir = new File(plugin.getDataFolder(), "data");
         if (!dataDir.exists()) {
             dataDir.mkdirs();
@@ -79,7 +84,7 @@ public class AdminManager {
             for (UUID uuid : admins) {
                 serializable.add(uuid.toString());
             }
-            plugin.getGson().toJson(serializable, writer);
+            gson.toJson(serializable, writer);
         } catch (Exception e) {
             plugin.getLogger().warning("Failed to save admins: " + e.getMessage());
         }

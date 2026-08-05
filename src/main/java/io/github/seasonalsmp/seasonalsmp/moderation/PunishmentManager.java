@@ -1,6 +1,6 @@
 package io.github.seasonalsmp.seasonalsmp.moderation;
 
-import io.github.seasonalsmp.seasonalsmp.SeasonSMP;
+import io.github.seasonalsmp.seasonalsmp.SeasonalSMP;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;

@@ -76,7 +76,7 @@ public class WarnManager {
         }
         try (Reader reader = new FileReader(dataFile)) {
             Type type = new TypeToken<Map<String, List<Warning>>>(){}.getType();
-            Map<String, List<Warning>> loaded = plugin.getGson().fromJson(reader, type);
+            Map<String, List<Warning>> loaded = gson.fromJson(reader, type);
             if (loaded != null) {
                 warnings.clear();
                 for (Map.Entry<String, List<Warning>> entry : loaded.entrySet()) {
